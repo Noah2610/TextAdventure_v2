@@ -24,7 +24,7 @@ def screen_size target = :all
 end
 
 ## Log, debug output
-def log msg = nil, mode = 'a'
+def log *msgs, mode: 'a'
 	case Env
 	when 'dev'
 		filepath = File.join(DIR[:log], 'dev.log')
@@ -32,18 +32,20 @@ def log msg = nil, mode = 'a'
 		return nil
 	end
 
-	if (msg.nil?)
+	if (msgs.empty?)
 		file = File.new filepath, 'w'
 		file.write ''
 		file.close
-		return msg
+		return
 	end
 
 	file = File.new filepath, mode
-	msg = msg.ai AP_OPTIONS
-	file.write msg + "\n"
+	msgs.each do |msg|
+		file.write msg.ai(AP_OPTIONS) + "\t"
+	end
+	file.write "\n"
 	file.close
-	return msg
+	return msgs
 end
 
 ## Clear log

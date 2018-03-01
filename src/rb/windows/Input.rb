@@ -11,14 +11,12 @@ VALID_KEYS = [
 
 class Windows::Input
 	def initialize args = {}
-		w = width
-		h = height
 		## Initialize Curses Window
 		@window = Curses::Window.new(
-			# height, width
-			h, w,
-			# top, left
-			(screen_size(:h) - height), 0
+		# height,  width
+			height,  width,
+		# top,     left
+			pos(:y), pos(:x)
 		)
 
 		## Enable keypad, fixes curses' constants
@@ -83,17 +81,36 @@ class Windows::Input
 		unless (@history.last == @text || @text.delete(' ').empty?)
 			@history << @text.dup
 		end
+		## Send @text to game to process
+		$game.handle_input @text
 		clear_text
 	end
 
+	## Return wanted width for window
 	def width
-		## Return proper width for window
-		screen_size :w
+		return screen_size(:w)
 	end
 
+	## Return wanted height for window
 	def height
-		## Return proper height for window
-		3
+		return 3
+	end
+
+	## Return wanted position in screen for window
+	def pos target = :all
+		ret = nil
+		case target
+		when :x
+			ret = 0
+		when :y
+			ret = screen_size(:h) - height
+		when :all
+			ret = {
+				x: pos(:x),
+				y: pos(:y)
+			}
+		end
+		return ret
 	end
 
 	## Return actual size of window
@@ -117,7 +134,7 @@ class Windows::Input
 		## Clear all text in window
 		@window.clear
 		## Move window to proper position on screen
-		@window.move (screen_size(:h) - height), 0
+		@window.move pos(:y), pos(:x)
 		## Resize window in case of terminal resize
 		@window.resize height, width
 		## Create border for window
@@ -134,7 +151,6 @@ class Windows::Input
 	end
 
 	def read
-		redraw
 		charid = @window.getch.ord
 		char = Curses.keyname charid
 		case charid
@@ -179,9 +195,11 @@ class Windows::Input
 			end
 		end
 
-		log charid
-		log char
+	end
 
+	def update
+		redraw
+		read
 	end
 end
 
