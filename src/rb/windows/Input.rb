@@ -138,7 +138,7 @@ class Windows::Input
 		charid = @window.getch.ord
 		char = Curses.keyname charid
 		case charid
-		when Curses::Key::BACKSPACE
+		when Curses::Key::BACKSPACE, 127
 			# Backspace - Remove character before cursor
 			@cursor -= 1          unless (@cursor <= 0)
 			@text.slice! @cursor
@@ -178,6 +178,9 @@ class Windows::Input
 				@cursor += 1
 			end
 		end
+
+		log charid
+		log char
 
 	end
 end
