@@ -1,8 +1,9 @@
 source 'https://rubygems.org/'
 
-gem 'curses'
 gem 'colorize'
+gem 'curses'
 
 group :dev do
+	gem 'awesome_print'
 	gem 'byebug'
 end
