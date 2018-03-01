@@ -2,6 +2,7 @@
 class Windows::Output
 	def initialize args = {}
 		@padding = 3
+		@padding_h = 1
 		@indent = 2
 		@lines = []
 		init args  if (defined? init)
@@ -40,35 +41,44 @@ class Windows::Output
 		@window.move pos(:y), pos(:x)
 		@window.resize height, width
 		@window.box ?|, ?-
-		## Print lines
-		index_offset = 0
+
+		## Process lines
+		lines_final = []
 		@lines.each_with_index do |line, index|
 			## Check if line is too long and has to be split
-
 			max_width = size(:w) - (@padding * 2)
 			if (line.size > max_width)
 
-				## Print first line
-				first_line = line[0 ... max_width]
-				@window.setpos index + 1 + index_offset, @padding
-				@window.addstr first_line
-				index_offset += 1
+				## First line
+				lines_final << line[0 ... max_width]
 
-				## Print split lines, indented
+				## Split following lines, indented
 				indented_max_width = max_width - @indent
 				indented_lines = line[(max_width) .. -1]
 				indented_lines_count = (((indented_lines.size / indented_max_width) + 1).floor)
 				indented_lines_count.times do |n|
-					@window.setpos index + 1 + index_offset, @padding + @indent
-					@window.addstr indented_lines[(indented_max_width * n) ... (indented_max_width * (n + 1))]
-					index_offset += 1  unless (n + 1 == indented_lines_count)
+					lines_final << "#{' ' * @indent}#{indented_lines[(indented_max_width * n) ... (indented_max_width * (n + 1))]}"
 				end
 
 			else
-				@window.setpos index + 1 + index_offset, @padding
-				@window.addstr line
+				## Line fits in width
+				lines_final << line
 			end
 		end
+
+		## Remove lines that don't fit in window height
+		max_height = size(:h) - (@padding_h * 2)
+		if (lines_final.size > max_height)
+			diff = lines_final.size - max_height
+			lines_final = lines_final[diff .. -1]
+		end
+
+		## Print lines
+		lines_final.each_with_index do |line, index|
+			@window.setpos index + @padding_h, @padding
+			@window.addstr line
+		end
+
 		@window.refresh
 	end
 end
