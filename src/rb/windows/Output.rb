@@ -94,7 +94,7 @@ class Windows::PrimaryOut < Windows::Output
 
 	## Return wanted width for window
 	def width
-		return screen_size(:w)
+		return (screen_size(:w) * 0.35).floor
 	end
 
 	## Return wanted height for window
@@ -108,6 +108,89 @@ class Windows::PrimaryOut < Windows::Output
 		case target
 		when :x, :y
 			ret = 0
+		when :all
+			ret = {
+				x: pos(:x),
+				y: pos(:y)
+			}
+		end
+		return ret
+	end
+
+	def update
+		redraw
+	end
+end
+
+class Windows::SecondaryOut < Windows::Output
+	def init args = {}
+		@window = Curses::Window.new(
+			height,  width,
+			pos(:y), pos(:x)
+		)
+		redraw
+	end
+
+	## Return wanted width for window
+	def width
+		return (screen_size(:w) * 0.65).floor
+	end
+
+	## Return wanted height for window
+	def height
+		return ((screen_size(:h) * 0.5) - 1).floor
+	end
+
+	## Return wanted position in screen for window
+	def pos target = :all
+		ret = nil
+		case target
+		when :x
+			ret = (screen_size(:w) * 0.35).ceil
+		when :y
+			ret = 0
+		when :all
+			ret = {
+				x: pos(:x),
+				y: pos(:y)
+			}
+		end
+		return ret
+	end
+
+	def update
+		redraw
+	end
+end
+
+
+class Windows::TertiaryOut < Windows::Output
+	def init args = {}
+		@window = Curses::Window.new(
+			height,  width,
+			pos(:y), pos(:x)
+		)
+		redraw
+	end
+
+	## Return wanted width for window
+	def width
+		return (screen_size(:w) * 0.65).floor
+	end
+
+	## Return wanted height for window
+	def height
+		return ((screen_size(:h) * 0.5) - 2).floor
+	end
+
+	## Return wanted position in screen for window
+	def pos target = :all
+		ret = nil
+		case target
+		when :x
+			ret = (screen_size(:w) * 0.35).ceil
+		when :y
+			ret = ((screen_size(:h) * 0.5) - 1).ceil
 		when :all
 			ret = {
 				x: pos(:x),

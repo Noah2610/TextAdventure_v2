@@ -15,15 +15,20 @@ class Game
 
 		## Initialize main curses windows
 		@windows = {
-			input:       Windows::Input.new,
-			primary_out: Windows::PrimaryOut.new
+			input:        Windows::Input.new,
+			outputs: [
+				Windows::PrimaryOut.new,
+				Windows::SecondaryOut.new,
+				Windows::TertiaryOut.new
+			]
 		}
 
 		Curses.refresh
 	end
 
 	def handle_input input
-		@windows[:primary_out].print "Input: #{input}"
+		for_window = input.match(/[012]/).to_s.to_i
+		@windows[:outputs][for_window].print "#{input.sub /[123]\s*/, ''}"
 	end
 
 	def running?
@@ -32,9 +37,9 @@ class Game
 
 	def update
 		Curses.refresh
-		#Curses.clear
+		Curses.clear
 		# Update Primary Output Window
-		@windows[:primary_out].update
+		@windows[:outputs].each &:update
 		# Update Input Window - Should be called last because it reads input
 		@windows[:input].update
 	end
