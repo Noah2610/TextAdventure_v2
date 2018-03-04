@@ -63,10 +63,6 @@ class Settings
 		return settings
 	end
 
-	def dbg
-		log @SETTINGS
-	end
-
 	def logfile
 		logdir = @SETTINGS['logdir']
 		return nil  if (logdir.nil?)
@@ -74,6 +70,10 @@ class Settings
 		## Create directory it if doesn't exist
 		Dir.mkdir full_logdir  unless (File.directory? full_logdir)
 		return File.join full_logdir, @SETTINGS['logfile']
+	end
+
+	def output
+		return @SETTINGS['output']
 	end
 end
 

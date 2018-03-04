@@ -1,9 +1,10 @@
 
 class Windows::Output
 	def initialize args = {}
-		@padding = 3
-		@padding_h = 1
-		@indent = 2
+		@padding      = SETTINGS.output['padding'] || 3
+		@padding_h    = SETTINGS.output['padding_height'] || 1
+		@indent       = SETTINGS.output['indent'] || 2
+		@history_size = SETTINGS.output['history_size'] || 100
 		@lines = []
 		init args  if (defined? init)
 	end
@@ -29,6 +30,8 @@ class Windows::Output
 		text.gsub(/\n/, "\n#{' ' * @indent}").split(/\n/).each do |ln|
 			@lines << ln
 		end
+		## Clear early lines
+		@lines = @lines[-@history_size .. -1]  if (@lines.size > @history_size)
 		redraw
 	end
 
@@ -122,6 +125,7 @@ class Windows::PrimaryOut < Windows::Output
 	end
 end
 
+=begin
 class Windows::SecondaryOut < Windows::Output
 	def init args = {}
 		@window = Curses::Window.new(
@@ -204,4 +208,5 @@ class Windows::TertiaryOut < Windows::Output
 		redraw
 	end
 end
+=end
 

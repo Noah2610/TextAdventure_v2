@@ -17,8 +17,8 @@ class Game
 			input:        Windows::Input.new,
 			outputs: [
 				Windows::PrimaryOut.new,
-				Windows::SecondaryOut.new,
-				Windows::TertiaryOut.new
+				#Windows::SecondaryOut.new,
+				#Windows::TertiaryOut.new
 			]
 		}
 
@@ -26,10 +26,6 @@ class Game
 	end
 
 	def handle_input input
-		case input
-		when 'dbg', 'debug', 'debugger'
-			SETTINGS.dbg
-		end
 		for_window = input.match(/[012]/).to_s.to_i
 		@windows[:outputs][for_window].print "#{input.sub /[123]\s*/, ''}"
 	end
