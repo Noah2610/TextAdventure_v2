@@ -1,5 +1,4 @@
 
-require File.join DIR[:misc], 'misc'
 ## Require curses windows
 require File.join DIR[:windows], 'Windows'
 require File.join DIR[:windows], 'Input'
@@ -27,6 +26,10 @@ class Game
 	end
 
 	def handle_input input
+		case input
+		when 'dbg', 'debug', 'debugger'
+			SETTINGS.dbg
+		end
 		for_window = input.match(/[012]/).to_s.to_i
 		@windows[:outputs][for_window].print "#{input.sub /[123]\s*/, ''}"
 	end
@@ -44,6 +47,7 @@ class Game
 		@windows[:input].update
 	end
 end
+
 
 ## Start game and enter game loop
 $loop_counter = 0

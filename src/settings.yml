@@ -1,0 +1,24 @@
+---
+### Settings for differnet environments, these take priority
+ENVIRONMENTS:
+  development:
+    logfile: 'development.log'
+    input:
+      ESCDELAY: 250
+
+  production:
+    logfile: 'production.log'
+
+
+### Regular settings, environment settings overwrite these
+## Log directory, best to leave as-is. Logfiles are created / overwritten in this directory
+logdir: 'log'
+## Default logfile
+logfile: 'default.log'
+
+## Input settings
+input:
+  ## Curses ESCDELAY, in ms (default = 1000ms)
+  ESCDELAY: 1000
+
+...

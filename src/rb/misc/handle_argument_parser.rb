@@ -25,14 +25,15 @@ end
 ## Define valid command-line arguments for ArgumentParser
 VALID_ARGUMENTS = {
 	single: {
-		help:     [['h'],                  false],
-		version:  [['v'],                  false],
-		env:      [['e'],                  true]
+		help:       [['h'],                      false],
+		version:    [['v'],                      false],
+		env:        [['e'],                      true]
 	},
 	double: {
-		help:     [['help'],               false],
-		version:  [['version'],            false],
-		env:      [['env','environment'],  true]
+		help:       [['help'],                   false],
+		version:    [['version'],                false],
+		env:        [['env','environment'],      true],
+		force_yaml: [['force-yaml','force-yml'], false]
 	}
 }
 

@@ -1,6 +1,5 @@
 
-### Misc constants
-AP_OPTIONS = {
+LOG_AP_OPTIONS = {
 	indent: 2,
 	plain:  true
 }
@@ -23,25 +22,37 @@ def screen_size target = :all
 	return ret
 end
 
-## Log, debug output
-def log *msgs, mode: 'a'
-	case Env
-	when 'dev'
-		filepath = File.join(DIR[:log], 'dev.log')
+### Log, debug output
+## USAGE:
+## log 'message one', 'message two', ..., mode: ?w, ap: true
+#      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
+#      Messages you want to have logged,  optional options
+def log *args
+	return nil  if (args.empty?)
+	## Parse args to separate messages from options
+	if (args.last.is_a?(Hash) && args.size > 1)
+		opts = args.last
+		msgs = args[0 ... -1]
 	else
-		return nil
+		opts = {}
+		msgs = args
 	end
 
+	default_mode = ?a
+	filepath = SETTINGS.logfile
+
 	if (msgs.empty?)
-		file = File.new filepath, 'w'
+		file = File.new filepath, ?w
 		file.write ''
 		file.close
 		return
 	end
 
-	file = File.new filepath, mode
-	msgs.each do |msg|
-		file.write msg.ai(AP_OPTIONS) + "\t"
+	file = File.new filepath, opts[:mode] || default_mode
+	msgs.each_with_index do |msg, index|
+		m = msg.ai(LOG_AP_OPTIONS)  if (opts[:ap].nil? || opts[:ap] == true)
+		m = msg                     if (opts[:ap] == false)
+		file.write m + (index < msgs.size - 1 ? ?\t : '')
 	end
 	file.write "\n"
 	file.close
@@ -49,5 +60,5 @@ def log *msgs, mode: 'a'
 end
 
 ## Clear log
-log  if (Env == 'dev')
+log  if (ENVT.dev?)
 
