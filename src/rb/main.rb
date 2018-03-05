@@ -12,18 +12,8 @@ class Game
 		## Initialize Curses screen
 		Curses.init_screen
 		Curses.start_color
-
-		## Define some color pairs
-		# WHITE on BLACK
-=begin
-		Curses.init_pair 1, Curses::COLOR_WHITE, Curses::COLOR_BLACK
-		# RED on BLACK
-		Curses.init_pair 2, Curses::COLOR_RED, Curses::COLOR_BLACK
-		# GREEN on BLACK
-		Curses.init_pair 3, Curses::COLOR_GREEN, Curses::COLOR_BLACK
-		# BLUE on BLACK
-		Curses.init_pair 4, Curses::COLOR_BLUE, Curses::COLOR_BLACK
-=end
+		## Initialize custom color-pairs
+		Windows::Colors.init
 
 		## Initialize main curses windows
 		@windows = {
@@ -39,7 +29,10 @@ class Game
 	end
 
 	def handle_input input
-		#Curses.attrset Curses.color_pair 2
+		case input.downcase.strip
+		when 'lines'
+			log @windows[:outputs][0].lines
+		end
 		@windows[:outputs][0].print input #, attr: Curses.color_pair(2) | Curses::A_BOLD
 	end
 

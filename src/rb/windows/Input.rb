@@ -6,7 +6,7 @@ class Windows::Input
 	## Define valid input keys
 	VALID_KEYS = [
 		(65 .. 90) .to_a,
-		(97 .. 122).to_a,
+		(97 .. 125).to_a,
 		(32 .. 64) .to_a
 	].flatten
 
@@ -190,7 +190,7 @@ class Windows::Input
 			# Print character
 		else
 			if (VALID_KEYS.include? charid)
-				@text[@cursor] = char
+				@text.insert @cursor, char
 				@cursor += 1
 			end
 		end
