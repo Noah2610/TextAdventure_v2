@@ -26,12 +26,13 @@ class Windows::Output
 		return ret
 	end
 
-	def print text
+	def print text, args = {}
 		text.gsub(/\n/, "\n#{' ' * @indent}").split(/\n/).each do |ln|
 			@lines << ln
 		end
 		## Clear early lines
 		@lines = @lines[-@history_size .. -1]  if (@lines.size > @history_size)
+		## Set Curses attributes if given
 		redraw
 	end
 
