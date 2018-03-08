@@ -16,8 +16,11 @@ DIR = {
 	windows:    File.join(ROOT, 'src/rb/Windows'),
 	input:      File.join(ROOT, 'src/rb/Input'),
 	verbs:      File.join(ROOT, 'src/rb/Verbs'),
+	instances:  File.join(ROOT, 'src/rb/Instances'),
+	items:      File.join(ROOT, 'src/rb/Instances/Items'),
 	data: {                                          # Text files, etc
-		verbs:    File.join(ROOT, 'src/Data/Verbs')
+		verbs:    File.join(ROOT, 'src/Data/Verbs'),
+		items:    File.join(ROOT, 'src/Data/Items')
 	},
 	settings:   File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
@@ -41,5 +44,7 @@ require File.join DIR[:rb], 'Settings'
 ## Load settings
 SETTINGS = Settings.new DIR[:settings]
 
+## Log the time to display new game
+log Time.now.strftime("%H:%M:%S"), ENVT.env  if (ENVT.dev?)
 require File.join DIR[:rb], 'Game'
 

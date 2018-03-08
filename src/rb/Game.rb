@@ -15,6 +15,16 @@ require_files File.join(DIR[:verbs]), except: 'Verb'
 ## Initialize all verbs
 Verbs::VERBS = Verbs.init_verbs
 
+## Require Instance
+require File.join DIR[:instances], 'Instance'
+
+## Require Items
+require File.join DIR[:items], 'Item'
+require_files File.join(DIR[:items]), except: 'Item'
+## Initialize a part of all Items, so we can recognize their keywords
+Instances::Items::ITEM_DATA = Instances::Items.load_item_data
+Instances::Items::Apple.new
+
 class Game
 	def initialize
 		## Last player input
@@ -67,9 +77,6 @@ class Game
 		@windows[:input].update
 	end
 end
-
-## Log the time to display new game
-log Time.now.strftime("%H:%M:%S"), ENVT.env  if (ENVT.dev?)
 
 ## Start game and enter game loop
 $loop_counter = 0

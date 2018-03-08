@@ -20,7 +20,7 @@ module Verbs
 		def read_data
 			filepath = File.join DIR[:data][:verbs], "#{self.class.name.sub('Verbs::','')}.yml"
 			return {
-				'keywords' => self.class.to_s.downcase
+				'keywords' => [self.class.to_s.downcase]
 			}  unless (File.file? filepath)
 			return YAML.load_file filepath
 		end
