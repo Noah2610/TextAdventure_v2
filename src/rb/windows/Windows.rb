@@ -7,13 +7,17 @@ module Windows
 	module Colors
 		## Color manipulation methods for Curses Windows
 
-		PAIRS = [
-			[:black, :black],
-			[:white, :black],
-			[:red,   :black],
-			[:green, :black],
-			[:blue,  :black]
+		## Generate color-pairs array
+		COLORS = [
+			:black, :white,
+			:red, :green, :blue
 		]
+		PAIRS = COLORS.map do |bg|
+			next COLORS.map do |fg|
+				next [fg,bg]
+			end
+		end .flatten 1
+		log PAIRS
 
 		def self.init
 			## Init Curses color-pairs, defined above
@@ -28,6 +32,7 @@ module Windows
 					return index
 				end
 			end
+			return nil
 		end
 
 		def change_color *colors
@@ -36,7 +41,7 @@ module Windows
 			fg = colors[0].downcase.to_sym
 			bg = colors[1] ? colors[1].downcase.to_sym : :black
 			id = Windows::Colors.get_color_pair_id_by_colors fg, bg
-			@window.attrset Curses.color_pair(id)
+			@window.attrset Curses.color_pair(id)  unless (id.nil?)
 		end
 	end
 end
