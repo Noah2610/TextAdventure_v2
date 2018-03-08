@@ -73,43 +73,28 @@ class Windows::Output
 	## color stack with indices for returned string
 	def process_color_codes lines
 		str = lines.join "\n"  if (lines.is_a? Array)
-		regex = /(?<before>.*?)(?<code>{[A-z,;:=]+?})/m
+		regex = /{[A-z,;:=]+?}/
 
 		## String without color-codes, will be returned
-		str_new = ''
-		## Temporary string only for this method
-		str_tmp = str.dup
-		## Indices to be filled with indices of color-codes, adjusted to str_new
-		indices = []
+		str_new = str.dup
 		## Will be filled with color-pair ids at appropriate indices, will be returned
 		color_stack = []
-		color_stack_tmp = []
 
 		return lines, nil  unless (str.match regex)
+
 		## Scan str for color-codes
-		str.scan regex do |before, code|
-			str_new += before
-			indices << (str_tmp =~ /#{Regexp.quote code}/)
-			#str_tmp.sub! /#{Regexp.quote(before + code)}/, ''
-			str_tmp.sub! /#{regex}/, ''
-			## Handle code
+		str.scan regex do |code|
+			index = (str_new =~ /#{Regexp.quote code}/)
+			str_new.sub! code, ''
+			## Handle color-code
 			codes = code.match(/{(.+?)}/m)[1].split(/[; ]/)
 			codes.each do |c|
 				# Color
 				if (m = c.match(/\ACOLOR[:=]([A-z,]+?)\z/))
 					colors = m[1].split(/[,]/)
-					color_stack_tmp << colors
+					color_stack[index] = colors
 				end
 			end
-		end
-
-		#str_new += str_tmp[indices.last .. -1]
-		str_new += str_tmp
-
-		## Create color_stack with indices and color_stack_tmp
-		color_stack = Array.new(indices.max)
-		indices.each_with_index do |index,i|
-			color_stack[index] = color_stack_tmp[i]
 		end
 
 		return str_new.split("\n"), color_stack
@@ -125,9 +110,8 @@ class Windows::Output
 
 		## Generate color stack for color-coded strings
 		lines, color_stack = process_color_codes @lines
-		log $loop_counter, lines, color_stack
 
-		unless (lines.nil?)
+		unless (lines.nil? || lines.empty?)
 			lines_final = []
 			lines.each_with_index do |line, index|
 				## Check if line is too long and has to be split
@@ -140,9 +124,13 @@ class Windows::Output
 					## Split following lines, indented
 					indented_max_width = max_width - @indent
 					indented_lines = line[(max_width) .. -1]
-					indented_lines_count = (((indented_lines.size / indented_max_width) + 1).floor)
+					begin
+						indented_lines_count = (((indented_lines.size / indented_max_width) + 1).floor)
+					rescue ZeroDivisionError
+						return
+					end
 					indented_lines_count.times do |n|
-						lines_final << "#{' ' * @indent}#{indented_lines[(indented_max_width * n) ... (indented_max_width * (n + 1))]}"
+						lines_final << "{INDENT}#{indented_lines[(indented_max_width * n) ... (indented_max_width * (n + 1))]}"
 					end
 
 				else
@@ -151,28 +139,43 @@ class Windows::Output
 				end
 			end
 
-			lines_index = 0
+			## Index counter of all characters printed, necessary for color-coding
+			char_index = 0
 
 			## Remove lines that don't fit in window height
 			max_height = size(:h) - (@padding_h * 2)
 			if (lines_final.size > max_height)
 				diff = lines_final.size - max_height
-				diff_length = lines_final[0 .. diff].join('').size
-				lines_index += diff_length
+				char_index += (lines_final[0 ... diff].join(?X) + ?X).delete('{INDENT}').size - lines_final[0 ... diff].join.scan('{INDENT}').size
 				lines_final = lines_final[diff .. -1]
 			end
 
 			## Print lines
+			if (color_stack && c = color_stack[char_index])
+				change_color c
+			end
+			return  if (lines_final.nil?)
 			lines_final.each_with_index do |line, index|
-				@window.setpos index + @padding_h, @padding
+				## Indent line if necessary (for split lines)
+				if (line =~ /\A{INDENT}/)
+					line.sub! '{INDENT}', ''
+					@window.setpos index + @padding_h, @padding + @indent
+					char_index -= 1
+				else
+					@window.setpos index + @padding_h, @padding
+				end
 				## Loop through chars and check for color-coding (according to color_stack)
-				line.each_char do |char|
-					if (color_stack && c = color_stack[lines_index])
+				line.each_char.with_index do |char, i|
+					if (color_stack && c = color_stack[char_index])
 						change_color c
 					end
 					@window.addch char
-					lines_index += 1
+					char_index += 1
 				end
+				if (color_stack && c = color_stack[char_index])
+					change_color c
+				end
+				char_index += 1
 			end
 		end
 
@@ -191,7 +194,7 @@ class Windows::PrimaryOut < Windows::Output
 
 	## Return wanted width for window
 	def width
-		return (screen_size(:w) * 0.50).floor
+		return (screen_size(:w) * 0.5).floor
 	end
 
 	## Return wanted height for window

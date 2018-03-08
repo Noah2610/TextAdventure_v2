@@ -16,15 +16,10 @@ module Windows
 		]
 
 		def self.init
-			## Init some Curses color-pairs
-			# WHITE on BLACK
-			Curses.init_pair 1, Curses::COLOR_WHITE, Curses::COLOR_BLACK
-			# RED on BLACK
-			Curses.init_pair 2, Curses::COLOR_RED, Curses::COLOR_BLACK
-			# GREEN on BLACK
-			Curses.init_pair 3, Curses::COLOR_GREEN, Curses::COLOR_BLACK
-			# BLUE on BLACK
-			Curses.init_pair 4, Curses::COLOR_BLUE, Curses::COLOR_BLACK
+			## Init Curses color-pairs, defined above
+			PAIRS.each_with_index do |pair, index|
+				Curses.init_pair index, Curses.const_get("COLOR_#{pair[0].to_s.upcase}"), Curses.const_get("COLOR_#{pair[1].to_s.upcase}")
+			end
 		end
 
 		def self.get_color_pair_id_by_colors fg, bg

@@ -54,6 +54,8 @@ class Game
 	end
 end
 
+## Log the time to display new game
+log Time.now.strftime("%H:%M:%S")  if (ENVT.dev?)
 
 ## Start game and enter game loop
 $loop_counter = 0
