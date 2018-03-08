@@ -4,7 +4,8 @@ ENVIRONMENTS:
   development:
     logfile: 'development.log'
     input:
-      ESCDELAY: 100
+      ESCDELAY:    100
+      history_size: 10
 
   production:
     logfile: 'production.log'
@@ -19,7 +20,7 @@ logfile: 'default.log'
 
 ## Input settings
 input:
-  ESCDELAY: 1000     # Curses ESCDELAY, in ms (default = 1000ms)
+  ESCDELAY:    1000  # Curses ESCDELAY, in ms (default = 1000ms)
   history_size: 100  # Amount of input lines to save
 
 ## Text output settings

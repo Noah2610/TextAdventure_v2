@@ -73,11 +73,11 @@ class Settings
 	end
 
 	def output
-		return @SETTINGS['output']
+		return @SETTINGS['output'] || {}
 	end
 
 	def input
-		return @SETTINGS['input']
+		return @SETTINGS['input'] || {}
 	end
 end
 

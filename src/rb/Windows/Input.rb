@@ -9,10 +9,11 @@ class Windows::Input
 	VALID_KEYS = [
 		(65 .. 90) .to_a,
 		(97 .. 125).to_a,
-		(32 .. 64) .to_a
+		(32 .. 64) .to_a,
+		95
 	].flatten
 	## Max size of input history
-	HISTORY_MAX_SIZE = SETTINGS.input['history_size']
+	HISTORY_MAX_SIZE = SETTINGS.input['history_size'] || 10
 
 	def initialize args = {}
 		## Initialize Curses Window

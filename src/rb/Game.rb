@@ -4,6 +4,11 @@ require File.join DIR[:windows], 'Windows'
 require File.join DIR[:windows], 'Input'
 require File.join DIR[:windows], 'Output'
 
+## Require Input stuff
+require File.join DIR[:input], 'Input'
+require File.join DIR[:input], 'Line'
+require File.join DIR[:input], 'Words'
+
 class Game
 	def initialize
 		## Last player input
@@ -31,7 +36,12 @@ class Game
 	end
 
 	def handle_input input
-		@windows[:outputs][0].print input
+		#@windows[:outputs][0].print input
+
+		## Create Input::Line from user input
+		line = Input::Line.new input
+
+		@windows[:outputs][0].print line.text
 	end
 
 	def running?
