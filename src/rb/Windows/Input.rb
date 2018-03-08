@@ -11,6 +11,8 @@ class Windows::Input
 		(97 .. 125).to_a,
 		(32 .. 64) .to_a
 	].flatten
+	## Max size of input history
+	HISTORY_MAX_SIZE = SETTINGS.input['history_size']
 
 	def initialize args = {}
 		## Initialize Curses Window
@@ -80,6 +82,11 @@ class Windows::Input
 
 	def handle_submit
 		@history_selector = 0
+		## Remove some lines from history
+		if (@history.size >= HISTORY_MAX_SIZE)
+			diff = (@history.size - 1) - HISTORY_MAX_SIZE
+			@history = @history[diff .. -1]
+		end
 		unless (@history.last == @text || @text.delete(' ').empty?)
 			@history << @text.dup
 		end

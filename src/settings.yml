@@ -4,22 +4,23 @@ ENVIRONMENTS:
   development:
     logfile: 'development.log'
     input:
-      ESCDELAY: 250
+      ESCDELAY: 100
 
   production:
     logfile: 'production.log'
 
 
 ### Regular settings, environment settings overwrite these
-## Log directory, best to leave as-is. Logfiles are created / overwritten in this directory
+## Log directory, relative path from root of project
+## Logfiles are created / overwritten in this directory
 logdir: 'log'
-## Default logfile
+## Default logfile, relative path from 'logdir' directory
 logfile: 'default.log'
 
 ## Input settings
 input:
-  ## Curses ESCDELAY, in ms (default = 1000ms)
-  ESCDELAY: 1000
+  ESCDELAY: 1000     # Curses ESCDELAY, in ms (default = 1000ms)
+  history_size: 100  # Amount of input lines to save
 
 ## Text output settings
 output:
@@ -27,5 +28,4 @@ output:
   padding_height: 1  # Padding of text to curses window edges, top and bottom
   indent:         2  # Indent of continuation lines
   history_size: 100  # Amount of lines to be saved at a time
-
 ...

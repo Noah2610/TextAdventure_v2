@@ -75,5 +75,9 @@ class Settings
 	def output
 		return @SETTINGS['output']
 	end
+
+	def input
+		return @SETTINGS['input']
+	end
 end
 

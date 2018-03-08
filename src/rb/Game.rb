@@ -14,6 +14,8 @@ class Game
 		Curses.start_color
 		## Initialize custom color-pairs
 		Windows::Color.init
+		## Set Escape delay
+		Curses.ESCDELAY = SETTINGS.input['ESCDELAY']
 
 		## Initialize main curses windows
 		@windows = {
@@ -29,11 +31,7 @@ class Game
 	end
 
 	def handle_input input
-		case input.downcase.strip
-		when 'lines'
-			log @windows[:outputs][0].lines
-		end
-		@windows[:outputs][0].print input #, attr: Curses.color_pair(2) | Curses::A_BOLD
+		@windows[:outputs][0].print input
 	end
 
 	def running?
