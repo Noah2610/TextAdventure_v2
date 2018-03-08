@@ -15,6 +15,10 @@ DIR = {
 	misc:       File.join(ROOT, 'src/rb/misc'),
 	windows:    File.join(ROOT, 'src/rb/Windows'),
 	input:      File.join(ROOT, 'src/rb/Input'),
+	verbs:      File.join(ROOT, 'src/rb/Verbs'),
+	data: {                                          # Text files, etc
+		verbs:    File.join(ROOT, 'src/Data/Verbs')
+	},
 	settings:   File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
 
@@ -30,6 +34,7 @@ if (ENVT.dev?)
 	require 'byebug'
 end
 
+require File.join DIR[:misc], 'extensions'
 require File.join DIR[:misc], 'misc'
 ## Require game code
 require File.join DIR[:rb], 'Settings'

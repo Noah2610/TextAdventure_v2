@@ -9,6 +9,12 @@ require File.join DIR[:input], 'Input'
 require File.join DIR[:input], 'Line'
 require File.join DIR[:input], 'Words'
 
+## Require Verbs
+require File.join DIR[:verbs], 'Verb'
+require_files File.join(DIR[:verbs]), except: 'Verb'
+## Initialize all verbs
+Verbs::VERBS = Verbs.init_verbs
+
 class Game
 	def initialize
 		## Last player input
@@ -41,7 +47,7 @@ class Game
 		## Create Input::Line from user input
 		line = Input::Line.new input
 
-		@windows[:outputs][0].print line.text
+		@windows[:outputs][0].print line.action || ''
 	end
 
 	def running?
@@ -63,7 +69,7 @@ class Game
 end
 
 ## Log the time to display new game
-log Time.now.strftime("%H:%M:%S")  if (ENVT.dev?)
+log Time.now.strftime("%H:%M:%S"), ENVT.env  if (ENVT.dev?)
 
 ## Start game and enter game loop
 $loop_counter = 0
