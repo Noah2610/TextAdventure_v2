@@ -68,36 +68,55 @@ class Windows::Output
 		@lines.clear
 	end
 
-	## Process color-coded string.
-	## Return string without color-codes and
+	## Process color/style-coded string.
+	## Return string without color/style-codes and
 	## color stack with indices for returned string
 	def process_color_codes lines
 		str = lines.join "\n"  if (lines.is_a? Array)
-		regex = /{[A-z,;:=]+?}/
+		regex = /{[A-z,;:= ]+?}/
 
-		## String without color-codes, will be returned
+		## String without attribute-codes, will be returned
 		str_new = str.dup
-		## Will be filled with color-pair ids at appropriate indices, will be returned
-		color_stack = []
+		## Will be filled with attribute-pair ids at appropriate indices, will be returned
+		attr_stack = []
 
 		return lines, nil  unless (str.match regex)
 
-		## Scan str for color-codes
+		## Scan str for attribute-codes
 		str.scan regex do |code|
 			index = (str_new =~ /#{Regexp.quote code}/)
 			str_new.sub! code, ''
-			## Handle color-code
+			## Handle attribute-code
 			codes = code.match(/{(.+?)}/m)[1].split(/[; ]/)
 			codes.each do |c|
-				# Color
-				if (m = c.match(/\ACOLOR[:=]([A-z,]+?)\z/))
-					colors = m[1].split(/[,]/)
-					color_stack[index] = colors
+				# RESET
+				if    (c.match(/\A\s*RESET\s*\z/))
+					if (attr_stack[index])
+						attr_stack[index] << :RESET
+					else
+						attr_stack[index] = [:RESET]
+					end
+				# COLOR
+				elsif (m = c.match(/\A\s*COLOR[:=]([A-z,]+?)\s*\z/))
+					colors = m[1].split /[,]/
+					if (attr_stack[index])
+						attr_stack[index] << [:color, colors]
+					else
+						attr_stack[index] = [[:color, colors]]
+					end
+				# ATTRIBUTE / STYLE
+				elsif (m = c.match(/\A\s*ATTR[:=]([A-z,]+?)\s*\z/))
+					attrs = m[1].split /[,]/
+					if (attr_stack[index])
+						attr_stack[index] << [:attr, attrs]
+					else
+						attr_stack[index] = [[:attr, attrs]]
+					end
 				end
 			end
 		end
 
-		return str_new.split("\n"), color_stack
+		return str_new.split("\n"), attr_stack
 	end
 
 	def redraw
@@ -108,8 +127,8 @@ class Windows::Output
 
 		## Process lines
 
-		## Generate color stack for color-coded strings
-		lines, color_stack = process_color_codes @lines
+		## Generate attribute stack for attribute-coded strings
+		lines, attr_stack = process_color_codes @lines
 
 		unless (lines.nil? || lines.empty?)
 			lines_final = []
@@ -139,7 +158,7 @@ class Windows::Output
 				end
 			end
 
-			## Index counter of all characters printed, necessary for color-coding
+			## Index counter of all characters printed, necessary for attribute-coding
 			char_index = 0
 
 			## Remove lines that don't fit in window height
@@ -151,8 +170,8 @@ class Windows::Output
 			end
 
 			## Print lines
-			if (color_stack && c = color_stack[char_index])
-				change_color c
+			if (attr_stack && attrs = attr_stack[char_index])
+				apply_attr attrs
 			end
 			return  if (lines_final.nil?)
 			lines_final.each_with_index do |line, index|
@@ -164,16 +183,16 @@ class Windows::Output
 				else
 					@window.setpos index + @padding_h, @padding
 				end
-				## Loop through chars and check for color-coding (according to color_stack)
+				## Loop through chars and check for attribute-coding (according to attr_stack)
 				line.each_char.with_index do |char, i|
-					if (color_stack && c = color_stack[char_index])
-						change_color c
+					if (attr_stack && attrs = attr_stack[char_index])
+						apply_attr attrs
 					end
 					@window.addch char
 					char_index += 1
 				end
-				if (color_stack && c = color_stack[char_index])
-					change_color c
+				if (attr_stack && attrs = attr_stack[char_index])
+					apply_attr attrs
 				end
 				char_index += 1
 			end
