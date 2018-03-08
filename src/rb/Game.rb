@@ -13,7 +13,7 @@ class Game
 		Curses.init_screen
 		Curses.start_color
 		## Initialize custom color-pairs
-		Windows::Colors.init
+		Windows::Color.init
 
 		## Initialize main curses windows
 		@windows = {

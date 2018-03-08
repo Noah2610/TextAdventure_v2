@@ -1,7 +1,6 @@
 
 class Windows::Output
-	attr_reader :lines
-	include Windows::Colors
+	include Windows::Color
 
 	def initialize args = {}
 		@padding      = SETTINGS.output['padding'] || 3
@@ -68,57 +67,6 @@ class Windows::Output
 		@lines.clear
 	end
 
-	## Process color/style-coded string.
-	## Return string without color/style-codes and
-	## color stack with indices for returned string
-	def process_color_codes lines
-		str = lines.join "\n"  if (lines.is_a? Array)
-		regex = /{[A-z,;:= ]+?}/
-
-		## String without attribute-codes, will be returned
-		str_new = str.dup
-		## Will be filled with attribute-pair ids at appropriate indices, will be returned
-		attr_stack = []
-
-		return lines, nil  unless (str.match regex)
-
-		## Scan str for attribute-codes
-		str.scan regex do |code|
-			index = (str_new =~ /#{Regexp.quote code}/)
-			str_new.sub! code, ''
-			## Handle attribute-code
-			codes = code.match(/{(.+?)}/m)[1].split(/[; ]/)
-			codes.each do |c|
-				# RESET
-				if    (c.match(/\A\s*RESET\s*\z/))
-					if (attr_stack[index])
-						attr_stack[index] << :RESET
-					else
-						attr_stack[index] = [:RESET]
-					end
-				# COLOR
-				elsif (m = c.match(/\A\s*COLOR[:=]([A-z,]+?)\s*\z/))
-					colors = m[1].split /[,]/
-					if (attr_stack[index])
-						attr_stack[index] << [:color, colors]
-					else
-						attr_stack[index] = [[:color, colors]]
-					end
-				# ATTRIBUTE / STYLE
-				elsif (m = c.match(/\A\s*ATTR[:=]([A-z,]+?)\s*\z/))
-					attrs = m[1].split /[,]/
-					if (attr_stack[index])
-						attr_stack[index] << [:attr, attrs]
-					else
-						attr_stack[index] = [[:attr, attrs]]
-					end
-				end
-			end
-		end
-
-		return str_new.split("\n"), attr_stack
-	end
-
 	def redraw
 		@window.clear
 		@window.move pos(:y), pos(:x)
@@ -128,7 +76,7 @@ class Windows::Output
 		## Process lines
 
 		## Generate attribute stack for attribute-coded strings
-		lines, attr_stack = process_color_codes @lines
+		lines, attr_stack = process_attribute_codes @lines
 
 		unless (lines.nil? || lines.empty?)
 			lines_final = []
@@ -183,14 +131,13 @@ class Windows::Output
 				else
 					@window.setpos index + @padding_h, @padding
 				end
-				## Loop through chars and check for attribute-coding (according to attr_stack)
-				line.each_char.with_index do |char, i|
-					if (attr_stack && attrs = attr_stack[char_index])
-						apply_attr attrs
-					end
-					@window.addch char
+
+				## Print line with attributes
+				print_with_attributes line, attr_stack, char_index do
+					## This block is executed everytime after a character has been printed
 					char_index += 1
 				end
+
 				if (attr_stack && attrs = attr_stack[char_index])
 					apply_attr attrs
 				end

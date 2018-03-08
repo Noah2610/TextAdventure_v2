@@ -13,7 +13,7 @@ DIR = {
 	src:        File.join(ROOT, 'src'),
 	rb:         File.join(ROOT, 'src/rb'),
 	misc:       File.join(ROOT, 'src/rb/misc'),
-	windows:    File.join(ROOT, 'src/rb/windows'),
+	windows:    File.join(ROOT, 'src/rb/Windows'),
 	settings:   File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
 
@@ -35,5 +35,5 @@ require File.join DIR[:rb], 'Settings'
 SETTINGS = Settings.new DIR[:settings]
 
 require File.join DIR[:misc], 'misc'
-require File.join DIR[:rb], 'main'
+require File.join DIR[:rb], 'Game'
 

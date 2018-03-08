@@ -3,6 +3,8 @@
 ### All commands should be entered in this window.
 
 class Windows::Input
+	include Windows::Color
+
 	## Define valid input keys
 	VALID_KEYS = [
 		(65 .. 90) .to_a,
@@ -144,7 +146,9 @@ class Windows::Input
 		#              y, x
 		@window.setpos 1, @padding
 		## Write text from @text variable to window
-		@window.addstr @text
+		## also process attribute-codes
+		text, attr_stack = process_attribute_codes @text, show: true
+		print_with_attributes text, attr_stack
 		## Set position to proper cursor position
 		@window.setpos 1, @padding + @cursor
 		@window.refresh
