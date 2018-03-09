@@ -1,24 +1,36 @@
 
-## Require curses windows
+### Require Files
+## curses windows
 require File.join DIR[:windows], 'Windows'
 require File.join DIR[:windows], 'Input'
 require File.join DIR[:windows], 'Output'
 
-## Require Input stuff
+## Input stuff
 require File.join DIR[:input], 'Input'
 require File.join DIR[:input], 'Line'
 require File.join DIR[:input], 'Words'
 
-## Require Verbs
+## Verbs
 require File.join DIR[:verbs], 'Verb'
 require_files File.join(DIR[:verbs]), except: 'Verb'
 # Initialize all verbs
 Verbs::VERBS = Verbs.init_verbs
 
-## Require Instance (+ Items, Persons, Rooms)
+## Instances (Items, Persons, Rooms)
 require File.join DIR[:instances], 'Instance'
 
+## Player
+require File.join DIR[:rb], 'Player'
+# Initialize Player
+PLAYER = Player::Player.new
 
+### Start byebug then exit if in environment debug
+if (ENVT.debug?)
+	debugger
+	exit
+end
+
+### Game
 class Game
 	def initialize
 		## Last player input
@@ -74,7 +86,7 @@ class Game
 	end
 end
 
-## Start game and enter game loop
+### Start Game
 $loop_counter = 0
 $game = Game.new
 while ($game.running?)

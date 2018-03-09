@@ -7,6 +7,9 @@ ENVIRONMENTS:
       ESCDELAY:    100
       history_size: 10
 
+  debug:
+    logfile: 'development.log'
+
   production:
     logfile: 'production.log'
 

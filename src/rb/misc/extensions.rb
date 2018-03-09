@@ -1,17 +1,23 @@
 
 ## Extend String with to_regex method to convert to regular expression properly, including options
 class String
-	def to_regex
+	def to_regex args = {}
 		slashes = self.count '/'
-		return /\A#{Regexp.quote self}\z/  if     (slashes < 2)
+		if     (slashes < 2)
+			if (args[:case_insensitive])
+				return /\A#{Regexp.quote self}\z/i
+			else
+				return /\A#{Regexp.quote self}\z/
+			end
+		end
 		return nil                         unless (self =~ /\A\/.+\/\z/)
-		split = self.split("/")
+		options_str = self.match(/\A\/.+\/(.?+\z)/)[1]
 		options = (
-			(split[2].include?("x") ? Regexp::EXTENDED : 0) |
-			(split[2].include?("i") ? Regexp::IGNORECASE : 0) |
-			(split[2].include?("m") ? Regexp::MULTILINE : 0)
-		)              unless (split[2].nil?)
-		options = nil  if (split[2].nil?)
+			(options_str.include?(?x) ? Regexp::EXTENDED   : 0) |
+			(options_str.include?(?i) ? Regexp::IGNORECASE : 0) |
+			(options_str.include?(?m) ? Regexp::MULTILINE  : 0)
+		)
+		options = nil  if (options == 0)
 		return Regexp.new(split[1], options)
 	end
 end

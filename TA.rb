@@ -35,7 +35,7 @@ require File.join DIR[:misc], 'handle_argument_parser'
 require File.join DIR[:rb], 'Environment'
 ENVT = Environment.new CL_ARGS[:options][:env] || ENV['TA_ENV'] || 'dev'
 
-if (ENVT.dev?)
+if (ENVT.dev? || ENVT.debug?)
 	## Require development gems
 	require 'awesome_print'
 	require 'byebug'
@@ -50,6 +50,6 @@ require File.join DIR[:rb], 'Settings'
 SETTINGS = Settings.new DIR[:settings]
 
 ## Log the time to display new game
-log Time.now.strftime("%H:%M:%S"), ENVT.env  if (ENVT.dev?)
+log Time.now.strftime("%H:%M:%S"), ENVT.env  unless (ENVT.prod?)
 require File.join DIR[:rb], 'Game'
 

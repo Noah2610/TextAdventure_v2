@@ -39,7 +39,7 @@ module Windows
 		## Process color/style-coded string.
 		## Return string without color/style-codes and
 		## color stack with indices for returned string
-		def process_attribute_codes lines, opts = {}
+		def self.process_attribute_codes lines, opts = {}
 			if    (lines.is_a? Array)
 				type_given = :array
 				str = lines.join "\n"
@@ -95,6 +95,9 @@ module Windows
 			ret = str_new.split("\n")  if (type_given == :array)
 			ret = str_new              if (type_given == :string)
 			return ret, attr_stack
+		end
+		def process_attribute_codes lines, opts = {}
+			return Windows::Color.process_attribute_codes(lines, opts = {})
 		end
 
 		## Print text with attr_stack, set_color when necessary

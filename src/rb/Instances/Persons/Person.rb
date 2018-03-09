@@ -1,7 +1,7 @@
 
 module Instances
 	module Persons
-		class Person < Instance
+		class Person < Instances::Instance
 			def initialize args = {}
 				super
 			end

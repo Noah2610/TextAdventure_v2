@@ -1,0 +1,6 @@
+---
+name:        "{COLOR:blue}Parsley's Truck{RESET}"
+description: 'Parsleys Truck is very Truck like.'
+items:
+  - 'foo'
+...

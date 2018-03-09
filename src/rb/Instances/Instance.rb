@@ -5,6 +5,7 @@
 # Rooms
 
 module Instances
+	### Module Methods
 	## Read all Instance data files and return them
 	## Group by Instance type and classnames
 	def self.load_data
@@ -35,14 +36,31 @@ module Instances
 			ret[:keywords] = [key_child.to_s.downcase]
 			return ret
 		end
-		return DATA[key_parent][key_child]
+		## Returned merged data of Instance type and actual class
+		return DATA[key_parent][key_parent.to_s.match(/(\A.+)s\z/)[1].to_sym].merge(DATA[key_parent][key_child])
 	end
 
+
+	### Instance Class
 	class Instance
 		attr_reader :data
 
 		def initialize args = {}
 			@data = Instances.data self.class
+		end
+
+		## Check if Instance class is Instance type target_type and optionally is class target_class
+		def self.is? target_type, target_class = nil
+			target_type = target_type.downcase.to_sym
+			target_class = target_class.downcase.to_sym  if (target_class)
+			type, clazz = self.name.sub('Instances::','').split('::')
+			type = type.match(/(\A.+)s\z/)[1].downcase.to_sym
+			clazz = clazz.downcase.to_sym
+			return (type == target_type)                 unless (target_class)
+			return (type == target_type && clazz == target_class)
+		end
+		def is? target_type, target_class = nil
+			self.class.is? target_type, target_class
 		end
 
 		## Name of Instance
@@ -63,7 +81,7 @@ module Instances
 		## Check if string matches a keyword
 		def keyword? string
 			return @data['keywords'].any? do |kw|
-				string =~ kw.to_regex
+				string =~ kw.to_regex(case_insensitive: true)
 			end
 		end
 	end
@@ -81,9 +99,15 @@ require_files File.join(DIR[:persons]), except: 'Person'
 require File.join DIR[:rooms], 'Room'
 require_files File.join(DIR[:rooms]), except: 'Room'
 
-## Load all instance data files
-Instances::DATA = Instances.load_data
+module Instances
+	## Load all instance data files
+	DATA = self.load_data
 
-# DEV
-
+	#TODO:
+	## Load Rooms specified in Player savefile
+	#TODO:
+	## Load Rooms dynamically; Current Room loads adjacent Rooms but not further
+	## Load all Rooms for now
+	Rooms::ROOMS = Rooms.init_rooms
+end
 

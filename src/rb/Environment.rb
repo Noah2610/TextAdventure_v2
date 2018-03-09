@@ -7,12 +7,14 @@ class Environment
 
 	def Environment.validate_env env
 		ret = nil
-		case env.downcase
-		when :dev, :development, 'dev', 'development'
+		case env.downcase.to_sym
+		when :dev, :development
 			ret = :development
-		when :prod, :production, 'prod', 'production'
+		when :dbg, :debug
+			ret = :debug
+		when :prod, :production
 			ret = :production
-		when :test, 'test'
+		when :test
 			ret = :test
 		else
 			## Not a valid environment, abort
@@ -34,6 +36,10 @@ class Environment
 	end
 	def dev?
 		return development?
+	end
+
+	def debug?
+		return @ENV == :debug
 	end
 
 	def production?
