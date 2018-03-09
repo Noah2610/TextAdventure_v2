@@ -12,18 +12,12 @@ require File.join DIR[:input], 'Words'
 ## Require Verbs
 require File.join DIR[:verbs], 'Verb'
 require_files File.join(DIR[:verbs]), except: 'Verb'
-## Initialize all verbs
+# Initialize all verbs
 Verbs::VERBS = Verbs.init_verbs
 
-## Require Instance
+## Require Instance (+ Items, Persons, Rooms)
 require File.join DIR[:instances], 'Instance'
 
-## Require Items
-require File.join DIR[:items], 'Item'
-require_files File.join(DIR[:items]), except: 'Item'
-## Initialize a part of all Items, so we can recognize their keywords
-Instances::Items::ITEM_DATA = Instances::Items.load_item_data
-Instances::Items::Apple.new
 
 class Game
 	def initialize
@@ -57,7 +51,9 @@ class Game
 		## Create Input::Line from user input
 		line = Input::Line.new input
 
-		@windows[:outputs][0].print line.action || ''
+		output = line.action
+		output = ''  if (output.nil? || output.empty?)
+		@windows[:outputs][0].print output
 	end
 
 	def running?

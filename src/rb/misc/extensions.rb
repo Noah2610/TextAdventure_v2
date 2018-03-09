@@ -3,8 +3,8 @@
 class String
 	def to_regex
 		slashes = self.count '/'
-		return Regexp.new(self)  if     (slashes == 0)
-		return nil               unless (slashes == 2)
+		return /\A#{Regexp.quote self}\z/  if     (slashes < 2)
+		return nil                         unless (self =~ /\A\/.+\/\z/)
 		split = self.split("/")
 		options = (
 			(split[2].include?("x") ? Regexp::EXTENDED : 0) |

@@ -1,5 +1,7 @@
 ---
-default_text: 'Looking at'
+texts:
+  not_found: 'Look at what?'
+  look:      'Looking at '
 keywords:
   - /\Alook\z/
 ...

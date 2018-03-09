@@ -55,8 +55,10 @@ module Windows
 		end
 
 		def print text, args = {}
-			text.gsub(/\n/, "\n#{' ' * @indent}").split(/\n/).each do |ln|
-				@lines << ln
+			[text].flatten.each do |txt|
+				txt.gsub(/\n/, "\n#{' ' * @indent}").split(/\n/).each do |ln|
+					@lines << ln
+				end
 			end
 			## Clear early lines
 			@lines = @lines[-@history_size .. -1]  if (@lines.size > @history_size)

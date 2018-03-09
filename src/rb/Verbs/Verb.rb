@@ -30,8 +30,16 @@ module Verbs
 			return @data['keywords']
 		end
 
+		## Check if string matches a keyword
+		def keyword? string
+			return @data['keywords'].any? do |kw|
+				string =~ kw.to_regex
+			end
+		end
+
 		## Do what the verb is supposed to do
-		def action
+		def action args = {}
+			log "VERB ACTION: #{self.class.name}"
 		end
 	end
 end

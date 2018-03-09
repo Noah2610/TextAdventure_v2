@@ -1,7 +1,7 @@
 
 module Instances
-	module Items
-		class Item < Instance
+	module Rooms
+		class Room < Instance
 			def initialize args = {}
 				super
 			end

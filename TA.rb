@@ -18,9 +18,13 @@ DIR = {
 	verbs:      File.join(ROOT, 'src/rb/Verbs'),
 	instances:  File.join(ROOT, 'src/rb/Instances'),
 	items:      File.join(ROOT, 'src/rb/Instances/Items'),
+	persons:    File.join(ROOT, 'src/rb/Instances/Persons'),
+	rooms:      File.join(ROOT, 'src/rb/Instances/Rooms'),
 	data: {                                          # Text files, etc
 		verbs:    File.join(ROOT, 'src/Data/Verbs'),
-		items:    File.join(ROOT, 'src/Data/Items')
+		items:    File.join(ROOT, 'src/Data/Items'),
+		persons:  File.join(ROOT, 'src/Data/Persons'),
+		rooms:    File.join(ROOT, 'src/Data/Rooms')
 	},
 	settings:   File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
@@ -38,6 +42,7 @@ if (ENVT.dev?)
 end
 
 require File.join DIR[:misc], 'extensions'
+require File.join DIR[:misc], 'constants'
 require File.join DIR[:misc], 'misc'
 ## Require game code
 require File.join DIR[:rb], 'Settings'
