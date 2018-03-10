@@ -18,5 +18,5 @@ text:
   in_inventory:
     - '[ITEM] is already in my inventory.'
     - 'I already have [ITEM].'
-    - 'I took [ITEM] form my inventory and put it right back.'
+    - 'I took [ITEM] from my inventory and put it right back.'
 ...

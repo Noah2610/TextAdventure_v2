@@ -36,10 +36,12 @@ module Inventory
 		end
 
 		def has_item? item
-			if    (item.is_a? Class)
-				return @items.values.any? { |i| i.is_a? item }
-			elsif (item.is_a?(Symbol) || item.is_a?(String))
+			if    (item.is_a?(Symbol) || item.is_a?(String))
 				return @items.keys.include? item.to_sym
+			elsif (item.is_a? Class)
+				return @items.values.any? { |i| i.is_a? item }
+			elsif (item.is_a? Instances::Items::Item)
+				return @items.values.any? { |i| i.is_a? item.class }
 			end
 			return false
 		end
