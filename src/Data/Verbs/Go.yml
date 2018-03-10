@@ -9,9 +9,9 @@ text:
     - 'I am now in [ROOM].'
     - '[ROOM] has enclosed me.'
   cannot_go:
-    - 'I cannot go to [WORD].'
+    - 'I cannot go to {ATTR:underline}[WORD]{RESET}.'
     - "That doesn't work."
-    - 'How do I go to [WORD]?'
+    - 'How do I go to {ATTR:underline}[WORD]{RESET}?'
   not_found:
     - 'Where should I go?'
 ignore:

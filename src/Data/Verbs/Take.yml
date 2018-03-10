@@ -9,8 +9,8 @@ text:
     - 'I picked up the [ITEM].'
     - 'I have placed the [ITEM] in my inventory.'
   cannot_take:
-    - "I can't take [WORD]."
-    - "I can't pick up [WORD]."
+    - "I can't take {ATTR:underline}[WORD]{RESET}."
+    - "I can't pick up {ATTR:underline}[WORD]{RESET}."
   in_inventory:
     - '[ITEM] is already in my inventory.'
     - 'I already have [ITEM].'

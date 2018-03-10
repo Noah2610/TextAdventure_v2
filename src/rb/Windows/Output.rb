@@ -81,7 +81,7 @@ module Windows
 				max_height = size(:h) - (@padding_h * 2)
 				if (lines_final.size > max_height)
 					diff = lines_final.size - max_height
-					char_index += (lines_final[0 ... diff].join(?X) + ?X).delete('{INDENT}').size - lines_final[0 ... diff].join.scan('{INDENT}').size
+					char_index += (lines_final[0 ... diff].join(?X) + ?X).gsub('{INDENT}','').size - lines_final[0 ... diff].join.scan('{INDENT}').size
 					lines_final = lines_final[diff .. -1]
 				end
 

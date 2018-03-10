@@ -5,6 +5,10 @@ description:         '<DEFAULT ROOM DESCRIPTION>'
 description_unknown: '<DEFAULT UNKNOWN ROOM DESCRIPTION>'
 keywords:            []
 keywords_unknown:    []
+keywords_self:
+  - room
+  - area
+  - /\Asurroundings?\z/i
 neighbors:           []
 keywords_neighbors:  {}
 items:               []

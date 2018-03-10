@@ -7,10 +7,8 @@ module Input
 	class Line
 		def initialize input, opts = {}
 			@words = []
-			#TODO: Don't check for attribute-codes, will be unnecessary,
-			# user shouldn't be able to enter attribute-coded strings
 			counter = 0
-			input.scan(/{.+?}|[^ .,:;!"'$%&\/()=?+*#\-_<>|]+/) do |w|
+			input.scan(/[^ .,:;!"'$%&\/()=?+*#\-_<>|]+/) do |w|
 				@words << Words.new_word(w, self, { pos: counter })
 				counter += 1
 			end
