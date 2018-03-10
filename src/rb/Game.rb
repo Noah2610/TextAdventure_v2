@@ -72,8 +72,7 @@ class Game
 		@windows[:outputs][:user].print line.text
 
 		output = line.action
-		output = ''  if (output.nil? || output.empty?)
-		@windows[:outputs][:primary].print output
+		@windows[:outputs][:primary].print output  unless (output.nil? || output.empty?)
 	end
 
 	def running?

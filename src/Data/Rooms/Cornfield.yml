@@ -6,10 +6,12 @@ description_unknown: 'This is a very {ATTR:bold}dark{RESET} field.'
 keywords:
   - /\A(corn)?field\z/i
 keywords_unknown:
-  - outside
   - /\A(dark)? ?field\z/i
 neighbors:
   - ParsleysTruck
+neighbors_neighbors:
+  ParsleysTruck:
+    - /in(side)?/i
 items:
   - Apple
 persons: []

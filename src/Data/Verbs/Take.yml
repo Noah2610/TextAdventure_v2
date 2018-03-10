@@ -11,12 +11,13 @@ text:
   cannot_take:
     - "I can't take [WORD]."
     - "I can't pick up [WORD]."
-  not_found:
-    - 'Take what?'
-    - 'Pick up what?'
-    - 'What am I supposed to take?'
   in_inventory:
     - '[ITEM] is already in my inventory.'
     - 'I already have [ITEM].'
     - 'I took [ITEM] from my inventory and put it right back.'
+  not_found:
+    - 'Take what?'
+    - 'Pick up what?'
+    - 'What am I supposed to take?'
+ignore: []
 ...

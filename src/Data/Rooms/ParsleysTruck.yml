@@ -11,6 +11,9 @@ keywords_unknown:
   - car
 neighbors:
   - Cornfield
+keywords_neighbors:
+  Cornfield:
+    - /out(side)?/i
 items:
   - Apple
 known:               true

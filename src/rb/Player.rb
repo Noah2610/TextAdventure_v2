@@ -22,6 +22,27 @@ class Player
 		return @room
 	end
 
+	## Add Item to Inventory; super actually adds it
+	def item_add item
+		ret = super
+		item.known!  if (ret)
+		return ret
+	end
+
+	## Goto other Room; Check if that's possible first
+	def goto room
+		return false  unless (current_room.can_goto? room)
+		if    (room.is_a?(Symbol) || room.is_a?(String))
+			@room = Instances::Rooms::ROOMS[room.to_sym]
+		elsif (room.is_a? Class)
+			@room = Instances::Rooms::ROOMS.values.map { |r| r  if (r.is_a? room) } .reject { |x| !x } .first
+		elsif (room.is_a? Instances::Rooms::Room)
+			@room = room
+		end
+		@room.went!  unless (@room.nil?)
+		return @room
+	end
+
 	## Return all currently available Instances. These include:
 	# ITEMS:
 	#  inventory Items, Items in Room, Items in Person's inventory in Room

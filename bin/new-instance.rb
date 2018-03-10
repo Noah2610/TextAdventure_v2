@@ -41,28 +41,30 @@ else
 end
 
 USAGE = [
-	"This is a helper script to easily create new Instance files for the game.",
-	"It will create properly named Ruby (.rb) and configuration (.yml) files",
-	"in their proper locations.",
+	"#{__FILE__}",
+	"  DESCRIPTION",
+	"    This is a helper script to easily create new Instance files for the game.",
+	"    It will create properly named Ruby (.rb) and configuration (.yml) files",
+	"    in their proper locations.",
 	"",
-	"SYNOPSIS",
-	"  #{__FILE__} [OPTIONS] TYPE NAME",
+	"  SYNOPSIS",
+	"    #{__FILE__} [OPTIONS] TYPE NAME",
 	"",
-	"  TYPE",
-	"    The Instance type to be created. Currently available:",
-	"      'verb', 'item', 'person', 'room'",
-	"    You can also use the first letter of each keyword:",
-	"      'v', 'i', 'p', and 'r', respectively.",
-	"    Note that input is case-sensitive.",
-	"  NAME",
-	"    The name of the new Instance.",
-	"    This name will be used for filenames and classes.",
+	"    TYPE",
+	"      The Instance type to be created. Currently available:",
+	"        'verb', 'item', 'person', 'room'",
+	"      You can also use the first letter of each keyword:",
+	"        'v', 'i', 'p', and 'r', respectively.",
+	"      Note that input is case-sensitive.",
+	"    NAME",
+	"      The name of the new Instance.",
+	"      This name will be used for filenames and classes.",
 	"",
-	"  OPTIONS",
-	"    --help -h",
-	"      Show this usage message.",
-	"    --force -f",
-	"      Overwrite files if they exist already."
+	"    OPTIONS",
+	"      --help -h",
+	"        Show this usage message.",
+	"      --force -f",
+	"        Overwrite files if they exist already."
 ].join("\n")
 
 VALID_ARGUMENTS = {
@@ -123,9 +125,12 @@ abort [
 	"  Valid characters: A-Z, a-z, 0-9",
 	"ABORTING"
 ].join("\n")  if (name_match.nil?)
+
 name = name_match[1]
 name[0] = name[0].upcase
 date = Time.now.strftime "%Y-%m-%d"
+username = `git config user.name`.strip
+
 case ARGUMENTS[:keywords].keys.first
 when :verb
 
@@ -134,10 +139,16 @@ when :verb
 	check_file codefile
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		"class Verbs::#{name} < Verbs::Verb",
 		"	def initialize args = {}",
 		"		super",
+		"	end",
+		"",
+		"	def action args = {}",
+		"		return text 'not_found'  if (args[:line].nil? || args[:word].nil?)",
+		"		word = args[:line].next_word pos: args[:word].position, priority: nil, ignore: ignore",
+		"		return text 'not_found'  unless (word)",
 		"	end",
 		"end"
 	].join("\n")
@@ -156,7 +167,7 @@ when :verb
 	templatefile = File.join DIR[:data][:verb], 'Verb.yml'
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		File.read(templatefile)
 	].join("\n")
 	puts [
@@ -175,7 +186,7 @@ when :item
 	check_file codefile
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		"class Instances::Items::#{name} < Instances::Items::Item",
 		"	def initialize args = {}",
 		"		super",
@@ -197,7 +208,7 @@ when :item
 	templatefile = File.join DIR[:data][:item], 'Item.yml'
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		File.read(templatefile)
 	].join("\n")
 	puts [
@@ -216,7 +227,7 @@ when :person
 	check_file codefile
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		"class Instances::Persons::#{name} < Instances::Persons::Person",
 		"	def initialize args = {}",
 		"		super",
@@ -238,7 +249,7 @@ when :person
 	templatefile = File.join DIR[:data][:person], 'Person.yml'
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		File.read(templatefile)
 	].join("\n")
 	puts [
@@ -257,7 +268,7 @@ when :room
 	check_file codefile
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		"class Instances::Rooms::#{name} < Instances::Rooms::Room",
 		"	def initialize args = {}",
 		"		super",
@@ -279,7 +290,7 @@ when :room
 	templatefile = File.join DIR[:data][:room], 'Room.yml'
 	## Ruby file content
 	content = [
-		"### Auto-generated on #{date} by #{`git config user.name`.strip}.",
+		"### Auto-generated on #{date} by #{username}.",
 		File.read(templatefile)
 	].join("\n")
 	puts [

@@ -43,8 +43,6 @@ module Instances
 
 	### Instance Class
 	class Instance
-		attr_reader :data
-
 		def initialize args = {}
 			@data = Instances.data self.class
 			@known = !!@data['known']
@@ -76,7 +74,9 @@ module Instances
 			self.class.is_not? target_type, target_class
 		end
 
-		## Return Instance type's classname and own classname
+		## Return Instance type's classname and own classname, ex.:
+		#   Instances::Items::Apple.new.get_instance_type_and_class
+		#   => ['Item', 'Apple']
 		def get_instance_type_and_class
 			return self.class.name.match(/\AInstances::(.+?)s::(.+)\z/).to_a[1 .. -1]
 		end

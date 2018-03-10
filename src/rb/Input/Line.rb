@@ -68,7 +68,6 @@ module Input
 				when nil
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						
 						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word
 					end
@@ -78,7 +77,7 @@ module Input
 				else
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n
-						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is? args[:priority])
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]

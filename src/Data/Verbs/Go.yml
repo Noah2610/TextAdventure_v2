@@ -1,0 +1,19 @@
+---
+keywords:
+  - go
+  - walk
+  - move
+text:
+  went:
+    - 'I went to [ROOM].'
+    - 'I am now in [ROOM].'
+    - '[ROOM] has enclosed me.'
+  cannot_go:
+    - 'I cannot go to [WORD].'
+    - "That doesn't work."
+    - 'How do I go to [WORD]?'
+  not_found:
+    - 'Where should I go?'
+ignore:
+  - to
+...

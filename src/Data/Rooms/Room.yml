@@ -6,6 +6,7 @@ description_unknown: '<DEFAULT UNKNOWN ROOM DESCRIPTION>'
 keywords:            []
 keywords_unknown:    []
 neighbors:           []
+keywords_neighbors:  {}
 items:               []
 persons:             []
 known:               false

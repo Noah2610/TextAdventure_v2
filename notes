@@ -20,9 +20,9 @@ WINDOWS:
 
 VERBS:
 	- Verbs:
-		* Look
+		#* Look
 		* Go
-		* Take
+		#* Take
 		* Talk
 		* Use
 

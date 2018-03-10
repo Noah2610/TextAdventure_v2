@@ -32,7 +32,7 @@ module Inventory
 
 		def item_add item
 			## Add Item by key of Item's classname as symbol
-			@items[item.class.name.split('::').last.to_sym] = item
+			return (@items[item.class.name.split('::').last.to_sym] = item)
 		end
 
 		def has_item? item
