@@ -13,4 +13,5 @@ neighbors:
   - Cornfield
 items:
   - Apple
+known:               true
 ...

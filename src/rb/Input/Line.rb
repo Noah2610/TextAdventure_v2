@@ -14,7 +14,6 @@ module Input
 				@words << Words.new_word(w, self, { pos: counter })
 				counter += 1
 			end
-			log @words.map { |x| x.class.name }
 		end
 
 		## Do whatever the line is supposed to do, usually call action on verb(s)
@@ -51,7 +50,7 @@ module Input
 				when :special
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is_not? :word)
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
@@ -60,7 +59,7 @@ module Input
 				when :word
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is? :word)
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
@@ -70,7 +69,7 @@ module Input
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
 						
-						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word
 					end
 					return nil
@@ -88,6 +87,22 @@ module Input
 			else
 				return nil
 			end
+		end
+
+		## Call next_word multiple times until it reaches the end of Line
+		def next_words args = {}
+			return nil  if (args.empty?)
+			pos = args[:pos]
+			ret = []
+			new_args = args
+			while (pos < @words.size)
+				new_args[:pos] = pos
+				next_w = next_word new_args
+				break  if (next_w.nil?)
+				ret << next_w
+				pos = next_w.position
+			end
+			return ret
 		end
 
 	end

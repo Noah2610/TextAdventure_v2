@@ -7,4 +7,5 @@ keywords:
   - orange
 keywords_unknown:
   - /\A(orange)? ?(ball)?\z/i
+known:               true
 ...

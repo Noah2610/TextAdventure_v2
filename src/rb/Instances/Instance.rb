@@ -47,7 +47,7 @@ module Instances
 
 		def initialize args = {}
 			@data = Instances.data self.class
-			@known = false
+			@known = !!@data['known']
 		end
 
 		## Check if Instance class is Instance type target_type and optionally is class target_class
@@ -90,7 +90,7 @@ module Instances
 		## Description of Instance
 		def description
 			return @data['description']          if (known?)
-			return @data['description_unknown']  if (unkown?)
+			return @data['description_unknown']  if (unknown?)
 		end
 
 		## Keywords of Instance

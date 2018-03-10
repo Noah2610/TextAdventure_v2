@@ -1,12 +1,31 @@
-
 # TODO
 
 PLAYER:
 	- savefile
+
+PERSONS:
+	- Actually create proper Person
+	- Conversation mode
 
 ROOMS:
 	- Load Rooms from Player savefile
 	- Load Rooms dynamically; Current Room loads adjacent Rooms but not further
 	- Areas, Rooms containers. Might be nice
 	- Store loaded Rooms in Player
+
+WINDOWS:
+	- System for centering certain lines, or at least have centered header
+	- Toggle Status Window (or other)
+	- Menu
+
+VERBS:
+	- Verbs:
+		* Look
+		* Go
+		* Take
+		* Talk
+		* Use
+
+OTHER:
+	- General Commands
 

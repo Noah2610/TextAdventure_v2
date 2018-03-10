@@ -45,6 +45,11 @@ module Inventory
 		end
 	end
 
+	## Check if Inventory contains any Items
+	def any_items?
+		return @inventory.items.any?
+	end
+
 	## Return all Items from Inventory
 	def items
 		return @inventory.items.values

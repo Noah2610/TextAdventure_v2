@@ -16,6 +16,29 @@ module Verbs
 			@data = read_data
 		end
 
+		## Perform substitution on text to replace occurences like '{ITEM}' with proper Word containing Instance, if given.
+		def self.substitute text, *words
+			words = [words].flatten
+			text_new = text.dup
+			words.each do |word|
+				break  unless (text_new =~ /\[[A-Z]+\]/)
+				text = text_new
+				text.scan /\[([A-z]+)\]/ do |matches|
+					match = matches.first
+					if (word.is?(match) || match.upcase.to_sym == :WORD)
+						if (instance = word.instance)
+							text_new.sub! /\[#{Regexp.quote match}\]/, instance.name
+							break
+						else
+							text_new.sub! /\[#{Regexp.quote match}\]/, word.text
+							break
+						end
+					end
+				end
+			end
+			return text_new
+		end
+
 		## Read extra data from yaml file
 		def read_data
 			filepath = File.join DIR[:data][:verbs], "#{self.class.name.sub('Verbs::','')}.yml"
@@ -39,7 +62,19 @@ module Verbs
 
 		## Do what the verb is supposed to do
 		def action args = {}
-			#log "VERB ACTION: #{self.class.name}"
+		end
+
+		## Return text(s) defined in config
+		def text target
+			instances = [instances].flatten
+			txt = [@data['text'][target]].flatten.sample
+			return nil        if (txt.nil?)
+			return txt
+		end
+
+		## Return words to ignore in Line
+		def ignore
+			return @data['ignore']
 		end
 	end
 end

@@ -8,14 +8,18 @@ class Verbs::Look < Verbs::Verb
 		super
 		if (args[:line])
 			## Get next special word, or any word if none exist
-			word = args[:line].next_word pos: args[:word].position, priority: :special, ignore: 'at'
+			word = args[:line].next_word pos: args[:word].position, priority: :special, ignore: ignore
 			if (word)
-				return @data['texts']['look'] + (word.instance ? word.instance.name : word.text)
+				if (instance = word.instance)
+					return instance.description
+				else
+					return Verbs::Verb.substitute text('not_special'), word
+				end
 			else
-				return @data['texts']['not_found']
+				return text 'look_at_what'
 			end
 		else
-			return @data['texts']['not_found']
+			return text 'look_at_what'
 		end
 	end
 end

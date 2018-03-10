@@ -4,6 +4,9 @@
 require File.join DIR[:windows], 'Windows'
 require File.join DIR[:windows], 'Input'
 require File.join DIR[:windows], 'Output'
+require File.join DIR[:windows], 'PrimaryOut'
+require File.join DIR[:windows], 'UserOut'
+require File.join DIR[:windows], 'StatusOut'
 
 ## Input stuff
 require File.join DIR[:input], 'Input'
@@ -50,11 +53,11 @@ class Game
 		## Initialize main curses windows
 		@windows = {
 			input:        Windows::Input.new,
-			outputs: [
-				Windows::PrimaryOut.new,
-				#Windows::SecondaryOut.new,
-				#Windows::TertiaryOut.new
-			]
+			outputs: {
+				primary: Windows::PrimaryOut.new,
+				user:    Windows::UserOut.new,
+				status:  Windows::StatusOut.new
+			}
 		}
 
 		Curses.refresh
@@ -66,9 +69,11 @@ class Game
 		## Create Input::Line from user input
 		line = Input::Line.new input
 
+		@windows[:outputs][:user].print line.text
+
 		output = line.action
 		output = ''  if (output.nil? || output.empty?)
-		@windows[:outputs][0].print output
+		@windows[:outputs][:primary].print output
 	end
 
 	def running?
@@ -80,20 +85,20 @@ class Game
 		# Color-pair
 		#Curses.attrset Curses.color_pair(1)
 
-		Curses.refresh
 		Curses.clear
-		# Update Primary Output Window
-		@windows[:outputs].each &:update
+		Curses.refresh
+		# Update Output Windows
+		@windows[:outputs].values.each &:update
 		# Update Input Window - Should be called last because it reads input
 		@windows[:input].update
 	end
 end
 
 ### Start Game
-$loop_counter = 0
+$game_loop = 0
 $game = Game.new
 while ($game.running?)
 	$game.update
-	$loop_counter += 1
+	$game_loop += 1
 end
 

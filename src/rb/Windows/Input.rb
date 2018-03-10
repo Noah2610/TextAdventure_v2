@@ -3,7 +3,7 @@
 ### All commands should be entered in this window.
 
 module Windows
-	class Input
+	class Input < Window
 		include Color
 
 		## Define valid input keys
@@ -15,8 +15,19 @@ module Windows
 		].flatten
 		## Max size of input history
 		HISTORY_MAX_SIZE = SETTINGS.input['history_size'] || 10
+		PROMPT = SETTINGS.input['prompt']
 
 		def initialize args = {}
+			super
+
+			## Set position and hight relative to terminal window
+			@pos = {
+				x: 0.0,
+				y: 0.90
+			}
+			@width  = 0.75
+			@height = 0.1
+
 			## Initialize Curses Window
 			@window = Curses::Window.new(
 				# height,  width
@@ -42,7 +53,19 @@ module Windows
 			@history = []
 			@history_selector = 0
 
+			@border = [?|, ?-]
+
 			redraw
+		end
+
+		## Overwrite height with fixed hight
+		def height
+			return 3
+		end
+
+		## Overwrite position y with fixed position
+		def pos_y
+			return screen_size(:h) - height
 		end
 
 		def clear_text
@@ -97,50 +120,6 @@ module Windows
 			clear_text
 		end
 
-		## Return wanted width for window
-		def width
-			return screen_size(:w)
-		end
-
-		## Return wanted height for window
-		def height
-			return 3
-		end
-
-		## Return wanted position in screen for window
-		def pos target = :all
-			ret = nil
-			case target
-			when :x
-				ret = 0
-			when :y
-				ret = screen_size(:h) - height
-			when :all
-				ret = {
-					x: pos(:x),
-					y: pos(:y)
-				}
-			end
-			return ret
-		end
-
-		## Return actual size of window
-		def size target = :all
-			ret = nil
-			case target
-			when :width, :w
-				ret = @window.maxx
-			when :height, :h
-				ret = @window.maxy
-			when :all
-				ret = {
-					w: size(:w),
-					h: size(:h)
-				}
-			end
-			return ret
-		end
-
 		def redraw
 			## Clear all text in window
 			@window.clear
@@ -149,17 +128,19 @@ module Windows
 			## Resize window in case of terminal resize
 			@window.resize height, width
 			## Create border for window
-			#           vert, hor
-			@window.box ?|,   ?-
+			#           vert,       hor
+			@window.box @border[0], @border[1]
 			## Set character position
 			#              y, x
 			@window.setpos 1, @padding
+			@window.addstr PROMPT
 			## Write text from @text variable to window
 			## also process attribute-codes
 			text, attr_stack = process_attribute_codes @text, show: true
 			print_with_attributes text, attr_stack
+			attr_reset
 			## Set position to proper cursor position
-			@window.setpos 1, @padding + @cursor
+			@window.setpos 1, @padding + @cursor + PROMPT.size
 			@window.refresh
 		end
 
@@ -212,7 +193,7 @@ module Windows
 
 		def update
 			redraw
-			read
+			read    unless ($game_loop == 0)
 		end
 	end
 end

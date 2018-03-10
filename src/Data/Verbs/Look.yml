@@ -1,7 +1,14 @@
 ---
-texts:
-  not_found: 'Look at what?'
-  look:      'Looking at '
 keywords:
-  - /\Alook\z/
+  - look
+text:
+  look_at_what:
+    - 'Look at what?'
+    - 'What should I look at?'
+  not_special:
+    - "{ATTR:underline}[WORD]{RESET} doesn't look special."
+    - "I don't think {ATTR:underline}[WORD]{RESET} is anything."
+    - "I don't see a {ATTR:underline}[WORD]{RESET} anywhere around."
+ignore:
+  - at
 ...

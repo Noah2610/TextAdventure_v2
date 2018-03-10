@@ -5,4 +5,5 @@ description:         '<DEFAULT PERSON DESCRIPTION>'
 description_unknown: '<DEFAULT UNKNOWN PERSON DESCRIPTION>'
 keywords:            []
 keywords_unknown:    []
+known:               false
 ...

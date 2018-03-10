@@ -6,6 +6,7 @@ ENVIRONMENTS:
     input:
       ESCDELAY:    100
       history_size: 10
+      prompt:     '$ '
 
   debug:
     logfile: 'development.log'
@@ -25,6 +26,7 @@ logfile: 'default.log'
 input:
   ESCDELAY:    1000  # Curses ESCDELAY, in ms (default = 1000ms)
   history_size: 100  # Amount of input lines to save
+  prompt:      '> '  # Text to place before input field
 
 ## Text output settings
 output:
@@ -32,4 +34,6 @@ output:
   padding_height: 1  # Padding of text to curses window edges, top and bottom
   indent:         2  # Indent of continuation lines
   history_size: 100  # Amount of lines to be saved at a time
+  min_width:     16  # Minimum amount of width a Window has to have to be drawn
+  min_height:     3  # Minimum amount of height a Window has to have to be drawn
 ...

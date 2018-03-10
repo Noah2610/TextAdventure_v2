@@ -8,4 +8,5 @@ keywords_unknown:    []
 neighbors:           []
 items:               []
 persons:             []
+known:               false
 ...

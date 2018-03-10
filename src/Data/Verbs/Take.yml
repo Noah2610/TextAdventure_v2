@@ -1,0 +1,22 @@
+---
+keywords:
+  - take
+  - grab
+  - /\Apick( up)?\z/i
+text:
+  took:
+    - 'I took the [ITEM].'
+    - 'I picked up the [ITEM].'
+    - 'I have placed the [ITEM] in my inventory.'
+  cannot_take:
+    - "I can't take [WORD]."
+    - "I can't pick up [WORD]."
+  not_found:
+    - 'Take what?'
+    - 'Pick up what?'
+    - 'What am I supposed to take?'
+  in_inventory:
+    - '[ITEM] is already in my inventory.'
+    - 'I already have [ITEM].'
+    - 'I took [ITEM] form my inventory and put it right back.'
+...

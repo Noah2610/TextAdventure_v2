@@ -1,57 +1,16 @@
 
 module Windows
-	class Output
+	class Output < Window
 		include Color
 
 		def initialize args = {}
+			super
 			@padding      = SETTINGS.output['padding'] || 3
 			@padding_h    = SETTINGS.output['padding_height'] || 1
 			@indent       = SETTINGS.output['indent'] || 2
 			@history_size = SETTINGS.output['history_size'] || 100
 			@lines = []
-			init args  if (defined? init)
-		end
-
-		## Return wanted width for window
-		def width
-			return screen_size(:w).floor
-		end
-
-		## Return wanted height for window
-		def height
-			return screen_size(:h).floor - 3
-		end
-
-		## Return wanted position in screen for window
-		def pos target = :all
-			ret = nil
-			case target
-			when :x, :y
-				ret = 0
-			when :all
-				ret = {
-					x: pos(:x),
-					y: pos(:y)
-				}
-			end
-			return ret
-		end
-
-		## Return actual size of window
-		def size target = :all
-			ret = nil
-			case target
-			when :width, :w
-				ret = @window.maxx
-			when :height, :h
-				ret = @window.maxy
-			when :all
-				ret = {
-					w: size(:w),
-					h: size(:h)
-				}
-			end
-			return ret
+			redraw
 		end
 
 		def print text, args = {}
@@ -72,9 +31,15 @@ module Windows
 
 		def redraw
 			@window.clear
+
+			## Don't draw if too small
+			if (width < MIN_WIDTH || height < MIN_HEIGHT)
+				return
+			end
+
 			@window.move pos(:y), pos(:x)
 			@window.resize height, width
-			@window.box ?|, ?-
+			@window.box @border[0], @border[1]
 
 			## Process lines
 
@@ -122,7 +87,7 @@ module Windows
 
 				## Print lines
 				if (attr_stack && attrs = attr_stack[char_index])
-					apply_attr attrs
+					attr_apply attrs
 				end
 				return  if (lines_final.nil?)
 				lines_final.each_with_index do |line, index|
@@ -142,53 +107,20 @@ module Windows
 					end
 
 					if (attr_stack && attrs = attr_stack[char_index])
-						apply_attr attrs
+						attr_apply attrs
 					end
 					char_index += 1
 				end
 			end
 
+			attr_reset
 			@window.refresh
-		end
-	end
-
-	class PrimaryOut < Output
-		def init args = {}
-			@window = Curses::Window.new(
-				height,  width,
-				pos(:y), pos(:x)
-			)
-			redraw
-		end
-
-		## Return wanted width for window
-		def width
-			return screen_size(:w)
-		end
-
-		## Return wanted height for window
-		def height
-			return screen_size(:h) - 3
-		end
-
-		## Return wanted position in screen for window
-		def pos target = :all
-			ret = nil
-			case target
-			when :x, :y
-				ret = 0
-			when :all
-				ret = {
-					x: pos(:x),
-					y: pos(:y)
-				}
-			end
-			return ret
 		end
 
 		def update
 			redraw
 		end
+
 	end
 end
 

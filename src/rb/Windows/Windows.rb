@@ -4,6 +4,78 @@
 ##  ex.: Input Window, Main Output Window, Conversation Output Window, ...
 
 module Windows
+	MIN_WIDTH  = SETTINGS.output['min_width']
+	MIN_HEIGHT = SETTINGS.output['min_height']
+
+	class Window
+		def initialize args = {}
+			@width  = args[:width]   || args[:w] || 0.0
+			@height = args[:height]  || args[:h] || 0.0
+			@pos    = ( args[:pos]   || (
+				(args[:x] && args[:y]) ? { x: args[:x], y: args[:y] } : { x: 0.0, y: 0.0 }
+			))
+			## Init Curses Window
+			@window = Curses::Window.new(
+				height,  width,
+				pos(:y), pos(:x)
+			)
+			@border = [?|, ?-]
+		end
+
+		## Return wanted width for window
+		def width
+			return (screen_size(:w) * @width).round
+		end
+
+		## Return wanted height for window
+		def height
+			return [(screen_size(:h) * @height).round, 3].max
+		end
+
+		## Return wanted position in screen for window
+		def pos target = :all
+			ret = nil
+			case target
+			when :x
+				return pos_x  if (defined? pos_x)
+				ret = (screen_size(:w) * @pos[:x]).round
+				if (ret + width > screen_size(:w))
+					ret = screen_size(:w) - width
+				end
+			when :y
+				return pos_y  if (defined? pos_y)
+				ret = (screen_size(:h) * @pos[:y]).round
+				if (ret + height > screen_size(:h))
+					ret = screen_size(:h) - height
+				end
+			when :all
+				ret = {
+					x: pos(:x),
+					y: pos(:y)
+				}
+			end
+			return ret
+		end
+
+		## Return actual size of window
+		def size target = :all
+			ret = nil
+			case target
+			when :width, :w
+				ret = @window.maxx
+			when :height, :h
+				ret = @window.maxy
+			when :all
+				ret = {
+					w: size(:w),
+					h: size(:h)
+				}
+			end
+			return ret
+		end
+	end
+
+
 	module Color
 		## Color manipulation methods for Curses Windows
 
@@ -97,14 +169,14 @@ module Windows
 			return ret, attr_stack
 		end
 		def process_attribute_codes lines, opts = {}
-			return Windows::Color.process_attribute_codes(lines, opts = {})
+			return Windows::Color.process_attribute_codes(lines, opts)
 		end
 
 		## Print text with attr_stack, set_color when necessary
 		def print_with_attributes text, attr_stack, index_offset = 0
 			text.each_char.with_index do |char, index|
 				if (attr_stack && attrs = attr_stack[index + index_offset])
-					apply_attr attrs
+					attr_apply attrs
 				end
 				@window.addch char
 				yield  if (block_given?)
@@ -131,7 +203,7 @@ module Windows
 		# TOP
 		# STANDOUT
 		## Set text attribute / style
-		def set_attr *attrs
+		def attr_set *attrs
 			attrs.flatten!
 			attrs_binary = 0
 			attrs.each do |a|
@@ -141,13 +213,13 @@ module Windows
 		end
 
 		## Handle semantic attributes and apply them to window
-		def apply_attr attrs
+		def attr_apply attrs
 			return nil  if (@window.nil?)
 			binary = 0
 			attrs.each do |att|
 				# Reset
 				if (att == :RESET)
-					@window.attrset Curses::A_NORMAL
+					attr_reset
 					next
 				end
 				case att[0]
@@ -155,11 +227,15 @@ module Windows
 					c = set_color(att[1])
 					binary |= c  unless (c.nil?)
 				when :attr
-					a = set_attr(att[1])
+					a = attr_set(att[1])
 					binary |= a  unless (a.nil?)
 				end
 			end
 			@window.attrset binary
+		end
+
+		def attr_reset
+			@window.attrset Curses::A_NORMAL
 		end
 	end
 end
