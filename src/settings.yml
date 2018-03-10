@@ -4,9 +4,9 @@ ENVIRONMENTS:
   development:
     logfile: 'development.log'
     input:
-      ESCDELAY:    100
-      history_size: 10
-      prompt:     '$ '
+      ESCDELAY:     100
+      history_size: 100
+      prompt:       '$ '
 
   debug:
     logfile: 'development.log'

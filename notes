@@ -12,20 +12,23 @@ ROOMS:
 	- Load Rooms dynamically; Current Room loads adjacent Rooms but not further
 	- Areas, Rooms containers. Might be nice
 	- Store loaded Rooms in Player
+	- In config: keywords_self; associate some names ('room','area') with the current Room
 
 WINDOWS:
 	- System for centering certain lines, or at least have centered header
 	- Toggle Status Window (or other)
 	- Menu
+	- Make input Window scrollable on the x axis
 
 VERBS:
 	- Verbs:
 		#* Look
-		* Go
+		#* Go
 		#* Take
 		* Talk
 		* Use
 
 OTHER:
 	- General Commands
+	- WRITE TESTS
 

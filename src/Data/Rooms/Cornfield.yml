@@ -9,7 +9,7 @@ keywords_unknown:
   - /\A(dark)? ?field\z/i
 neighbors:
   - ParsleysTruck
-neighbors_neighbors:
+keywords_neighbors:
   ParsleysTruck:
     - /in(side)?/i
 items:
