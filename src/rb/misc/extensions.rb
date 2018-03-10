@@ -10,15 +10,15 @@ class String
 				return /\A#{Regexp.quote self}\z/
 			end
 		end
-		return nil                         unless (self =~ /\A\/.+\/\z/)
-		options_str = self.match(/\A\/.+\/(.?+\z)/)[1]
+		return nil                         unless (self =~ /\A\/.+\/[xim]*\z/)
+		string, options_str = self.match(/\A\/(.+)\/(.?+)\z/).to_a[1 .. -1]
 		options = (
 			(options_str.include?(?x) ? Regexp::EXTENDED   : 0) |
 			(options_str.include?(?i) ? Regexp::IGNORECASE : 0) |
 			(options_str.include?(?m) ? Regexp::MULTILINE  : 0)
 		)
 		options = nil  if (options == 0)
-		return Regexp.new(split[1], options)
+		return Regexp.new(string, options)
 	end
 end
 

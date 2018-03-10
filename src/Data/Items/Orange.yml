@@ -1,5 +1,10 @@
 ---
-name: '{COLOR:yellow;ATTR:bold}Orange{RESET}'
+name:                '{COLOR:yellow;ATTR:bold}Orange{RESET}'
+name_unknown:        '{COLOR:yellow}Orange Ball{RESET}'
+description:         'An orange bally orange boy.'
+description_unknown: 'An orange bally boy.'
 keywords:
   - orange
+keywords_unknown:
+  - /\A(orange)? ?(ball)?\z/i
 ...

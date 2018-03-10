@@ -3,46 +3,41 @@
 ## and keep track of where the user is and what they can do
 ## Get available Instances, ...
 
-module Player
-	class Player
-		def initialize
-			#TODO:
-			## Read savefile content
+class Player
+	include Inventory
 
-			## Inventory
-			@inventory = Inventory.new
-			## Current Room
-			@room = Instances::Rooms::ROOMS[:ParsleysTruck]
-		end
+	def initialize args = {}
+		## Init Inventory
+		super
 
-		## Return all Items from Inventory
-		def items
-			return @inventory.items
-		end
+		#TODO:
+		## Read savefile content
 
-		## Add Item to Inventory
-		def item_add item
-			return false  unless (item.is? :item)
-			return @inventory.item_add item
-		end
-
-		## Return current Room
-		def current_room
-			return @room
-		end
+		## Current Room
+		@room = Instances::Rooms::ROOMS[:ParsleysTruck]
 	end
 
-	class Inventory
-		attr_reader :items
-		def initialize
-			@items = []
-		end
+	## Return current Room
+	def current_room
+		return @room
+	end
 
-		def item_add item
-			return false  unless (item.can_add_to_inventory?)
-			@items << item
-			return true
-		end
+	## Return all currently available Instances. These include:
+	# ITEMS:
+	#  inventory Items, Items in Room, Items in Person's inventory in Room
+	# PERSONS:
+	#  Persons in Room
+	# ROOMS:
+	#  current Room, adjacent Rooms (neighbors)
+	def available_instances
+		ret = {}
+		## Items
+		ret[:items] = [items, current_room.items].flatten
+		## Rooms
+		ret[:rooms] = [current_room, current_room.get_neighbors].flatten
+		## Persons
+		ret[:persons] = []
+		return ret
 	end
 end
 

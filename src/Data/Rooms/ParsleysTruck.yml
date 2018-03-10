@@ -1,6 +1,16 @@
 ---
-name:        "{COLOR:blue}Parsley's Truck{RESET}"
-description: 'Parsleys Truck is very Truck like.'
+name:                "{COLOR:blue}Parsley's Truck{RESET}"
+name_unknown:        'Unknown Truck'
+description:         'Parsleys Truck is very truck like.'
+description_unknown: 'This truck is very unknown.'
+keywords:
+  - /\A(parsleys?)? ?truck\z/i
+  - /\A(parsleys?)? ?car\z/i
+keywords_unknown:
+  - truck
+  - car
+neighbors:
+  - Cornfield
 items:
-  - 'foo'
+  - Apple
 ...

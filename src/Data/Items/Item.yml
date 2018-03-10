@@ -1,4 +1,8 @@
 ---
-name:        '<DEFAULT ITEM NAME>'
-description: '<DEFAULT ITEM DESCRIPTION>'
+name:                '<DEFAULT ITEM NAME>'
+name_unknown:        '<DEFAULT UNKNOWN ITEM NAME>'
+description:         '<DEFAULT ITEM DESCRIPTION>'
+description_unknown: '<DEFAULT UNKNOWN ITEM DESCRIPTION>'
+keywords:            []
+keywords_unknown:    []
 ...

@@ -1,8 +1,12 @@
 ---
-name:        '{COLOR:green}Parsley{RESET}'
-description: 'This is our Parsley boi.'
+name:                '{COLOR:green}Parsley{RESET}'
+name_unknown:        '{COLOR:green}Unknown Friend{RESET}'
+description:         'This is our Parsley boy.'
+description_unknown: 'This is our Friendly boy.'
 keywords:
-  - 'parsley'
-  - 'friend'
+  - /\Aparsle?y\z/i
+  - friend
+keywords_unknown:
+  - friend
 ...
 

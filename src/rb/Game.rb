@@ -16,13 +16,16 @@ require_files File.join(DIR[:verbs]), except: 'Verb'
 # Initialize all verbs
 Verbs::VERBS = Verbs.init_verbs
 
+## Inventory
+require File.join DIR[:rb], 'Inventory'
+
 ## Instances (Items, Persons, Rooms)
 require File.join DIR[:instances], 'Instance'
 
 ## Player
 require File.join DIR[:rb], 'Player'
 # Initialize Player
-PLAYER = Player::Player.new
+PLAYER = Player.new
 
 ### Start byebug then exit if in environment debug
 if (ENVT.debug?)

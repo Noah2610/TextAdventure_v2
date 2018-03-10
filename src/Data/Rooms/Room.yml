@@ -1,6 +1,11 @@
 ---
-name:        '<DEFAULT ROOM NAME>'
-description: '<DEFAULT ROOM DESCRIPTION>'
-items:   []
-persons: []
+name:                '<DEFAULT ROOM NAME>'
+name_unknown:        '<DEFAULT UNKNOWN ROOM NAME>'
+description:         '<DEFAULT ROOM DESCRIPTION>'
+description_unknown: '<DEFAULT UNKNOWN ROOM DESCRIPTION>'
+keywords:            []
+keywords_unknown:    []
+neighbors:           []
+items:               []
+persons:             []
 ...

@@ -1,5 +1,5 @@
 
-class Instances::Rooms::ParsleysTruck < Instances::Rooms::Room
+class Instances::Rooms::Cornfield < Instances::Rooms::Room
 	include Inventory
 	def initialize args = {}
 		super

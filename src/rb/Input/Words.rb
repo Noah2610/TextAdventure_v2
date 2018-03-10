@@ -21,17 +21,14 @@ module Input
 			# ROOMS:
 			#  current Room, adjacent Rooms (neighbors)
 			## Probably get this list through a new Player class
-=begin
-			Instances.constants.each do |constname|
-				constant = Instances.const_get constname
-				next    unless (constant.is_a? Module)
-				## Loop through all Items/Persons/Rooms
-				constant.constants.each do |instancename|
-					instance = constant.const_get instancename
-					next  unless (instance.is_a? Class)
+			PLAYER.available_instances.each do |type, instances|
+				instances.each do |instance|
+					if (instance.keyword? text)
+						args[:instance] = instance
+						return Words.const_get(type.match(/\A(.+?)s?\z/)[1].capitalize).new text, line, args
+					end
 				end
 			end
-=end
 
 			return Word.new text, line, args
 		end
@@ -39,39 +36,26 @@ module Input
 		## Base Word, a lot of inherits below,
 		## or if a word couldn't be categorized it will create a Word
 		class Word
-			attr_reader :position
+			attr_reader :position, :instance
 
 			def initialize text, line, args = {}
 				@line = line
 				@text = text
 				@position = args[:pos]
+				@instance = args[:instance]
 				init args  if (defined? init)
 			end
 
 			def is? type
-				return !!(self.class.name.split('::').last.downcase.to_sym == type.downcase.to_sym)
+				return !!(self.class.name.split('::').last.downcase.to_sym == type.downcase.to_sym)  if (@instance.nil?)
+				return @instance.is? type
 			end
-
 			def is_not? type
-				return !!(self.class.name.split('::').last.downcase.to_sym != type.downcase.to_sym)
+				return !!(self.class.name.split('::').last.downcase.to_sym != type.downcase.to_sym)  if (@instance.nil?)
+				return @instance.is_not? type
 			end
 
-			def is_word?
-				return !!(self.class == Input::Words::Word)
-			end
-			def is_verb?
-				return !!(self.class == Input::Words::Verb)
-			end
-			def is_item?
-				return !!(self.class == Input::Words::Item)
-			end
-			def is_person?
-				return !!(self.class == Input::Words::Person)
-			end
-			def is_room?
-				return !!(self.class == Input::Words::Room)
-			end
-
+			## Return initial user's text with which Word was created
 			def text
 				return @text
 			end
@@ -87,6 +71,7 @@ module Input
 			end
 		end
 
+		## Instances
 		class Item < Word
 			def init args = {}
 			end

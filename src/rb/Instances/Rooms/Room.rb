@@ -14,23 +14,29 @@ module Instances
 		class Room < Instances::Instance
 			def initialize args = {}
 				super
-				## Load all Items that Room is supposed to have
-				@data['items'].each do |item|
-					if (Instances::Items.constants.include? item)
+			end
+
+			# Default items method
+			def items; nil; end
+
+			def set_neighbors
+				## Get all neighbors
+				@neighbors = @data['neighbors'].map do |roomname|
+					if (room = Instances::Rooms::ROOMS[roomname.to_sym])
+						next [roomname.to_sym, room]
 					else
-						## Item doesn't exist, display warning
-						log "WARNING: Room '#{Windows::Color.process_attribute_codes(name)[0]}' tried to load Item '#{item.to_s}' which doesn't exist"
+						## Room doesn't exist, log warning
+						classtype, clazz = get_instance_type_and_class
+						log "WARNING: Room '#{clazz}'"
 					end
-				end
+				end .reject { |x| !x } .to_h
 			end
 
-			## Get all Items inside Room
-			def items
-				return @data['items']
-			end
+			
 
-			## Check if Room has Item item inside
-			def has_item? item
+			## Get all adjacent Rooms (neighbors)
+			def get_neighbors
+				return @neighbors.values
 			end
 		end
 	end

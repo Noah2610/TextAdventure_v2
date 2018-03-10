@@ -39,7 +39,7 @@ module Verbs
 
 		## Do what the verb is supposed to do
 		def action args = {}
-			log "VERB ACTION: #{self.class.name}"
+			#log "VERB ACTION: #{self.class.name}"
 		end
 	end
 end

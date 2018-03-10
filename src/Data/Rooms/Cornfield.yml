@@ -1,0 +1,15 @@
+---
+name:                '{COLOR:yellow}Cornfield{RESET}'
+name_unknown:        '{ATTR:bold}Dark Field{RESET}'
+description_unknown: 'This is the {COLOR:magenta;ATTR:bold}sick {COLOR:yellow;ATTR:underline}cornfield{RESET}.'
+keywords:
+  - /\A(corn)?field\z/i
+keywords_unknown:
+  - outside
+  - /\A(dark)? ?field\z/i
+neighbors:
+  - ParsleysTruck
+items:
+  - Apple
+persons: []
+...

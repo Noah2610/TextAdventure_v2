@@ -1,6 +1,5 @@
 #!/bin/env ruby
 
-require 'colorize'
 require 'curses'
 require 'pathname'
 require 'yaml'

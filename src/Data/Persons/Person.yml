@@ -1,4 +1,8 @@
 ---
-name:        '<DEFAULT PERSON NAME>'
-description: '<DEFAULT PERSON DESCRIPTION>'
+name:                '<DEFAULT PERSON NAME>'
+name_unknown:        '<DEFAULT UNKNOWN PERSON NAME>'
+description:         '<DEFAULT PERSON DESCRIPTION>'
+description_unknown: '<DEFAULT UNKNOWN PERSON DESCRIPTION>'
+keywords:            []
+keywords_unknown:    []
 ...

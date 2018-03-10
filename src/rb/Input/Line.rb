@@ -14,6 +14,7 @@ module Input
 				@words << Words.new_word(w, self, { pos: counter })
 				counter += 1
 			end
+			log @words.map { |x| x.class.name }
 		end
 
 		## Do whatever the line is supposed to do, usually call action on verb(s)
@@ -25,7 +26,7 @@ module Input
 
 		def verbs
 			return @words.map do |word|
-				next word  if (word.is_verb?)
+				next word  if (word.is? :verb)
 			end .reject { |x| !x }
 		end
 
@@ -38,6 +39,7 @@ module Input
 			return @words[pos]
 		end
 
+		#TODO: Refactor this method
 		## Return next word at and with some options
 		def next_word args = {}
 			return @words.first  if (args.empty?)
@@ -49,27 +51,38 @@ module Input
 				when :special
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
+						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
 						return word  if (word.is_not? :word)
 					end
-					return next_word pos: args[:pos]
+					return next_word pos: args[:pos], ignore: args[:ignore]
 
 				## Prioritze Words::Word
 				when :word
 					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n
+						word = word_at args[:pos] + n + 1
+						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						return word  if (word.is? :word)
 					end
+					return next_word pos: args[:pos], ignore: args[:ignore]
 
 				## No priority
 				when nil
-					return word_at args[:pos] + 1
+					(@words.size - args[:pos] - 1).times do |n|
+						word = word_at args[:pos] + n + 1
+						
+						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
+						return word
+					end
+					return nil
 
 				## Prioritze specific special word
 				else
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n
+						next         if (args[:ignore] && !!(word.text =~ args[:ignore].to_regex))
 						return word  if (word.is? args[:priority])
 					end
-					return next_word pos: args[:pos]
+					return next_word pos: args[:pos], ignore: args[:ignore]
 				end
 
 			else
