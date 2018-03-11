@@ -24,6 +24,11 @@ module Instances
 				@known = true  unless (@known)
 			end
 
+			## Overwrite keywords method to include keywords_self
+			def keywords
+				return [super, @data['keywords_self'] || []].flatten
+			end
+
 			## Get keywords_neighbors; keywords for neighbors only applicable from this Room
 			def keywords_neighbors target = :all
 				case target

@@ -101,12 +101,9 @@ module Instances
 
 		## Check if string matches a keyword
 		def keyword? string
-			return @data['keywords'].any? do |kw|
+			return keywords.any? do |kw|
 				string =~ kw.to_regex(case_insensitive: true)
-			end                                  if (known?)
-			return @data['keywords_unknown'].any? do |kw|
-				string =~ kw.to_regex(case_insensitive: true)
-			end                                  if (unknown?)
+			end
 		end
 
 		## Check if Instance is known, ex.:
