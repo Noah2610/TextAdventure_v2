@@ -1,0 +1,19 @@
+---
+keywords:
+  - talk
+text:
+  cannot_talk:
+    - "I don't see {ATTR:underline}[WORD]{RESET}."
+    - "Who is {ATTR:underline}[WORD]{RESET}?"
+    - "Where is {ATTR:underline}[WORD]{RESET}?"
+    - "I don't see {ATTR:underline}[WORD]{RESET} around."
+    - "I can't talk to {ATTR:underline}[WORD]{RESET}."
+    - "How do I talk to {ATTR:underline}[WORD]{RESET}?"
+    - "I don't know how to talk to {ATTR:underline}[WORD]{RESET}."
+  not_found:
+    - "To whom do I want to talk to?"
+    - "Talk to whom?"
+ignore:
+  - to
+  - with
+...

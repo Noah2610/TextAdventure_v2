@@ -1,11 +1,12 @@
 ---
-name:                '{COLOR:red;ATTR:bold}Apple{RESET}'
-name_unknown:        '{COLOR:red}Red Ball{RESET}'
-description:         'A red bally apply boy.'
-description_unknown: 'A red bally boy.'
+name:                "{COLOR:red;ATTR:bold}Apple{RESET}"
+name_unknown:        "{COLOR:red}Red Ball{RESET}"
+description:         "A red bally apply boy."
+description_unknown: "A red bally boy."
 keywords:
   - apple
   - apfel
 keywords_unknown:
-  - /\A(red)? ?(ball)?\z/i
+  - /\A(red)?(ball)?\z/i
+known: true
 ...

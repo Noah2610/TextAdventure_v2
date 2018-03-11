@@ -5,19 +5,18 @@ keywords:
   - /\Apick( up)?\z/i
 text:
   took:
-    - 'I took the [ITEM].'
-    - 'I picked up the [ITEM].'
-    - 'I have placed the [ITEM] in my inventory.'
+    - "I took the [ITEM]."
+    - "I picked up the [ITEM]."
+    - "I have placed the [ITEM] in my inventory."
   cannot_take:
     - "I can't take {ATTR:underline}[WORD]{RESET}."
     - "I can't pick up {ATTR:underline}[WORD]{RESET}."
   in_inventory:
-    - '[ITEM] is already in my inventory.'
-    - 'I already have [ITEM].'
-    - 'I took [ITEM] from my inventory and put it right back.'
+    - "[ITEM] is already in my inventory."
+    - "I already have [ITEM]."
+    - "I took [ITEM] from my inventory and put it right back."
   not_found:
-    - 'Take what?'
-    - 'Pick up what?'
-    - 'What am I supposed to take?'
-ignore: []
+    - "Take what?"
+    - "Pick up what?"
+    - "What am I supposed to take?"
 ...

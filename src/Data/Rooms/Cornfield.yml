@@ -1,8 +1,8 @@
 ---
-name:                '{COLOR:yellow}Cornfield{RESET}'
-name_unknown:        '{ATTR:bold}Dark Field{RESET}'
-description:         'This is the {COLOR:magenta;ATTR:bold}sick {COLOR:yellow;ATTR:underline}cornfield{RESET}.'
-description_unknown: 'This is a very {ATTR:bold}dark{RESET} field.'
+name:                "{COLOR:yellow}Cornfield{RESET}"
+name_unknown:        "{ATTR:bold}Dark Field{RESET}"
+description:         "This is the {COLOR:magenta;ATTR:bold}sick {COLOR:yellow;ATTR:underline}cornfield{RESET}."
+description_unknown: "This is a very {ATTR:bold}dark{RESET} field."
 keywords:
   - /\A(corn)?field\z/i
 keywords_unknown:
@@ -13,6 +13,6 @@ keywords_neighbors:
   ParsleysTruck:
     - /in(side)?/i
 items:
-  - Apple
+  - Orange
 persons: []
 ...

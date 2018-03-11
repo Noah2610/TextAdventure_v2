@@ -41,13 +41,6 @@ def log *args
 	default_mode = ?a
 	filepath = SETTINGS.logfile
 
-	if (msgs.empty?)
-		file = File.new filepath, ?w
-		file.write ''
-		file.close
-		return
-	end
-
 	file = File.new filepath, opts[:mode] || default_mode
 	msgs.each_with_index do |msg, index|
 		m = msg.ai(LOG_AP_OPTIONS)  if (opts[:ap].nil? || opts[:ap] == true)
@@ -60,7 +53,14 @@ def log *args
 end
 
 ## Clear log
-log  if (ENVT.dev?)
+def clear_log
+	f = File.new SETTINGS.logfile, ?w
+	f.write ''
+	f.close
+end
+
+## Clear log
+clear_log  if (ENVT.dev?)
 
 ## Require multiple files from directory
 def require_files dir, args = {}

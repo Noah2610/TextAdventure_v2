@@ -1,8 +1,8 @@
 ---
-name:                '<DEFAULT ROOM NAME>'
-name_unknown:        '<DEFAULT UNKNOWN ROOM NAME>'
-description:         '<DEFAULT ROOM DESCRIPTION>'
-description_unknown: '<DEFAULT UNKNOWN ROOM DESCRIPTION>'
+name:                "<DEFAULT ROOM NAME>"
+name_unknown:        "<DEFAULT UNKNOWN ROOM NAME>"
+description:         "<DEFAULT ROOM DESCRIPTION>"
+description_unknown: "<DEFAULT UNKNOWN ROOM DESCRIPTION>"
 keywords:            []
 keywords_unknown:    []
 keywords_self:

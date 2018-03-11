@@ -4,12 +4,10 @@ class Verbs::Look < Verbs::Verb
 	end
 
 	def action args = {}
-		return text 'not_found'  if (args[:line].nil? || args[:word].nil?)
+		return nil                              if (args[:line].nil? || args[:word].nil?)
 		## Get next special word, or any word if none exist
 		word = args[:line].next_word pos: args[:word].position, priority: :special, ignore: ignore
-		if (word.nil?)
-			return PLAYER.current_room.description
-		end
+		return PLAYER.current_room.description  if (word.nil?)
 		if (instance = word.instance)
 			return instance.description
 		else

@@ -1,10 +1,11 @@
 
 ### Require Files
 ## curses windows
-require File.join DIR[:windows], 'Windows'
+require File.join DIR[:windows], 'Window'
 require File.join DIR[:windows], 'Input'
 require File.join DIR[:windows], 'Output'
 require File.join DIR[:windows], 'PrimaryOut'
+require File.join DIR[:windows], 'ConversationOut'
 require File.join DIR[:windows], 'UserOut'
 require File.join DIR[:windows], 'StatusOut'
 
@@ -29,6 +30,8 @@ require File.join DIR[:instances], 'Instance'
 require File.join DIR[:rb], 'Player'
 # Initialize Player
 PLAYER = Player.new
+# Move Player to Room
+PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
 
 ### Start byebug then exit if in environment debug
 if (ENVT.debug?)
@@ -39,9 +42,6 @@ end
 ### Game
 class Game
 	def initialize
-		## Last player input
-		@input = nil
-
 		## Initialize Curses screen
 		Curses.init_screen
 		Curses.start_color
@@ -54,9 +54,10 @@ class Game
 		@windows = {
 			input:        Windows::Input.new,
 			outputs: {
-				primary: Windows::PrimaryOut.new,
-				user:    Windows::UserOut.new,
-				status:  Windows::StatusOut.new
+				primary:      Windows::PrimaryOut.new,
+				conversation: Windows::ConversationOut.new,
+				user:         Windows::UserOut.new,
+				status:       Windows::StatusOut.new
 			}
 		}
 
@@ -73,6 +74,13 @@ class Game
 
 		output = line.action
 		@windows[:outputs][:primary].print output  unless (output.nil? || output.empty?)
+	end
+
+	## Return Window
+	def window target
+		return @windows[target]            if (@windows[target])
+		return @windows[:outputs][target]  if (@windows[:outputs][target])
+		return nil
 	end
 
 	def running?

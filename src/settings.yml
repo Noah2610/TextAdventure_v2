@@ -7,6 +7,8 @@ ENVIRONMENTS:
       ESCDELAY:     100
       history_size: 100
       prompt:       '$ '
+      border_color: 'blue'
+      border_attr:  'bold'
 
   debug:
     logfile: 'development.log'
@@ -24,9 +26,13 @@ logfile: 'default.log'
 
 ## Input settings
 input:
-  ESCDELAY:    1000  # Curses ESCDELAY, in ms (default = 1000ms)
-  history_size: 100  # Amount of input lines to save
-  prompt:      '> '  # Text to place before input field
+  ESCDELAY:      1000     # Curses ESCDELAY, in ms (default = 1000ms)
+  history_size:  100      # Amount of input lines to save
+  prompt:       '> '      # Text to place before input field
+  border_color: 'yellow'  # Border color of Input and Command History Window,
+                          # can be Array with foreground and background colors
+                          # or string for foreground and default background color
+  border_attr:  'bold'    # Also apply attribute for border
 
 ## Text output settings
 output:
@@ -35,5 +41,5 @@ output:
   indent:         2  # Indent of continuation lines
   history_size: 100  # Amount of lines to be saved at a time
   min_width:     16  # Minimum amount of width a Window has to have to be drawn
-  min_height:     3  # Minimum amount of height a Window has to have to be drawn
+  min_height:     2  # Minimum amount of height a Window has to have to be drawn
 ...

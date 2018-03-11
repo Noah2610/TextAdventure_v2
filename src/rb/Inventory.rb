@@ -25,9 +25,13 @@ module Inventory
 	end
 
 	class Inventory
-		attr_reader :items
 		def initialize args = {}
 			@items = {}
+		end
+
+		## Return items
+		def items
+			return @items.values
 		end
 
 		def item_add item
@@ -36,12 +40,12 @@ module Inventory
 		end
 
 		def has_item? item
-			if    (item.is_a?(Symbol) || item.is_a?(String))
-				return @items.keys.include? item.to_sym
+			if    (item.is_a? Instances::Items::Item)
+				return items.any? { |i| i.is_a? item.class }
 			elsif (item.is_a? Class)
-				return @items.values.any? { |i| i.is_a? item }
-			elsif (item.is_a? Instances::Items::Item)
-				return @items.values.any? { |i| i.is_a? item.class }
+				return items.any? { |i| i.is_a? item }
+			elsif (item.is_a?(Symbol) || item.is_a?(String))
+				return @items.keys.include? item.to_sym
 			end
 			return false
 		end
@@ -54,7 +58,7 @@ module Inventory
 
 	## Return all Items from Inventory
 	def items
-		return @inventory.items.values
+		return @inventory.items
 		return nil
 	end
 

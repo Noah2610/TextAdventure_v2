@@ -7,8 +7,8 @@ text:
     - "I don't think {ATTR:underline}[WORD]{RESET} is anything."
     - "I don't see a {ATTR:underline}[WORD]{RESET} anywhere around."
   not_found:
-    - 'Look at what?'
-    - 'What should I look at?'
+    - "Look at what?"
+    - "What should I look at?"
 ignore:
   - at
 ...

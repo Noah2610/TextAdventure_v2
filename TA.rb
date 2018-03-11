@@ -42,11 +42,9 @@ end
 
 require File.join DIR[:misc], 'extensions'
 require File.join DIR[:misc], 'constants'
-require File.join DIR[:misc], 'misc'
-## Require game code
 require File.join DIR[:rb], 'Settings'
-## Load settings
 SETTINGS = Settings.new DIR[:settings]
+require File.join DIR[:misc], 'misc'
 
 ## Log the time to display new game
 log Time.now.strftime("%H:%M:%S"), ENVT.env  unless (ENVT.prod?)

@@ -16,5 +16,11 @@ class Windows::PrimaryOut < Windows::Output
 
 		@border = [?|, ?=]
 	end
+
+	## Overwite height
+	def height
+		return ((screen_size(:h) - 5).to_f * 0.5).ceil  if ($game && !$game.window(:conversation).hidden?)
+		return (screen_size(:h) - 5)
+	end
 end
 

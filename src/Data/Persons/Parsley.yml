@@ -1,13 +1,34 @@
 ---
-name:                '{COLOR:green}Parsley{RESET}'
-name_unknown:        '{COLOR:green}Unknown Friend{RESET}'
-description:         'This is our Parsley boy.'
-description_unknown: 'This is our Friendly boy.'
+name:                "{COLOR:green}Parsley{RESET}"
+name_unknown:        "{COLOR:green}Unknown Friend{RESET}"
+description:         "This is our Parsley boy."
+description_unknown: "This is our Friendly boy."
 keywords:
   - /\Aparsle?y\z/i
   - friend
 keywords_unknown:
   - friend
 known:               true
+text:
+  KEYWORDS:
+    hello:
+      - hello
+      - hi
+      - hey
+    bye:
+      - /\A(good)?(bye){1,2}\z/i
+  KEYPHRASES:
+    hello:
+      - good day
+    bye:
+      - good bye
+    who_are_you:
+      - /who|what are you/i
+  hello:
+    - "Hello [PLAYER]."
+    - "Good day [PLAYER]."
+  bye:
+    - "Goodbye [PLAYER]."
+    - "See you around [PLAYER]."
 ...
 

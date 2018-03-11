@@ -14,6 +14,18 @@ module Instances
 		class Room < Instances::Instance
 			def initialize args = {}
 				super
+				## Load Persons
+				@persons = @data['persons'].map do |personstr|
+					person = personstr.to_sym
+					if (Instances::Persons.constants.include? person)
+						next Instances::Persons.const_get(person).new
+					else
+						## Item doesn't exist, display warning
+						classtype, clazz = get_instance_type_and_class
+						log "WARNING: #{classtype} '#{clazz}' tried to load Person '#{personstr}' which doesn't exist."
+						next nil
+					end
+				end  if (@data['persons'])
 			end
 
 			## Default items method
@@ -69,14 +81,19 @@ module Instances
 
 			## Check if Player can go to Room from this Room
 			def can_goto? room
-				if    (room.is_a?(Symbol) || room.is_a?(String))
-					return true  if (@neighbors.keys.include? room.to_sym)
+				if    (room.is_a? Instances::Rooms::Room)
+					return true  if (@neighbors.values.include? room)
 				elsif (room.is_a? Class)
 					return true  if (@neighbors.values.any? { |n| n.is_a? room })
-				elsif (room.is_a? Instances::Rooms::Room)
-					return true  if (@neighbors.values.include? room)
+				elsif (room.is_a?(Symbol) || room.is_a?(String))
+					return true  if (@neighbors.keys.include? room.to_sym)
 				end
 				return false
+			end
+
+			## Return all Persons in Room
+			def persons
+				return @persons
 			end
 
 		end  # END - CLASS

@@ -54,6 +54,8 @@ module Windows
 			@history_selector = 0
 
 			@border = [?|, ?-]
+			@border_color = SETTINGS.input['border_color']
+			@border_attr = SETTINGS.input['border_attr']
 
 			redraw
 		end
@@ -127,9 +129,12 @@ module Windows
 			@window.move pos(:y), pos(:x)
 			## Resize window in case of terminal resize
 			@window.resize height, width
+			## Set color for border
+			attr_apply :color, @border_color, :attr, @border_attr  if (@border_color || @border_attr)
 			## Create border for window
 			#           vert,       hor
 			@window.box @border[0], @border[1]
+			attr_reset
 			## Set character position
 			#              y, x
 			@window.setpos 1, @padding
@@ -139,8 +144,23 @@ module Windows
 			text, attr_stack = process_attribute_codes @text, show: true
 			print_with_attributes text, attr_stack
 			attr_reset
+
+			# Overwrite top box border line
+			@window.setpos 0, 0
+			topborder_string = ""
+			topborder_string += "{COLOR:#{@border_color}}"  if (@border_color)
+			topborder_string += "{ATTR:#{@border_attr}}"    if (@border_attr)
+			topborder_string += ?+
+			topborder_string.sub! '}{', ';'                 if (@border_color && @border_attr)
+			topborder_string += "#{'-' * (width - 2)}"
+			topborder_string += ?+
+			topborder_string += "{RESET}"                   if (@border_color || @border_attr)
+			topborder = process_attribute_codes topborder_string
+			print_with_attributes topborder[0], topborder[1]
+
 			## Set position to proper cursor position
 			@window.setpos 1, @padding + @cursor + PROMPT.size
+
 			@window.refresh
 		end
 

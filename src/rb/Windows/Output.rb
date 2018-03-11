@@ -29,20 +29,24 @@ module Windows
 			@lines.clear
 		end
 
-		def redraw
+		def redraw args = {}
 			@window.clear
 
-			## Don't draw if too small
-			if (width < MIN_WIDTH || height < MIN_HEIGHT)
-				return
+			## Don't draw if too small or shouldn't show
+			if (@hidden || (width < MIN_WIDTH || height < MIN_HEIGHT))
+				return false
 			end
+
+			## Optional custom code for border
+			attr_apply :color, @border_color, :attr, @border_attr  if (@border_color || @border_attr)
 
 			@window.move pos(:y), pos(:x)
 			@window.resize height, width
 			@window.box @border[0], @border[1]
 
-			## Process lines
+			attr_reset
 
+			## Process lines
 			## Generate attribute stack for attribute-coded strings
 			lines, attr_stack = process_attribute_codes @lines
 
@@ -62,7 +66,7 @@ module Windows
 						begin
 							indented_lines_count = (((indented_lines.size / indented_max_width) + 1).floor)
 						rescue ZeroDivisionError
-							return
+							return false
 						end
 						indented_lines_count.times do |n|
 							lines_final << "{INDENT}#{indented_lines[(indented_max_width * n) ... (indented_max_width * (n + 1))]}"
@@ -89,7 +93,7 @@ module Windows
 				if (attr_stack && attrs = attr_stack[char_index])
 					attr_apply attrs
 				end
-				return  if (lines_final.nil?)
+				return false  if (lines_final.nil?)
 				lines_final.each_with_index do |line, index|
 					## Indent line if necessary (for split lines)
 					if (line =~ /\A{INDENT}/)
@@ -115,6 +119,25 @@ module Windows
 
 			attr_reset
 			@window.refresh
+
+			return true
+		end
+
+		## Check if Window is hidden
+		def hidden?
+			return !!@hidden
+		end
+
+		## Hide Window
+		def hide
+			@hidden = true
+			return hidden?
+		end
+
+		## Show Window
+		def show
+			@hidden = false
+			return !hidden?
 		end
 
 		def update

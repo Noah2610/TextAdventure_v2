@@ -83,20 +83,20 @@ module Instances
 
 		## Name of Instance
 		def name
-			return @data['name']                 if (known?)
-			return @data['name_unknown']         if (unknown?)
+			return [@data['name']].flatten.sample                 if (known?)
+			return [@data['name_unknown']].flatten.sample         if (unknown?)
 		end
 
 		## Description of Instance
 		def description
-			return @data['description']          if (known?)
-			return @data['description_unknown']  if (unknown?)
+			return [@data['description']].flatten.sample          if (known?)
+			return [@data['description_unknown']].flatten.sample  if (unknown?)
 		end
 
 		## Keywords of Instance
 		def keywords
-			return @data['keywords']             if (known?)
-			return @data['keywords_unknown']     if (unknown?)
+			return @data['keywords']                              if (known?)
+			return @data['keywords_unknown']                      if (unknown?)
 		end
 
 		## Check if string matches a keyword

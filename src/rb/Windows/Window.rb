@@ -172,7 +172,7 @@ module Windows
 			return Windows::Color.process_attribute_codes(lines, opts)
 		end
 
-		## Print text with attr_stack, set_color when necessary
+		## Print text with attr_stack, get_color when necessary
 		def print_with_attributes text, attr_stack, index_offset = 0
 			text.each_char.with_index do |char, index|
 				if (attr_stack && attrs = attr_stack[index + index_offset])
@@ -181,10 +181,14 @@ module Windows
 				@window.addch char
 				yield  if (block_given?)
 			end
+			## Apply attribute again, in case last index was an attribute
+			if (attr_stack && attrs = attr_stack[text.size + index_offset])
+				attr_apply attrs
+			end
 		end
 
 		## Set text foreground and background colors
-		def set_color *colors
+		def get_color *colors
 			colors.flatten!
 			fg = colors[0].downcase.to_sym
 			bg = colors[1] ? colors[1].downcase.to_sym : :black
@@ -213,10 +217,12 @@ module Windows
 		end
 
 		## Handle semantic attributes and apply them to window
-		def attr_apply attrs
+		def attr_apply *attrs
 			return nil  if (@window.nil?)
+			attrs = attrs.flatten.each_slice(2).to_a
 			binary = 0
 			attrs.each do |att|
+				next  if (att[1].nil?)
 				# Reset
 				if (att == :RESET)
 					attr_reset
@@ -224,7 +230,7 @@ module Windows
 				end
 				case att[0]
 				when :color
-					c = set_color(att[1])
+					c = get_color(att[1])
 					binary |= c  unless (c.nil?)
 				when :attr
 					a = attr_set(att[1])

@@ -1,9 +1,28 @@
 ---
-name:                '<DEFAULT PERSON NAME>'
-name_unknown:        '<DEFAULT UNKNOWN PERSON NAME>'
-description:         '<DEFAULT PERSON DESCRIPTION>'
-description_unknown: '<DEFAULT UNKNOWN PERSON DESCRIPTION>'
+name:                "<DEFAULT PERSON NAME>"
+name_unknown:        "<DEFAULT UNKNOWN PERSON NAME>"
+description:         "<DEFAULT PERSON DESCRIPTION>"
+description_unknown: "<DEFAULT UNKNOWN PERSON DESCRIPTION>"
 keywords:            []
 keywords_unknown:    []
 known:               false
+text:
+  KEYWORDS:
+    hello:
+      - hello
+      - hi
+      - hey
+    bye:
+      - /\A(good)?(bye){1,2}\z/i
+  KEYPHRASES:
+    hello:
+      - good day
+    bye:
+      - good bye
+  hello:
+    - "Hello [PLAYER]."
+    - "Good day [PLAYER]."
+  bye:
+    - "Goodbye [PLAYER]."
+    - "See you around [PLAYER]."
 ...

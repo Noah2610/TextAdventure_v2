@@ -133,7 +133,7 @@ username = `git config user.name`.strip
 
 case ARGUMENTS[:keywords].keys.first
 when :verb
-
+	#### VERB
 	### CODE FILE
 	codefile = File.join DIR[:src][:verb], "#{name}.rb"
 	check_file codefile
@@ -146,7 +146,7 @@ when :verb
 		"	end",
 		"",
 		"	def action args = {}",
-		"		return text 'not_found'  if (args[:line].nil? || args[:word].nil?)",
+		"		return nil               if (args[:line].nil? || args[:word].nil?)",
 		"		word = args[:line].next_word pos: args[:word].position, priority: nil, ignore: ignore",
 		"		return text 'not_found'  unless (word)",
 		"	end",
@@ -180,7 +180,7 @@ when :verb
 	f.close
 
 when :item
-
+	#### ITEM
 	### CODE FILE
 	codefile = File.join DIR[:src][:item], "#{name}.rb"
 	check_file codefile
@@ -221,7 +221,7 @@ when :item
 	f.close
 
 when :person
-
+	#### PERSON
 	### CODE FILE
 	codefile = File.join DIR[:src][:person], "#{name}.rb"
 	check_file codefile
@@ -262,7 +262,7 @@ when :person
 	f.close
 
 when :room
-
+	#### ROOM
 	### CODE FILE
 	codefile = File.join DIR[:src][:room], "#{name}.rb"
 	check_file codefile

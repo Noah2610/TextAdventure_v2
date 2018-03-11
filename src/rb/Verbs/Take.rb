@@ -4,7 +4,7 @@ class Verbs::Take < Verbs::Verb
 	end
 
 	def action args = {}
-		return text 'not_found'  if (args[:line].nil? || args[:word].nil?)
+		return nil               if (args[:line].nil? || args[:word].nil?)
 		word = args[:line].next_word pos: args[:word].position, priority: :item, ignore: ignore
 		return text 'not_found'  unless (word)
 		if    (word.is_not? :item)
