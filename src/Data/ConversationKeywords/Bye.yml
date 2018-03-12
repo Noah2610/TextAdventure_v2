@@ -1,0 +1,9 @@
+---
+keywords:
+  - /\A(good)?(bye){1,2}\z/i
+keypharses:
+  - good bye
+text:
+  - "Goodbye [PLAYER]."
+  - "See you around [PLAYER]."
+...

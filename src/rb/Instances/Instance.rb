@@ -126,18 +126,18 @@ end
 
 ## Require Items
 require File.join DIR[:items], 'Item'
-require_files File.join(DIR[:items]), except: 'Item'
+require_files DIR[:items], except: 'Item'
 
 ## Require Persons
 require File.join DIR[:persons], 'Person'
-require_files File.join(DIR[:persons]), except: 'Person'
+require_files DIR[:persons], except: 'Person'
 
 ## Require Rooms
 require File.join DIR[:rooms], 'Room'
-require_files File.join(DIR[:rooms]), except: 'Room'
+require_files DIR[:rooms], except: 'Room'
 
 module Instances
-	## Load all instance data files
+	## Load all Instance data files
 	DATA = self.load_data
 
 	#TODO:

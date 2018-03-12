@@ -16,12 +16,15 @@ require File.join DIR[:input], 'Words'
 
 ## Verbs
 require File.join DIR[:verbs], 'Verb'
-require_files File.join(DIR[:verbs]), except: 'Verb'
+require_files DIR[:verbs], except: 'Verb'
 # Initialize all verbs
 Verbs::VERBS = Verbs.init_verbs
 
 ## Inventory
 require File.join DIR[:rb], 'Inventory'
+
+## ConversationKeywords
+require File.join DIR[:conversation_keywords], 'ConversationKeyword'
 
 ## Instances (Items, Persons, Rooms)
 require File.join DIR[:instances], 'Instance'
@@ -65,15 +68,27 @@ class Game
 	end
 
 	def handle_input input
-		#@windows[:outputs][0].print input
-
 		## Create Input::Line from user input
 		line = Input::Line.new input
+		return  unless (line)
 
+		## Print User's Input to UserOut output Window
 		@windows[:outputs][:user].print line.text
 
-		output = line.action
-		@windows[:outputs][:primary].print output  unless (output.nil? || output.empty?)
+		## Check Player modes
+		if    (PLAYER.mode? :normal)
+			## Normal mode
+			# Process Line
+			output = line.process
+			# Print output of processed Line to PrimaryOut output Window
+			@windows[:outputs][:primary].print output       unless (output.nil? || output.empty?)
+		elsif (PLAYER.mode? :conversation)
+			## Conversation mode
+			# Process Line for conversation
+			output = line.process
+			# Print output of processed Line to ConversationOut output Window
+			@windows[:outputs][:conversation].print output  unless (output.nil? || output.empty?)
+		end
 	end
 
 	## Return Window

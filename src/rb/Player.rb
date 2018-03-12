@@ -25,6 +25,11 @@ class Player
 		@talking_to = nil
 	end
 
+	## Return current mode
+	def mode
+		return @mode
+	end
+
 	## Check current mode
 	def mode? target
 		return @mode == target
@@ -96,10 +101,16 @@ class Player
 
 	## Leave conversation
 	def conversation_end
-		return nil  unless (in_conversation?)
+		return nil  unless (mode? :conversation)
 		@mode = :normal
 		@talking_to = nil
 		$game.window(:conversation).hide
+	end
+
+	## Person Player is talking to
+	def conversation_person
+		return nil  unless (mode? :conversation)
+		return @talking_to
 	end
 
 end

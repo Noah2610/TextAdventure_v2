@@ -5,20 +5,42 @@
 
 module Input
 	class Line
-		def initialize input, opts = {}
+		def initialize input, args = {}
 			@words = []
-			counter = 0
-			input.scan(/[^ .,:;!"'$%&\/()=?+*#\-_<>|]+/) do |w|
-				@words << Words.new_word(w, self, { pos: counter })
-				counter += 1
+			case PLAYER.mode
+			when :normal
+				## Normal mode
+				counter = 0
+				input.scan(/[^ .,:;!"'$%&\/()=?+*#\-_<>|]+/) do |w|
+					@words << Words.new_word(w, self, { pos: counter })
+					counter += 1
+				end
+
+			when :conversation
+				## Conversation mode
+				person = PLAYER.conversation_person
+				return nil  unless (person)
+				## First check for KEYPHRASES
+
 			end
 		end
 
-		## Do whatever the line is supposed to do, usually call action on verb(s)
-		def action
-			return verbs.map do |verb|
-				next verb.action
-			end .reject { |x| !x }
+		## Do whatever the line is supposed to do, according to Player mode
+		#   :normal       - Call action on Verbs
+		#   :conversation - ???
+		def process
+			case PLAYER.mode
+			when :normal
+				## Process for normal mode
+				return verbs.map do |verb|
+					next verb.action
+				end .reject { |x| !x }
+
+			when :conversation
+				## Process for conversation mode
+				person = PLAYER.conversation_person
+				return nil  if (person.nil?)
+			end
 		end
 
 		def verbs

@@ -9,26 +9,5 @@ keywords:
 keywords_unknown:
   - friend
 known:               true
-text:
-  KEYWORDS:
-    hello:
-      - hello
-      - hi
-      - hey
-    bye:
-      - /\A(good)?(bye){1,2}\z/i
-  KEYPHRASES:
-    hello:
-      - good day
-    bye:
-      - good bye
-    who_are_you:
-      - /who|what are you/i
-  hello:
-    - "Hello [PLAYER]."
-    - "Good day [PLAYER]."
-  bye:
-    - "Goodbye [PLAYER]."
-    - "See you around [PLAYER]."
 ...
 
