@@ -74,20 +74,12 @@ class Game
 
 		## Print User's Input to UserOut output Window
 		@windows[:outputs][:user].print line.text
+		## Process Line
+		output = line.process
 
-		## Check Player modes
-		if    (PLAYER.mode? :normal)
-			## Normal mode
-			# Process Line
-			output = line.process
-			# Print output of processed Line to PrimaryOut output Window
-			@windows[:outputs][:primary].print output       unless (output.nil? || output.empty?)
-		elsif (PLAYER.mode? :conversation)
-			## Conversation mode
-			# Process Line for conversation
-			output = line.process
-			# Print output of processed Line to ConversationOut output Window
-			@windows[:outputs][:conversation].print output  unless (output.nil? || output.empty?)
+		unless (output.nil? || output.empty?)
+			@windows[:outputs][:primary].print output       if (PLAYER.mode? :normal)
+			@windows[:outputs][:conversation].print output  if (PLAYER.mode? :conversation)
 		end
 	end
 

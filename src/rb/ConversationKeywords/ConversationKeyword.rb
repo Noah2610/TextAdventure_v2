@@ -6,27 +6,24 @@ module ConversationKeywords
 			constant = self.const_get constname
 			next nil                unless (constant.is_a? Class)
 			data = read_data(File.join(DIR[:data][:conversation_keywords], "#{constname.to_s}.yml"))
-			next [constname, data]  unless (data.nil?)
+			next [constname.to_s, data]  unless (data.nil?)
 			log "WARNING: ConversationKeyword '#{constname.to_s}' has no data file!"
 			next nil
 		end .reject { |x| !x } .to_h
 	end
 
 	## Return data for Instance class
-	def self.data clazz
-		return nil                                                             if (!clazz.is_a?(Class) || clazz.is_not?(:person))
-		classname = clazz.name.sub('Instances::Persons::','')
-		key_parent, key_child = classname.split('::')[1 .. -1].map(&:to_sym)
-		## Return nil if Instance type / Instance data group (ex.: Items, Persons) doesn't exist
-		return nil                                                             unless (DATA.keys.include? key_parent)
-		## Return default data of Instance type (ex.: Item.yml, Person.yml)
-		unless (DATA[key_parent].keys.include? key_child)
-			ret = DATA[key_parent][key_parent.to_s.match(/\A(.+)s\z/)[1].to_sym].dup
-			ret[:keywords] = [key_child.to_s.downcase]
-			return ret
-		end
-		## Returned merged data of Instance type and actual class
-		return DATA[key_parent][key_parent.to_s.match(/\A(.+)s\z/)[1].to_sym].merge(DATA[key_parent][key_child])
+	def self.get_for targets
+		targets = [targets].flatten
+		return targets.map do |target|
+			## Check if target ConversationKeyword exists
+			if (DATA[target] && self.constants.map { |c| self.const_get c } .any? { |c| c.is_a?(Class) && c.name.sub('ConversationKeywords::','') == target })
+				next [target, ConversationKeyword.new(DATA[target])]
+			else
+				log "WARNING: ConversationKeyword #{target} doesn't exist!"
+				next nil
+			end
+		end .reject { |x| !x } .to_h
 	end
 
 	def self.read_data file
@@ -35,7 +32,30 @@ module ConversationKeywords
 	end
 
 	class ConversationKeyword
-		def initialize args = {}
+		def initialize data, args = {}
+			@data = data
+		end
+
+		## Return default keyword text
+		def text
+			return @data['text']
+		end
+
+		## Return keywords
+		def keywords
+			return @data['keywords']
+		end
+
+		## Return keyphrases
+		def keyphrases
+			return @data['keyphrases']
+		end
+
+		## Check if string matches a keyword
+		def keyword? string
+			return [keyphrases, keywords].reject { |x| !x } .flatten.any? do |kw|
+				string =~ kw.to_regex(word: true)
+			end
 		end
 	end
 end

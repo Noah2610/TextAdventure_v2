@@ -102,7 +102,7 @@ module Instances
 		## Check if string matches a keyword
 		def keyword? string
 			return keywords.any? do |kw|
-				string =~ kw.to_regex(case_insensitive: true)
+				string =~ kw.to_regex
 			end
 		end
 

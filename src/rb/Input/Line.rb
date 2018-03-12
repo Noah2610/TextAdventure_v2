@@ -18,9 +18,12 @@ module Input
 
 			when :conversation
 				## Conversation mode
-				person = PLAYER.conversation_person
-				return nil  unless (person)
-				## First check for KEYPHRASES
+				return nil  unless (kws = PLAYER.conversation_keywords)
+				kws.each do |kw|
+					if (kw.keyword? input)
+						log kw.keywords.first
+					end
+				end
 
 			end
 		end

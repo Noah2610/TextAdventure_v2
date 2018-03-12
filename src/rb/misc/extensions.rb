@@ -4,10 +4,10 @@ class String
 	def to_regex args = {}
 		slashes = self.count '/'
 		if     (slashes < 2)
-			if (args[:case_insensitive])
-				return /\A#{Regexp.quote self}\z/i
+			if (args[:case_sensitive])
+				return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/
 			else
-				return /\A#{Regexp.quote self}\z/
+				return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/i
 			end
 		end
 		return nil                         unless (self =~ /\A\/.+\/[xim]*\z/)

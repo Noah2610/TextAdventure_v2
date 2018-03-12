@@ -1,7 +1,7 @@
 ---
 keywords:
-  - /\A(good)?(bye){1,2}\z/i
-keypharses:
+  - /(good)?(bye){1,2}/i
+keyphrases:
   - good bye
 text:
   - "Goodbye [PLAYER]."
