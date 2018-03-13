@@ -25,6 +25,16 @@ class Player
 		@talking_to = nil
 	end
 
+	def name
+		#TODO: Get name from savefile
+		return '{COLOR:red;ATTR:bold,standout}Player{RESET}'
+	end
+
+	## is? method for some compatibility with methods used on Instances (kinda hacky)
+	def is? target
+		return target.downcase.to_sym == :player
+	end
+
 	## Return current mode
 	def mode
 		return @mode
@@ -100,11 +110,11 @@ class Player
 	end
 
 	## Leave conversation
-	def conversation_end
+	def conversation_end args = {}
 		return nil  unless (mode? :conversation)
 		@mode = :normal
 		@talking_to = nil
-		$game.window(:conversation).hide
+		$game.window(:conversation).hide  unless (args[:keep_window])
 	end
 
 	## Person Player is talking to

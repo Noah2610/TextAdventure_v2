@@ -6,6 +6,14 @@ module Instances
 				super
 				## Load ConversationKeywords
 				@conversation_keywords = ConversationKeywords.get_for @data['conversation']['keywords']  if (@data['conversation'] && @data['conversation']['keywords'])
+				## Set person for every Keyword
+				@conversation_keywords.values.each { |k| k.person = self }
+			end
+
+			## Return conversational text
+			def conversation_text #keyword, target, *instances
+				return @data['conversation']['text']  if (@data['conversation'])
+				return nil
 			end
 
 			## Overwrite keywords method to handle conversation mode differently

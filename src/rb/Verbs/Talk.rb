@@ -9,10 +9,10 @@ class Verbs::Talk < Verbs::Verb
 		return text 'not_found'  unless (word)
 		if    (word.is? :word)
 			# Word is not special - is Word
-			return Verbs::Verb.substitute text('not_found'), word
+			return text 'not_found', word
 		elsif (word.is_not? :person)
 			# Word is not Person
-			return Verbs::Verb.substitute text('cannot_talk'), word
+			return text 'cannot_talk', word
 		elsif (word.is?(:person) && instance = word.instance)
 			# Word IS Person
 			## Set to conversation-mode

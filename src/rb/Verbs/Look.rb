@@ -11,7 +11,7 @@ class Verbs::Look < Verbs::Verb
 		if (instance = word.instance)
 			return instance.description
 		else
-			return Verbs::Verb.substitute text('not_special'), word
+			return text 'not_special', word
 		end
 	end
 end

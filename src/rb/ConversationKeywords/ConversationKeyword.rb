@@ -17,8 +17,8 @@ module ConversationKeywords
 		targets = [targets].flatten
 		return targets.map do |target|
 			## Check if target ConversationKeyword exists
-			if (DATA[target] && self.constants.map { |c| self.const_get c } .any? { |c| c.is_a?(Class) && c.name.sub('ConversationKeywords::','') == target })
-				next [target, ConversationKeyword.new(DATA[target])]
+			if (DATA[target] && const = self.constants.map { |c| self.const_get c } .map { |c| c  if (c.is_a?(Class) && c.name.sub('ConversationKeywords::','') == target) } .reject { |x| !x } .first)
+				next [target, const.new(DATA[target])]
 			else
 				log "WARNING: ConversationKeyword #{target} doesn't exist!"
 				next nil
@@ -34,11 +34,34 @@ module ConversationKeywords
 	class ConversationKeyword
 		def initialize data, args = {}
 			@data = data
+			@person = nil
 		end
 
-		## Return default keyword text
-		def text
-			return @data['text']
+		## Assign person
+		def person= person
+			@person = person
+		end
+
+		## Do whatever logic Keyword is supposed to do and return text
+		def action
+			return text
+		end
+
+		## Return default keyword text and perform substitution if instances given
+		def text *words
+			words = [words, PLAYER].flatten
+			txt = nil
+			if    (@person.nil?)
+				## No Person set
+				txt = [@data['text']].flatten.sample
+			elsif (@person.is? :person)
+				## Has Person
+				txt = [@person.conversation_text].flatten.sample
+				txt = [@data['text']].flatten.sample  if (txt.nil?)
+			end
+			return nil                              if (txt.nil?)
+			return Input.substitute txt, words  unless  (words.empty?)
+			return txt
 		end
 
 		## Return keywords

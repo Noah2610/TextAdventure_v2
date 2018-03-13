@@ -86,6 +86,24 @@ module Input
 			def init args = {}
 			end
 		end
+
+		## Conversational Word
+		class Conversation < Word
+			attr_reader :keyword
+			def initialize line, args = {}
+				@line = line
+				@keyword = args[:keyword]
+			end
+
+			def text
+				return nil
+			end
+
+			def action
+				return @keyword.action  if (@keyword)
+				return nil
+			end
+		end
 	end
 end
 

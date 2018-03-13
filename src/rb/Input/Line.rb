@@ -4,8 +4,37 @@
 ## The Input::Words::Verb should then handle the line apropriately (maybe)
 
 module Input
+	## Perform substitution on text to replace occurences like '{ITEM}' with proper Word containing Instance, if given.
+	def self.substitute text, *words
+		words = [words].flatten
+		text_new = text.dup
+		words.each do |word|
+			break  unless (text_new =~ /\[[A-Z]+\]/)
+			text = text_new.dup
+			text.scan /\[([A-z]+)\]/ do |matches|
+				match = matches.first
+				# Check if match is PLAYER
+				if    (word.is?(match) && word.is?(:player))
+					text_new.sub! /\[#{Regexp.quote match}\]/, PLAYER.name
+					break
+				elsif (word.is?(match) || match.upcase.to_sym == :WORD)
+					if (instance = word.instance)
+						text_new.sub! /\[#{Regexp.quote match}\]/, instance.name
+						break
+					else
+						text_new.sub! /\[#{Regexp.quote match}\]/, word.text
+						break
+					end
+				end
+			end
+		end
+		return text_new
+	end
+
+
 	class Line
 		def initialize input, args = {}
+			@input_text = input
 			@words = []
 			case PLAYER.mode
 			when :normal
@@ -19,11 +48,12 @@ module Input
 			when :conversation
 				## Conversation mode
 				return nil  unless (kws = PLAYER.conversation_keywords)
-				kws.each do |kw|
+				@words = kws.map do |kw|
 					if (kw.keyword? input)
-						log kw.keywords.first
+						next Words::Conversation.new self, keyword: kw
 					end
-				end
+				end .reject { |x| !x }
+				log @words.map { |w| w.keyword.class.name }
 
 			end
 		end
@@ -43,17 +73,29 @@ module Input
 				## Process for conversation mode
 				person = PLAYER.conversation_person
 				return nil  if (person.nil?)
+				return conversation_words.map do |x|
+					next x.action
+				end .reject { |x| !x }
 			end
 		end
 
+		## Return all Verbs in @words
 		def verbs
 			return @words.map do |word|
 				next word  if (word.is? :verb)
 			end .reject { |x| !x }
 		end
 
+		## Return all conversational Words in @words
+		def conversation_words
+			return @words.map do |word|
+				next word  if (word.is? :conversation)
+			end .reject { |x| !x }
+		end
+
 		def text
-			return @words.map { |word| word.text } .join ' '
+			return @words.map { |w| w.text } .join ' '  unless (@words.empty? || @words.any? { |w| w.text.nil? })
+			return @input_text
 		end
 
 		## Return word in line at position pos
@@ -69,7 +111,7 @@ module Input
 			if (args[:pos])
 				## Check for additional options, like priority of word type
 				case args[:priority]
-				## Prioritze special words (all words except Words::Word)
+					## Prioritze special words (all words except Words::Word)
 				when :special
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
@@ -78,7 +120,7 @@ module Input
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
 
-				## Prioritze Words::Word
+					## Prioritze Words::Word
 				when :word
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
@@ -87,7 +129,7 @@ module Input
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
 
-				## No priority
+					## No priority
 				when nil
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
@@ -96,7 +138,7 @@ module Input
 					end
 					return nil
 
-				## Prioritze specific special word
+					## Prioritze specific special word
 				else
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n

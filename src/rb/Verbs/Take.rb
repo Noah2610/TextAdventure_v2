@@ -9,16 +9,16 @@ class Verbs::Take < Verbs::Verb
 		return text 'not_found'  unless (word)
 		if    (word.is_not? :item)
 			## Is not Item
-			return Verbs::Verb.substitute text('cannot_take'), word
+			return text 'cannot_take', word
 		end
 
 		## Is ITEM
 		## Check if Item is already in Player's Inventory
 		unless (PLAYER.has_item? word.instance)
-			return Verbs::Verb.substitute text('took'), word  if (PLAYER.item_add word.instance)
-			return Verbs::Verb.substitute text('cannot_take'), word
+			return text 'took', word  if (PLAYER.item_add word.instance)
+			return text 'cannot_take', word
 		else
-			return Verbs::Verb.substitute text('in_inventory'), word
+			return text 'in_inventory', word
 		end
 
 	end

@@ -45,6 +45,9 @@ end
 ### Game
 class Game
 	def initialize
+		## Method queue
+		@queue = {}
+
 		## Initialize Curses screen
 		Curses.init_screen
 		Curses.start_color
@@ -73,13 +76,13 @@ class Game
 		return  unless (line)
 
 		## Print User's Input to UserOut output Window
-		@windows[:outputs][:user].print line.text
+		window(:user).print line.text
 		## Process Line
 		output = line.process
 
 		unless (output.nil? || output.empty?)
-			@windows[:outputs][:primary].print output       if (PLAYER.mode? :normal)
-			@windows[:outputs][:conversation].print output  if (PLAYER.mode? :conversation)
+			window(:primary).print output       if (PLAYER.mode? :normal)
+			window(:conversation).print output  if (PLAYER.mode? :conversation)
 		end
 	end
 
@@ -90,14 +93,38 @@ class Game
 		return nil
 	end
 
+	## Add methods to queue; queueing system
+	#  When to execute          On which object  The method to call;  Optional parameters
+	#  according to $game_loop  to call method   either Symbol        to be passed to
+	#  ($game_loop + at)             on          or String            method when called
+	#         vv                     vv             vvvv                 vvvvv
+	def queue at,                    on,            meth,                *args
+		unless (on.methods.include? meth)
+			log "WARNING: Tried to queue non-existent method '#{meth.to_s}'!"
+			return false
+		end
+		tick = $game_loop + at
+		if (@queue[tick])
+			log "WARNING: Overwriting method '#{@queue[tick][0].class.name}.#{@queue[tick][1].to_s}(#{@queue[tick][2].join(', ')})' with method '#{on.class.name}.#{meth.to_s}(#{args.join(', ')})' in queue!"
+		end
+		@queue[tick] = [on, meth, args]
+	end
+
+	## Check if method is ready for queue and execute
+	def handle_queue
+		if (meth = @queue[$game_loop])
+			return meth[0].method(meth[1]).call(*meth[2])
+		end
+		return nil
+	end
+
 	def running?
 		true
 	end
 
 	def update
-		## Reset Curses attributes
-		# Color-pair
-		#Curses.attrset Curses.color_pair(1)
+		## Handle method queue
+		handle_queue
 
 		Curses.clear
 		Curses.refresh

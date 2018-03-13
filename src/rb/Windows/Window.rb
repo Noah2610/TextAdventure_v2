@@ -126,7 +126,7 @@ module Windows
 			## String without attribute-codes, will be returned
 			str_new = str.dup
 			## Will be filled with attribute-pair ids at appropriate indices, will be returned
-			attr_stack = []
+			attr_stack = {}
 
 			return lines, nil  unless (str.match regex)
 
@@ -219,7 +219,7 @@ module Windows
 		## Handle semantic attributes and apply them to window
 		def attr_apply *attrs
 			return nil  if (@window.nil?)
-			attrs = attrs.flatten.each_slice(2).to_a
+			attrs = attrs.flatten(2).each_slice(2).to_a
 			binary = 0
 			attrs.each do |att|
 				next  if (att[1].nil?)
