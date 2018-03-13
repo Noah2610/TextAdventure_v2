@@ -4,6 +4,7 @@ keywords:
 keyphrases:
   - good bye
 text:
-  - "Goodbye [PLAYER]."
-  - "See you around [PLAYER]."
+  default:
+    - "Goodbye [PLAYER]."
+    - "See you around [PLAYER]."
 ...

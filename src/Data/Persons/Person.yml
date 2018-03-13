@@ -11,4 +11,5 @@ conversation:
     - Hello
     - Bye
     - Hello
+  text: {}
 ...

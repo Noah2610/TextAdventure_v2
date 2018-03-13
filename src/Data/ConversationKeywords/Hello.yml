@@ -6,6 +6,7 @@ keywords:
 keyphrases:
   - good day
 text:
-  - "Hello [PLAYER]."
-  - "Good day [PLAYER]."
+  default:
+    - "Hello [PLAYER]."
+    - "Good day [PLAYER]."
 ...

@@ -9,25 +9,25 @@ ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
 
 ## Set DIR constant with relevant paths
 DIR = {
-	src:                   File.join(ROOT, 'src'),
-	rb:                    File.join(ROOT, 'src/rb'),
-	misc:                  File.join(ROOT, 'src/rb/misc'),
-	windows:               File.join(ROOT, 'src/rb/Windows'),
-	input:                 File.join(ROOT, 'src/rb/Input'),
-	verbs:                 File.join(ROOT, 'src/rb/Verbs'),
-	instances:             File.join(ROOT, 'src/rb/Instances'),
-	items:                 File.join(ROOT, 'src/rb/Instances/Items'),
-	persons:               File.join(ROOT, 'src/rb/Instances/Persons'),
-	rooms:                 File.join(ROOT, 'src/rb/Instances/Rooms'),
-	conversation_keywords: File.join(ROOT, 'src/rb/ConversationKeywords'),
-	data: {                # Text files, etc
-		verbs:               File.join(ROOT, 'src/Data/Verbs'),
-		items:               File.join(ROOT, 'src/Data/Items'),
-		persons:             File.join(ROOT, 'src/Data/Persons'),
-		rooms:               File.join(ROOT, 'src/Data/Rooms'),
+	src:                     File.join(ROOT, 'src'),
+	rb:                      File.join(ROOT, 'src/rb'),
+	misc:                    File.join(ROOT, 'src/rb/misc'),
+	windows:                 File.join(ROOT, 'src/rb/Windows'),
+	input:                   File.join(ROOT, 'src/rb/Input'),
+	verbs:                   File.join(ROOT, 'src/rb/Verbs'),
+	instances:               File.join(ROOT, 'src/rb/Instances'),
+	items:                   File.join(ROOT, 'src/rb/Instances/Items'),
+	persons:                 File.join(ROOT, 'src/rb/Instances/Persons'),
+	rooms:                   File.join(ROOT, 'src/rb/Instances/Rooms'),
+	conversation_keywords:   File.join(ROOT, 'src/rb/ConversationKeywords'),
+	data: {                  # Text files, etc
+		verbs:                 File.join(ROOT, 'src/Data/Verbs'),
+		items:                 File.join(ROOT, 'src/Data/Items'),
+		persons:               File.join(ROOT, 'src/Data/Persons'),
+		rooms:                 File.join(ROOT, 'src/Data/Rooms'),
 		conversation_keywords: File.join(ROOT, 'src/Data/ConversationKeywords')
 	},
-	settings:              File.join(ROOT, 'src/settings.yml')  # Default Settings file
+	settings:                File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
 
 require File.join DIR[:misc], 'handle_argument_parser'

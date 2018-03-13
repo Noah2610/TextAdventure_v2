@@ -11,8 +11,9 @@ module Instances
 			end
 
 			## Return conversational text
-			def conversation_text #keyword, target, *instances
-				return @data['conversation']['text']  if (@data['conversation'])
+			def conversation_text target
+				target = target.to_s
+				return @data['conversation']['text'][target]  if (@data['conversation'] && @data['conversation'][target])
 				return nil
 			end
 

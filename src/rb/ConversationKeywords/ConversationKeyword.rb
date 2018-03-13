@@ -48,18 +48,19 @@ module ConversationKeywords
 		end
 
 		## Return default keyword text and perform substitution if instances given
-		def text *words
+		def text target = :default, *words
+			target = target.to_s
 			words = [words, PLAYER].flatten
 			txt = nil
 			if    (@person.nil?)
 				## No Person set
-				txt = [@data['text']].flatten.sample
+				txt = [@data['text'][target]].flatten.sample  if (@data['text'])
 			elsif (@person.is? :person)
 				## Has Person
-				txt = [@person.conversation_text].flatten.sample
-				txt = [@data['text']].flatten.sample  if (txt.nil?)
+				txt = [@person.conversation_text(target)].flatten.sample
+				txt = [@data['text'][target]].flatten.sample  if (@data['text'] && txt.nil?)
 			end
-			return nil                              if (txt.nil?)
+			return nil                          if (txt.nil?)
 			return Input.substitute txt, words  unless  (words.empty?)
 			return txt
 		end
