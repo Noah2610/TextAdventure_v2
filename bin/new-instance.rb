@@ -10,16 +10,25 @@ ROOT = File.dirname(Pathname.new(File.join(File.absolute_path(__FILE__), '..')).
 ## Directories for files
 DIR = {
 	src: {
-		verb:   File.join(ROOT, 'src/rb/Verbs'),
-		item:   File.join(ROOT, 'src/rb/Instances/Items'),
-		person: File.join(ROOT, 'src/rb/Instances/Persons'),
-		room:   File.join(ROOT, 'src/rb/Instances/Rooms')
+		verb:                 File.join(ROOT, 'src/rb/Verbs'),
+		item:                 File.join(ROOT, 'src/rb/Instances/Items'),
+		person:               File.join(ROOT, 'src/rb/Instances/Persons'),
+		room:                 File.join(ROOT, 'src/rb/Instances/Rooms'),
+		conversation_keyword: File.join(ROOT, 'src/rb/ConversationKeywords')
 	},
 	data: {
-		verb:   File.join(ROOT, 'src/Data/Verbs'),
-		item:   File.join(ROOT, 'src/Data/Items'),
-		person: File.join(ROOT, 'src/Data/Persons'),
-		room:   File.join(ROOT, 'src/Data/Rooms')
+		verb:                 File.join(ROOT, 'src/Data/Verbs'),
+		item:                 File.join(ROOT, 'src/Data/Items'),
+		person:               File.join(ROOT, 'src/Data/Persons'),
+		room:                 File.join(ROOT, 'src/Data/Rooms'),
+		conversation_keyword: File.join(ROOT, 'src/Data/ConversationKeywords')
+	},
+	templates: {
+		verb:                 File.join(ROOT, 'templates/Verb.rb'),
+		item:                 File.join(ROOT, 'templates/Item.rb'),
+		room:                 File.join(ROOT, 'templates/Person.rb'),
+		person:               File.join(ROOT, 'templates/Room.rb'),
+		conversation_keyword: File.join(ROOT, 'templates/ConversationKeyword.rb')
 	}
 }
 
@@ -52,9 +61,9 @@ USAGE = [
 	"",
 	"    TYPE",
 	"      The Instance type to be created. Currently available:",
-	"        'verb', 'item', 'person', 'room'",
+	"        'verb', 'item', 'person', 'room', 'conversation_keyword'",
 	"      You can also use the first letter of each keyword:",
-	"        'v', 'i', 'p', and 'r', respectively.",
+	"        'v', 'i', 'p', 'r', and 'c', respectively.",
 	"      Note that input is case-sensitive.",
 	"    NAME",
 	"      The name of the new Instance.",
@@ -69,18 +78,19 @@ USAGE = [
 
 VALID_ARGUMENTS = {
 	single: {
-		help:   [[?h],      false],
-		force:  [[?f],      false]
+		help:                 [[?h],      false],
+		force:                [[?f],      false]
 	},
 	double: {
-		help:   [['help'],  false],
-		force:  [['force'], false]
+		help:                 [['help'],  false],
+		force:                [['force'], false]
 	},
 	keywords: {
-		verb:   [['verb',   ?v], :INPUT],
-		item:   [['item',   ?i], :INPUT],
-		person: [['person', ?p], :INPUT],
-		room:   [['room',   ?r], :INPUT]
+		verb:                 [['verb',   ?v], :INPUT],
+		item:                 [['item',   ?i], :INPUT],
+		person:               [['person', ?p], :INPUT],
+		room:                 [['room',   ?r], :INPUT],
+		conversation_keyword: [['conversation_keyword','conversation','keyword','ck',?c], :INPUT]
 	}
 }
 
@@ -130,6 +140,7 @@ name = name_match[1]
 name[0] = name[0].upcase
 date = Time.now.strftime "%Y-%m-%d"
 username = `git config user.name`.strip
+comment = "### Auto-generated on #{date} by #{username}."
 
 case ARGUMENTS[:keywords].keys.first
 when :verb
@@ -137,21 +148,8 @@ when :verb
 	### CODE FILE
 	codefile = File.join DIR[:src][:verb], "#{name}.rb"
 	check_file codefile
-	## Ruby file content
-	content = [
-		"### Auto-generated on #{date} by #{username}.",
-		"class Verbs::#{name} < Verbs::Verb",
-		"	def initialize args = {}",
-		"		super",
-		"	end",
-		"",
-		"	def action args = {}",
-		"		return nil               if (args[:line].nil? || args[:word].nil?)",
-		"		word = args[:line].next_word pos: args[:word].position, priority: nil, ignore: ignore",
-		"		return text 'not_found'  unless (word)",
-		"	end",
-		"end"
-	].join("\n")
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:verb]).sub('REPLACE_NAME', name)
 	puts [
 		"Writing Verb template code to file:",
 		"  '#{codefile}'"
@@ -162,20 +160,19 @@ when :verb
 	f.close
 
 	### CONFIGURATION FILE
-	configfile = File.join DIR[:data][:verb], "#{name}.yml"
-	check_file configfile
-	templatefile = File.join DIR[:data][:verb], 'Verb.yml'
-	## Ruby file content
+	datafile = File.join DIR[:data][:verb], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:verb], 'Verb.yml'
 	content = [
 		"### Auto-generated on #{date} by #{username}.",
-		File.read(templatefile)
+		File.read(datafile_template)
 	].join("\n")
 	puts [
 		"Writing Verb default configuration to file:",
-		"  '#{configfile}'"
+		"  '#{datafile}'"
 	].join("\n")
 	## Write to file
-	f = File.open configfile, ?w
+	f = File.open datafile, ?w
 	f.write content
 	f.close
 
@@ -184,15 +181,8 @@ when :item
 	### CODE FILE
 	codefile = File.join DIR[:src][:item], "#{name}.rb"
 	check_file codefile
-	## Ruby file content
-	content = [
-		"### Auto-generated on #{date} by #{username}.",
-		"class Instances::Items::#{name} < Instances::Items::Item",
-		"	def initialize args = {}",
-		"		super",
-		"	end",
-		"end"
-	].join("\n")
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:item]).sub('REPLACE_NAME', name)
 	puts [
 		"Writing Item template code to file:",
 		"  '#{codefile}'"
@@ -203,20 +193,19 @@ when :item
 	f.close
 
 	### CONFIGURATION FILE
-	configfile = File.join DIR[:data][:item], "#{name}.yml"
-	check_file configfile
-	templatefile = File.join DIR[:data][:item], 'Item.yml'
-	## Ruby file content
+	datafile = File.join DIR[:data][:item], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:item], 'Item.yml'
 	content = [
 		"### Auto-generated on #{date} by #{username}.",
-		File.read(templatefile)
+		File.read(datafile_template)
 	].join("\n")
 	puts [
 		"Writing Item default configuration to file:",
-		"  '#{configfile}'"
+		"  '#{datafile}'"
 	].join("\n")
 	## Write to file
-	f = File.open configfile, ?w
+	f = File.open datafile, ?w
 	f.write content
 	f.close
 
@@ -225,15 +214,8 @@ when :person
 	### CODE FILE
 	codefile = File.join DIR[:src][:person], "#{name}.rb"
 	check_file codefile
-	## Ruby file content
-	content = [
-		"### Auto-generated on #{date} by #{username}.",
-		"class Instances::Persons::#{name} < Instances::Persons::Person",
-		"	def initialize args = {}",
-		"		super",
-		"	end",
-		"end"
-	].join("\n")
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:person]).sub('REPLACE_NAME', name)
 	puts [
 		"Writing Person template code to file:",
 		"  '#{codefile}'"
@@ -244,20 +226,19 @@ when :person
 	f.close
 
 	### CONFIGURATION FILE
-	configfile = File.join DIR[:data][:person], "#{name}.yml"
-	check_file configfile
-	templatefile = File.join DIR[:data][:person], 'Person.yml'
-	## Ruby file content
+	datafile = File.join DIR[:data][:person], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:person], 'Person.yml'
 	content = [
 		"### Auto-generated on #{date} by #{username}.",
-		File.read(templatefile)
+		File.read(datafile_template)
 	].join("\n")
 	puts [
 		"Writing Person default configuration to file:",
-		"  '#{configfile}'"
+		"  '#{datafile}'"
 	].join("\n")
 	## Write to file
-	f = File.open configfile, ?w
+	f = File.open datafile, ?w
 	f.write content
 	f.close
 
@@ -266,15 +247,8 @@ when :room
 	### CODE FILE
 	codefile = File.join DIR[:src][:room], "#{name}.rb"
 	check_file codefile
-	## Ruby file content
-	content = [
-		"### Auto-generated on #{date} by #{username}.",
-		"class Instances::Rooms::#{name} < Instances::Rooms::Room",
-		"	def initialize args = {}",
-		"		super",
-		"	end",
-		"end"
-	].join("\n")
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:room]).sub('REPLACE_NAME', name)
 	puts [
 		"Writing Room template code to file:",
 		"  '#{codefile}'"
@@ -285,20 +259,52 @@ when :room
 	f.close
 
 	### CONFIGURATION FILE
-	configfile = File.join DIR[:data][:room], "#{name}.yml"
-	check_file configfile
-	templatefile = File.join DIR[:data][:room], 'Room.yml'
-	## Ruby file content
+	datafile = File.join DIR[:data][:room], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:room], 'Room.yml'
 	content = [
 		"### Auto-generated on #{date} by #{username}.",
-		File.read(templatefile)
+		File.read(datafile_template)
 	].join("\n")
 	puts [
 		"Writing Room default configuration to file:",
-		"  '#{configfile}'"
+		"  '#{datafile}'"
 	].join("\n")
 	## Write to file
-	f = File.open configfile, ?w
+	f = File.open datafile, ?w
+	f.write content
+	f.close
+
+when :conversation_keyword
+	#### CONVERSATION_KEYWORD
+	### CODE FILE
+	codefile = File.join DIR[:src][:conversation_keyword], "#{name}.rb"
+	check_file codefile
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:conversation_keyword]).sub('REPLACE_NAME', name)
+	puts [
+		"Writing ConversationKeyword template code to file:",
+		"  '#{codefile}'"
+	].join("\n")
+	## Write to file
+	f = File.open codefile, ?w
+	f.write content
+	f.close
+
+	### CONFIGURATION FILE
+	datafile = File.join DIR[:data][:conversation_keyword], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:conversation_keyword], 'ConversationKeyword.yml'
+	content = [
+		"### Auto-generated on #{date} by #{username}.",
+		File.read(datafile_template)
+	].join("\n")
+	puts [
+		"Writing ConversationKeyword default configuration to file:",
+		"  '#{datafile}'"
+	].join("\n")
+	## Write to file
+	f = File.open datafile, ?w
 	f.write content
 	f.close
 
