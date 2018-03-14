@@ -52,12 +52,13 @@ module Input
 				counter = input.index /\b/
 				words_words = []
 				input.scan(/\b\S+\b/) do |w|
-					counter = input.index(w, counter) + w.size + 1
 					break  if (counter > input.size)
 					words_words << Words.new_word(w, self, no_verbs: true, pos: counter)
+					counter = input.index(w, counter) + w.size + 1
 				end
 				## Conversation Words
 				words_conversation = kws.map do |kw|
+					#TODO: do this differently
 					if (positions = kw.keyword? input)
 						next positions.map do |pos|
 							next Words::Conversation.new self, keyword: kw, pos: pos

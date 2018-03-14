@@ -91,15 +91,14 @@ module Inventory
 	end
 
 	## Can give Item?
-	def give? item, person = :nil
+	def give? item, person = nil
 		return true  if (person.nil?)
 		return true && (person.has_inventory? && person.take?)
 	end
 
 	## Can take Item?
 	def take? item
-		return false
-		if (@can_take.include? instance.get_instance_type_and_class[1].to_sym)
+		if (@can_take.include? item.get_instance_type_and_class[1].to_sym)
 			return true
 		end
 		return false
@@ -109,7 +108,7 @@ module Inventory
 	def give item, person
 		if (has_item?(item) && give?(item))
 			if (person.take item)
-
+				item_remove item
 				return true
 			end
 		end
