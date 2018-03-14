@@ -9,5 +9,15 @@ keywords:
 keywords_unknown:
   - friend
 known:               true
+conversation:
+  keywords:
+    - Hello
+    - Bye
+    - Take
+  text:
+    Take:
+      given:
+        - "Dope [ITEM], brah."
+        - "Sick [ITEM]!"
 ...
 

@@ -3,8 +3,6 @@ keywords:
   - hello
   - hi
   - hey
-keyphrases:
-  - good day
 text:
   default:
     - "Hello [PLAYER]."

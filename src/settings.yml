@@ -4,11 +4,12 @@ ENVIRONMENTS:
   development:
     logfile: 'development.log'
     input:
-      ESCDELAY:     100
-      history_size: 100
-      prompt:       '$ '
-      border_color: 'blue'
-      border_attr:  'bold'
+      ESCDELAY:            100
+      history_size:        100
+      prompt:              '$ '
+      prompt_conversation: '> '
+      border_color:        'blue'
+      border_attr:         'bold'
 
   debug:
     logfile: 'development.log'
@@ -26,13 +27,14 @@ logfile: 'default.log'
 
 ## Input settings
 input:
-  ESCDELAY:      1000     # Curses ESCDELAY, in ms (default = 1000ms)
-  history_size:  100      # Amount of input lines to save
-  prompt:       '> '      # Text to place before input field
-  border_color: 'yellow'  # Border color of Input and Command History Window,
-                          # can be Array with foreground and background colors
-                          # or string for foreground and default background color
-  border_attr:  'bold'    # Also apply attribute for border
+  ESCDELAY:            1000      # Curses ESCDELAY, in ms (default = 1000ms)
+  history_size:        100       # Amount of input lines to save
+  prompt:              '> '      # Text to place before input field
+  prompt_conversation: '>> '     # Same as prompt, but in conversation mode
+  border_color:        'yellow'  # Border color of Input and Command History Window,
+                                 # can be Array with foreground and background colors
+                                 # or string for foreground and default background color
+  border_attr:         'bold'    # Also apply attribute for border
 
 ## Text output settings
 output:

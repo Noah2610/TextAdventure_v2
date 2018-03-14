@@ -74,3 +74,9 @@ def require_files dir, args = {}
 	end
 end
 
+## Read YAML file content and return
+def read_yaml file
+	return nil  unless (File.file? file)
+	return YAML.load_file file
+end
+

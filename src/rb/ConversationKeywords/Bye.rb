@@ -5,7 +5,7 @@ class ConversationKeywords::Bye < ConversationKeywords::ConversationKeyword
 	end
 
 	## Exit conversation
-	def action
+	def action args = {}
 		$game.queue 1, PLAYER, :conversation_end, { keep_window: true }
 		$game.queue 2, $game.window(:conversation), :hide
 		return super

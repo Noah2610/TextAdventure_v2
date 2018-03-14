@@ -1,0 +1,25 @@
+---
+keywords:
+  - take
+text:
+  default: "I can take an item."
+  given:
+    - "Thank you for the [ITEM]."
+    - "I really needed that [ITEM]."
+    - "Finally a [ITEM]!"
+  cannot_give:
+    - "I don't need [ITEM]."
+    - "I don't want [ITEM]."
+    - "Why would I need [ITEM]?"
+  not_special:
+    - "I don't need [WORD]."
+    - "What do I do with [WORD]?"
+    - "How do I use [WORD]?"
+  doesnt_have:
+    - "I don't think you have [ITEM]."
+    - "You don't have [ITEM]."
+  not_found:
+    - "Do you want to give me something?"
+    - "What do you want to give me?"
+    - "Do you have something special for me?"
+...

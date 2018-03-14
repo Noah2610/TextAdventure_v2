@@ -24,6 +24,10 @@ module Inventory
 		end  if (@data && @data['items'])
 	end
 
+	def has_inventory?
+		return true
+	end
+
 	class Inventory
 		def initialize args = {}
 			@items = {}
@@ -34,9 +38,16 @@ module Inventory
 			return @items.values
 		end
 
+		## Add Item from Inventory
 		def item_add item
 			## Add Item by key of Item's classname as symbol
 			return (@items[item.class.name.split('::').last.to_sym] = item)
+		end
+
+		## Remove Item from Inventory
+		def item_remove item
+			return false  unless (has_item? item)
+			return @items.delete item.class.name.split('::').last.to_sym
 		end
 
 		def has_item? item
@@ -49,7 +60,7 @@ module Inventory
 			end
 			return false
 		end
-	end
+	end # END - CLASS
 
 	## Check if Inventory contains any Items
 	def any_items?
@@ -68,9 +79,49 @@ module Inventory
 		return @inventory.item_add item
 	end
 
+	## Remove Item from Inventory
+	def item_remove item
+		return false  unless (item.is? :item)
+		return @inventory.item_remove item
+	end
+
 	## Check if Inventory has Item item
 	def has_item? item
 		return @inventory.has_item? item
 	end
-end
+
+	## Can give Item?
+	def give? item, person = :nil
+		return true  if (person.nil?)
+		return true && (person.has_inventory? && person.take?)
+	end
+
+	## Can take Item?
+	def take? item
+		return false
+		if (@can_take.include? instance.get_instance_type_and_class[1].to_sym)
+			return true
+		end
+		return false
+	end
+
+	## Give Item to Person
+	def give item, person
+		if (has_item?(item) && give?(item))
+			if (person.take item)
+
+				return true
+			end
+		end
+		return false
+	end
+
+	def take item
+		if (take? item)
+			item_add item
+			return true
+		end
+		return false
+	end
+end # END - MODULE
 

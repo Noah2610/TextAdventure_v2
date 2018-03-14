@@ -1,6 +1,7 @@
 ---
-keywords:   []
-keyphrases: []
+keywords:    []
 text:
-  default:  []
+  default:   "<DEFAULT DEFAULT TEXT>"
+  not_found: "<DEFAULT NOT FOUND TEXT>"
+ignore:      []
 ...

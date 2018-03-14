@@ -5,7 +5,7 @@ module ConversationKeywords
 		return self.constants.map do |constname|
 			constant = self.const_get constname
 			next nil                unless (constant.is_a? Class)
-			data = read_data(File.join(DIR[:data][:conversation_keywords], "#{constname.to_s}.yml"))
+			data = read_yaml(File.join(DIR[:data][:conversation_keywords], "#{constname.to_s}.yml"))
 			next [constname.to_s, data]  unless (data.nil?)
 			log "WARNING: ConversationKeyword '#{constname.to_s}' has no data file!"
 			next nil
@@ -26,11 +26,6 @@ module ConversationKeywords
 		end .reject { |x| !x } .to_h
 	end
 
-	def self.read_data file
-		return nil  unless (File.file? file)
-		return YAML.load_file file
-	end
-
 	class ConversationKeyword
 		def initialize data, args = {}
 			@data = data
@@ -43,7 +38,7 @@ module ConversationKeywords
 		end
 
 		## Do whatever logic Keyword is supposed to do and return text
-		def action
+		def action args = {}
 			return text
 		end
 
@@ -57,7 +52,8 @@ module ConversationKeywords
 				txt = [@data['text'][target]].flatten.sample  if (@data['text'])
 			elsif (@person.is? :person)
 				## Has Person
-				txt = [@person.conversation_text(target)].flatten.sample
+				ptxt = @person.conversation_text(self.class.name.split('::')[-1])
+				txt = [ptxt[target]].flatten.sample           unless (ptxt.nil?)
 				txt = [@data['text'][target]].flatten.sample  if (@data['text'] && txt.nil?)
 			end
 			return nil                          if (txt.nil?)
@@ -65,21 +61,21 @@ module ConversationKeywords
 			return txt
 		end
 
+		## Return words to ignore in Line
+		def ignore
+			return @data['ignore']
+		end
+
 		## Return keywords
 		def keywords
 			return @data['keywords']
 		end
 
-		## Return keyphrases
-		def keyphrases
-			return @data['keyphrases']
-		end
-
 		## Check if string matches a keyword
 		def keyword? string
-			return [keyphrases, keywords].reject { |x| !x } .flatten.any? do |kw|
-				string =~ kw.to_regex(word: true)
-			end
+			return [keywords].reject { |x| !x } .flatten.map do |kw|
+				next string =~ kw.to_regex(word: true)
+			end .reject { |x| !x }
 		end
 	end
 end

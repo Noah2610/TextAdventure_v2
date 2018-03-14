@@ -107,6 +107,7 @@ class Player
 		@mode = :conversation
 		@talking_to = person
 		$game.window(:conversation).show
+		$game.window(:input).prompt = :conversation
 	end
 
 	## Leave conversation
@@ -115,6 +116,7 @@ class Player
 		@mode = :normal
 		@talking_to = nil
 		$game.window(:conversation).hide  unless (args[:keep_window])
+		$game.window(:input).prompt = :normal
 	end
 
 	## Person Player is talking to
@@ -126,7 +128,7 @@ class Player
 	## Return available conversation_keywords
 	def conversation_keywords
 		return nil  unless (mode? :conversation)
-		return conversation_person.keywords
+		return conversation_person.conversation_keywords
 	end
 
 end

@@ -16,6 +16,7 @@ module Windows
 		## Max size of input history
 		HISTORY_MAX_SIZE = SETTINGS.input['history_size'] || 10
 		PROMPT = SETTINGS.input['prompt']
+		PROMPT_CONVERSATION = SETTINGS.input['prompt_conversation']
 
 		def initialize args = {}
 			super
@@ -57,6 +58,8 @@ module Windows
 			@border_color = SETTINGS.input['border_color']
 			@border_attr = SETTINGS.input['border_attr']
 
+			@prompt = PROMPT
+
 			redraw
 		end
 
@@ -70,11 +73,26 @@ module Windows
 			return screen_size(:h) - height
 		end
 
+		## Change prompt
+		def prompt= target = :normal
+			case target
+			when :normal
+				@prompt = PROMPT
+			when :conversation
+				@prompt = PROMPT_CONVERSATION
+			else
+				return false
+			end
+			return true
+		end
+
+		## Clear @text
 		def clear_text
 			@text.clear
 			@cursor = 0
 		end
 
+		## Handle arrowkey input
 		def handle_arrowkey dir
 			case dir
 			when :up
@@ -138,7 +156,7 @@ module Windows
 			## Set character position
 			#              y, x
 			@window.setpos 1, @padding
-			@window.addstr PROMPT
+			@window.addstr @prompt
 			## Write text from @text variable to window
 			## also process attribute-codes
 			text, attr_stack = process_attribute_codes @text, show: true
@@ -159,7 +177,7 @@ module Windows
 			print_with_attributes topborder[0], topborder[1]
 
 			## Set position to proper cursor position
-			@window.setpos 1, @padding + @cursor + PROMPT.size
+			@window.setpos 1, @padding + @cursor + @prompt.size
 
 			@window.refresh
 		end

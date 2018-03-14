@@ -4,15 +4,15 @@ PLAYER:
 	- savefile
 
 PERSONS:
-	- Actually create proper Person
-	- Conversation mode
+	#- Actually create proper Person
+	#- Conversation mode
 
 ROOMS:
 	- Load Rooms from Player savefile
 	- Load Rooms dynamically; Current Room loads adjacent Rooms but not further
 	- Areas, Rooms containers. Might be nice
 	- Store loaded Rooms in Player
-	- In config: keywords_self; associate some names ('room','area') with the current Room
+	#- In config: keywords_self; associate some names ('room','area') with the current Room
 
 WINDOWS:
 	- System for centering certain lines, or at least have centered header
@@ -25,10 +25,12 @@ VERBS:
 		#* Look
 		#* Go
 		#* Take
-		* Talk
+		#* Talk
 		* Use
 
 OTHER:
 	- General Commands
 	- WRITE TESTS
+	- Handle ConversationWords more uniformly like Words
+	- Set ConversationWord's text to user's proper input text
 

@@ -11,17 +11,12 @@ module Instances
 	def self.load_data
 		return ( [:Items, :Persons, :Rooms].map do |type|
 			next [type, ( self.const_get(type).constants.map do |classname|
-				data = read_data(File.join(DIR[:data][type.downcase], "#{classname.to_s}.yml"))
+				data = read_yaml(File.join(DIR[:data][type.downcase], "#{classname.to_s}.yml"))
 				next [classname, data]  unless (data.nil?)
 				log "WARNING: #{type.match(/\A(.+)s\z/)[1]} '#{classname.to_s}' has no data file!"
 				next nil
 			end .reject { |x| !x } .to_h ) ]
 		end .to_h )
-	end
-
-	def self.read_data file
-		return nil  unless (File.file? file)
-		return YAML.load_file file
 	end
 
 	## Return data for Instance class
@@ -121,8 +116,14 @@ module Instances
 		def unknown!
 			return @known = false
 		end
-	end
-end
+
+		## Check if Instance has an Inventory
+		def has_inventory?
+			return false
+		end
+
+	end # END - CLASS
+end # END - MODULE
 
 ## Require Items
 require File.join DIR[:items], 'Item'

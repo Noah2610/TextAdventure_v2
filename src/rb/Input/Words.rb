@@ -9,7 +9,7 @@ module Input
 					args[:verb] = v
 					return Words::Verb.new text, line, args
 				end
-			end
+			end  unless (args[:no_verbs])
 			## INSTANCES
 			## The way to get instances here is to somehow figure out and get
 			## a list of all currently available Items/Persons/Rooms
@@ -30,18 +30,20 @@ module Input
 				end
 			end
 
-			return Word.new text, line, args
+			return Word.new text, line, args  unless (args[:no_words])
+			return nil
 		end
 
 		## Base Word, a lot of inherits below,
 		## or if a word couldn't be categorized it will create a Word
 		class Word
-			attr_reader :position, :instance
+			attr_accessor :position
+			attr_reader :instance
 
 			def initialize text, line, args = {}
 				@line = line
 				@text = text
-				@position = args[:pos]
+				@position = args[:pos] || args[:position]
 				@instance = args[:instance]
 				init args  if (defined? init)
 			end
@@ -91,16 +93,17 @@ module Input
 		class Conversation < Word
 			attr_reader :keyword
 			def initialize line, args = {}
+				@position = args[:pos] || args[:position]
 				@line = line
 				@keyword = args[:keyword]
 			end
 
 			def text
-				return nil
+				return @keyword.keywords.first
 			end
 
 			def action
-				return @keyword.action  if (@keyword)
+				return @keyword.action word: self, line: @line  if (@keyword)
 				return nil
 			end
 		end

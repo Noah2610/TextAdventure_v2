@@ -40,20 +40,46 @@ module Input
 			when :normal
 				## Normal mode
 				counter = 0
-				input.scan(/[^ .,:;!"'$%&\/()=?+*#\-_<>|]+/) do |w|
-					@words << Words.new_word(w, self, { pos: counter })
+				input.scan(/\b\S+\b/) do |w|
+					@words << Words.new_word(w, self, pos: counter)
 					counter += 1
 				end
 
 			when :conversation
 				## Conversation mode
 				return nil  unless (kws = PLAYER.conversation_keywords)
-				@words = kws.map do |kw|
-					if (kw.keyword? input)
-						next Words::Conversation.new self, keyword: kw
+				## Instance Words
+				counter = input.index /\b/
+				words_words = []
+				input.scan(/\b\S+\b/) do |w|
+					counter = input.index(w, counter) + w.size + 1
+					break  if (counter > input.size)
+					words_words << Words.new_word(w, self, no_verbs: true, pos: counter)
+				end
+				## Conversation Words
+				words_conversation = kws.map do |kw|
+					if (positions = kw.keyword? input)
+						next positions.map do |pos|
+							next Words::Conversation.new self, keyword: kw, pos: pos
+						end
 					end
-				end .reject { |x| !x }
-				log @words.map { |w| w.keyword.class.name }
+				end .flatten .reject { |x| !x }
+				## Remove Words that are Conversation Words
+				words_words.reject! do |ww|
+					words_conversation.any? do |wc|
+						next wc.position == ww.position
+					end
+				end
+				## Concat Conversation Words and Words
+				@words = words_conversation.concat words_words
+				## Sort @words and set proper positions
+				@words.sort! do |w1,w2|
+					w1.position - w2.position
+				end
+				@words.each_with_index do |w, i|
+					w.position = i
+				end
+				#log @words.map { |w| [w.class.name, w.position] }
 
 			end
 		end

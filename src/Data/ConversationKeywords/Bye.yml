@@ -1,8 +1,6 @@
 ---
 keywords:
-  - /(good)?(bye){1,2}/i
-keyphrases:
-  - good bye
+  - /(good)? ?(bye){1,2}/i
 text:
   default:
     - "Goodbye [PLAYER]."
