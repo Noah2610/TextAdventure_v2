@@ -47,7 +47,7 @@ module Input
 
 			when :conversation
 				## Conversation mode
-				return nil  unless (kws = PLAYER.conversation_keywords)
+				return nil  unless (kws = PLAYER.terms)
 				## Instance Words
 				counter = input.index /\b/
 				words_words = []

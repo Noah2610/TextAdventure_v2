@@ -1,4 +1,4 @@
-class ConversationKeywords::Take < ConversationKeywords::ConversationKeyword
+class Terms::Take < Terms::Term
 	def initialize args = {}
 		super
 	end

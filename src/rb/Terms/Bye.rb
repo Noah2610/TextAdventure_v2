@@ -1,5 +1,5 @@
 
-class ConversationKeywords::Bye < ConversationKeywords::ConversationKeyword
+class Terms::Bye < Terms::Term
 	def initialize args = {}
 		super
 	end

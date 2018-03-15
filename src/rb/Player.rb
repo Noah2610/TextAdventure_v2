@@ -125,10 +125,10 @@ class Player
 		return @talking_to
 	end
 
-	## Return available conversation_keywords
-	def conversation_keywords
+	## Return available terms
+	def terms
 		return nil  unless (mode? :conversation)
-		return conversation_person.conversation_keywords
+		return conversation_person.terms
 	end
 
 end

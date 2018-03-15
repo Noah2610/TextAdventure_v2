@@ -23,8 +23,8 @@ Verbs::VERBS = Verbs.init_verbs
 ## Inventory
 require File.join DIR[:rb], 'Inventory'
 
-## ConversationKeywords
-require File.join DIR[:conversation_keywords], 'ConversationKeyword'
+## Terms
+require File.join DIR[:terms], 'Term'
 
 ## Instances (Items, Persons, Rooms)
 require File.join DIR[:instances], 'Instance'

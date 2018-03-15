@@ -19,13 +19,13 @@ DIR = {
 	items:                   File.join(ROOT, 'src/rb/Instances/Items'),
 	persons:                 File.join(ROOT, 'src/rb/Instances/Persons'),
 	rooms:                   File.join(ROOT, 'src/rb/Instances/Rooms'),
-	conversation_keywords:   File.join(ROOT, 'src/rb/ConversationKeywords'),
+	terms:   File.join(ROOT, 'src/rb/Terms'),
 	data: {                  # Text files, etc
 		verbs:                 File.join(ROOT, 'src/Data/Verbs'),
 		items:                 File.join(ROOT, 'src/Data/Items'),
 		persons:               File.join(ROOT, 'src/Data/Persons'),
 		rooms:                 File.join(ROOT, 'src/Data/Rooms'),
-		conversation_keywords: File.join(ROOT, 'src/Data/ConversationKeywords')
+		terms: File.join(ROOT, 'src/Data/Terms')
 	},
 	settings:                File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }

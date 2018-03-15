@@ -14,21 +14,21 @@ DIR = {
 		item:                 File.join(ROOT, 'src/rb/Instances/Items'),
 		person:               File.join(ROOT, 'src/rb/Instances/Persons'),
 		room:                 File.join(ROOT, 'src/rb/Instances/Rooms'),
-		conversation_keyword: File.join(ROOT, 'src/rb/ConversationKeywords')
+		term: File.join(ROOT, 'src/rb/Terms')
 	},
 	data: {
 		verb:                 File.join(ROOT, 'src/Data/Verbs'),
 		item:                 File.join(ROOT, 'src/Data/Items'),
 		person:               File.join(ROOT, 'src/Data/Persons'),
 		room:                 File.join(ROOT, 'src/Data/Rooms'),
-		conversation_keyword: File.join(ROOT, 'src/Data/ConversationKeywords')
+		term: File.join(ROOT, 'src/Data/Terms')
 	},
 	templates: {
 		verb:                 File.join(ROOT, 'templates/Verb.rb'),
 		item:                 File.join(ROOT, 'templates/Item.rb'),
 		room:                 File.join(ROOT, 'templates/Person.rb'),
 		person:               File.join(ROOT, 'templates/Room.rb'),
-		conversation_keyword: File.join(ROOT, 'templates/ConversationKeyword.rb')
+		term: File.join(ROOT, 'templates/Term.rb')
 	}
 }
 
@@ -61,7 +61,7 @@ USAGE = [
 	"",
 	"    TYPE",
 	"      The Instance type to be created. Currently available:",
-	"        'verb', 'item', 'person', 'room', 'conversation_keyword'",
+	"        'verb', 'item', 'person', 'room', 'term'",
 	"      You can also use the first letter of each keyword:",
 	"        'v', 'i', 'p', 'r', and 'c', respectively.",
 	"      Note that input is case-sensitive.",
@@ -90,7 +90,7 @@ VALID_ARGUMENTS = {
 		item:                 [['item',   ?i], :INPUT],
 		person:               [['person', ?p], :INPUT],
 		room:                 [['room',   ?r], :INPUT],
-		conversation_keyword: [['conversation_keyword','conversation','keyword','ck',?c], :INPUT]
+		term: [['term','conversation','keyword','ck',?c], :INPUT]
 	}
 }
 
@@ -275,15 +275,15 @@ when :room
 	f.write content
 	f.close
 
-when :conversation_keyword
-	#### CONVERSATION_KEYWORD
+when :term
+	#### term
 	### CODE FILE
-	codefile = File.join DIR[:src][:conversation_keyword], "#{name}.rb"
+	codefile = File.join DIR[:src][:term], "#{name}.rb"
 	check_file codefile
 	content = comment
-	content += "\n" + File.read(DIR[:templates][:conversation_keyword]).sub('REPLACE_NAME', name)
+	content += "\n" + File.read(DIR[:templates][:term]).sub('REPLACE_NAME', name)
 	puts [
-		"Writing ConversationKeyword template code to file:",
+		"Writing Term template code to file:",
 		"  '#{codefile}'"
 	].join("\n")
 	## Write to file
@@ -292,15 +292,15 @@ when :conversation_keyword
 	f.close
 
 	### CONFIGURATION FILE
-	datafile = File.join DIR[:data][:conversation_keyword], "#{name}.yml"
+	datafile = File.join DIR[:data][:term], "#{name}.yml"
 	check_file datafile
-	datafile_template = File.join DIR[:data][:conversation_keyword], 'ConversationKeyword.yml'
+	datafile_template = File.join DIR[:data][:term], 'Term.yml'
 	content = [
 		"### Auto-generated on #{date} by #{username}.",
 		File.read(datafile_template)
 	].join("\n")
 	puts [
-		"Writing ConversationKeyword default configuration to file:",
+		"Writing Term default configuration to file:",
 		"  '#{datafile}'"
 	].join("\n")
 	## Write to file

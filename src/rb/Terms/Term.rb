@@ -1,13 +1,13 @@
 
-module ConversationKeywords
-	## Load all ConversationKeyword data files and return them
+module Terms
+	## Load all Term data files and return them
 	def self.load_data
 		return self.constants.map do |constname|
 			constant = self.const_get constname
 			next nil                unless (constant.is_a? Class)
-			data = read_yaml(File.join(DIR[:data][:conversation_keywords], "#{constname.to_s}.yml"))
+			data = read_yaml(File.join(DIR[:data][:terms], "#{constname.to_s}.yml"))
 			next [constname.to_s, data]  unless (data.nil?)
-			log "WARNING: ConversationKeyword '#{constname.to_s}' has no data file!"
+			log "WARNING: Term '#{constname.to_s}' has no data file!"
 			next nil
 		end .reject { |x| !x } .to_h
 	end
@@ -16,17 +16,17 @@ module ConversationKeywords
 	def self.get_for targets
 		targets = [targets].flatten
 		return targets.map do |target|
-			## Check if target ConversationKeyword exists
-			if (DATA[target] && const = self.constants.map { |c| self.const_get c } .map { |c| c  if (c.is_a?(Class) && c.name.sub('ConversationKeywords::','') == target) } .reject { |x| !x } .first)
+			## Check if target Term exists
+			if (DATA[target] && const = self.constants.map { |c| self.const_get c } .map { |c| c  if (c.is_a?(Class) && c.name.sub('Terms::','') == target) } .reject { |x| !x } .first)
 				next [target, const.new(DATA[target])]
 			else
-				log "WARNING: ConversationKeyword #{target} doesn't exist!"
+				log "WARNING: Term #{target} doesn't exist!"
 				next nil
 			end
 		end .reject { |x| !x } .to_h
 	end
 
-	class ConversationKeyword
+	class Term
 		def initialize data, args = {}
 			@data = data
 			@person = nil
@@ -80,8 +80,8 @@ module ConversationKeywords
 	end
 end
 
-## Require all ConversationKeywords
-require_files DIR[:conversation_keywords], except: 'ConversationKeyword'
-## Load all ConversationKeyword data files
-ConversationKeywords::DATA = ConversationKeywords.load_data
+## Require all Terms
+require_files DIR[:terms], except: 'Term'
+## Load all Term data files
+Terms::DATA = Terms.load_data
 

@@ -4,10 +4,10 @@ module Instances
 		class Person < Instances::Instance
 			def initialize args = {}
 				super
-				## Load ConversationKeywords
-				@conversation_keywords = ConversationKeywords.get_for @data['conversation']['keywords']  if (@data['conversation'] && @data['conversation']['keywords'])
+				## Load Terms
+				@terms = Terms.get_for @data['conversation']['keywords']  if (@data['conversation'] && @data['conversation']['keywords'])
 				## Set person for every Keyword
-				@conversation_keywords.values.each { |k| k.person = self }
+				@terms.values.each { |k| k.person = self }
 
 				@can_take = []
 			end
@@ -19,9 +19,9 @@ module Instances
 				return nil
 			end
 
-			## Return ConversationKeywords
-			def conversation_keywords
-				return @conversation_keywords.values
+			## Return Terms
+			def terms
+				return @terms.values
 				return nil
 			end
 
@@ -30,7 +30,7 @@ module Instances
 				return false
 			end
 
-			## Take Item - via conversation and ConversationKeyword Give
+			## Take Item - via conversation and Term Give
 			def take item
 				return false
 			end
