@@ -34,7 +34,7 @@ require File.join DIR[:misc], 'handle_argument_parser'
 
 ## Load Environment class and set Environment
 require File.join DIR[:rb], 'Environment'
-ENVT = Environment.new CL_ARGS[:options][:env] || ENV['TA_ENV'] || 'dev'
+ENVT = Environment.new CL_ARGS[:options][:env] || 'production'
 
 if (ENVT.dev? || ENVT.debug?)
 	## Require development gems

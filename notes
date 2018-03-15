@@ -31,6 +31,4 @@ VERBS:
 OTHER:
 	- General Commands
 	- WRITE TESTS
-	- Handle ConversationWords more uniformly like Words
-	- Set ConversationWord's text to user's proper input text
 
