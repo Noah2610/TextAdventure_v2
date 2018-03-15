@@ -126,7 +126,7 @@ class Player
 	end
 
 	## Return available terms
-	def terms
+	def available_terms
 		return nil  unless (mode? :conversation)
 		return conversation_person.terms
 	end

@@ -27,6 +27,7 @@ module Terms
 	end
 
 	class Term
+		include Keywords
 		def initialize data, args = {}
 			@data = data
 			@person = nil
@@ -72,11 +73,13 @@ module Terms
 		end
 
 		## Check if string matches a keyword
+=begin
 		def keyword? string
 			return [keywords].reject { |x| !x } .flatten.map do |kw|
 				next string =~ kw.to_regex(word: true)
 			end .reject { |x| !x }
 		end
+=end
 	end
 end
 

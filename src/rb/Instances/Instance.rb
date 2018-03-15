@@ -38,6 +38,7 @@ module Instances
 
 	### Instance Class
 	class Instance
+		include Keywords
 		def initialize args = {}
 			@data = Instances.data self.class
 			@known = !!@data['known']
@@ -94,12 +95,14 @@ module Instances
 			return @data['keywords_unknown']                      if (unknown?)
 		end
 
+=begin
 		## Check if string matches a keyword
 		def keyword? string
 			return keywords.any? do |kw|
 				string =~ kw.to_regex
 			end
 		end
+=end
 
 		## Check if Instance is known, ex.:
 		def known?

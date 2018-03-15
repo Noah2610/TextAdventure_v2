@@ -35,54 +35,86 @@ module Input
 	class Line
 		def initialize input, args = {}
 			@input_text = input
-			@words = []
-			case PLAYER.mode
-			when :normal
-				## Normal mode
-				counter = 0
-				input.scan(/\b\S+\b/) do |w|
-					@words << Words.new_word(w, self, pos: counter)
-					counter += 1
-				end
+			@words = adjust_words(create_words(input, args))
+			log @words.map { |w| [w.text, w.class.name] }
+		end
 
-			when :conversation
-				## Conversation mode
-				return nil  unless (kws = PLAYER.terms)
-				## Instance Words
-				counter = input.index /\b/
-				words_words = []
-				input.scan(/\b\S+\b/) do |w|
-					break  if (counter > input.size)
-					words_words << Words.new_word(w, self, no_verbs: true, pos: counter)
-					counter = input.index(w, counter) + w.size + 1
-				end
-				## Conversation Words
-				words_conversation = kws.map do |kw|
-					#TODO: do this differently
-					if (positions = kw.keyword? input)
-						next positions.map do |pos|
-							next Words::Conversation.new self, keyword: kw, pos: pos
+		def create_words input, args = {}
+			words = []                 # Created Words, will be returned
+			input_remains = input.dup  # Words::Word will be created from all remaining words (separated by word boundaries)
+			positions = []             # Save all positions to check for duplicate matches
+			prev_positions_size = -1   # Set to new position.size after each loop to check when to end
+			while (positions.size > prev_positions_size)
+				prev_positions_size = positions.size
+				case PLAYER.mode
+				when :normal
+					## VERBS
+					Verbs::VERBS.each do |v|
+						if (txt, pos = v.keyword? input)
+							next  if (positions.include? pos)
+							wargs = args.merge({
+								pos:  pos,
+								verb: v
+							})
+							words << Words::Verb.new(txt, self, wargs)
+							input_remains.sub! txt, ''
+							positions << pos
 						end
 					end
-				end .flatten .reject { |x| !x }
-				## Remove Words that are Conversation Words
-				words_words.reject! do |ww|
-					words_conversation.any? do |wc|
-						next wc.position == ww.position
+
+				when :conversation
+					## TERMS
+					PLAYER.available_terms.each do |t|
+						if (txt, pos = t.keyword? input)
+							next  if (positions.include? pos)
+							wargs = args.merge({
+								pos:  pos,
+								term: t
+							})
+							words << Words::Term.new(txt, self, wargs)
+							input_remains.sub! txt, ''
+							positions << pos
+						end
 					end
 				end
-				## Concat Conversation Words and Words
-				@words = words_conversation.concat words_words
-				## Sort @words and set proper positions
-				@words.sort! do |w1,w2|
-					w1.position - w2.position
-				end
-				@words.each_with_index do |w, i|
-					w.position = i
-				end
-				#log @words.map { |w| [w.class.name, w.position] }
 
+				## INSTANCES
+				PLAYER.available_instances.each do |type, instances|
+					instances.each do |instance|
+						if (txt, pos = instance.keyword? input)
+							next  if (positions.include? pos)
+							wargs = args.merge({
+								pos:      pos,
+								instance: instance
+							})
+							words << Words.const_get(type.match(/\A(.+?)s?\z/)[1].capitalize).new(txt, self, wargs)
+							input_remains.sub! txt, ''
+							positions << pos
+						end
+					end
+				end
+			end # END - LOOP
+
+			## Create Words::Word (multiple) from remaining input
+			input_remains.scan /\b\S+\b/ do |w|
+				wargs = args.merge({
+					pos: input.index(w)
+				})
+				words << Words::Word.new(w, self, wargs)
 			end
+
+			return words
+		end # END - METHOD
+
+		## Sort Words and set proper positions
+		def adjust_words words
+			words.sort! do |w1,w2|
+				w1.position - w2.position
+			end
+			words.each_with_index do |w, i|
+				w.position = i
+			end
+			return words
 		end
 
 		## Do whatever the line is supposed to do, according to Player mode

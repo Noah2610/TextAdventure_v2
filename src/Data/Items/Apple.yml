@@ -7,6 +7,6 @@ keywords:
   - apple
   - apfel
 keywords_unknown:
-  - /\A(red)?(ball)?\z/i
+  - /(red)?(ball)?/i
 known: true
 ...

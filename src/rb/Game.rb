@@ -14,6 +14,9 @@ require File.join DIR[:input], 'Input'
 require File.join DIR[:input], 'Line'
 require File.join DIR[:input], 'Words'
 
+## Keywords
+require File.join DIR[:rb], 'Keywords'
+
 ## Verbs
 require File.join DIR[:verbs], 'Verb'
 require_files DIR[:verbs], except: 'Verb'

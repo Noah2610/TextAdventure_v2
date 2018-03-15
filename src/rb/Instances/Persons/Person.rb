@@ -5,7 +5,7 @@ module Instances
 			def initialize args = {}
 				super
 				## Load Terms
-				@terms = Terms.get_for @data['conversation']['keywords']  if (@data['conversation'] && @data['conversation']['keywords'])
+				@terms = Terms.get_for @data['conversation']['terms']  if (@data['conversation'] && @data['conversation']['terms'])
 				## Set person for every Keyword
 				@terms.values.each { |k| k.person = self }
 

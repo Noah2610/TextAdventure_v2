@@ -5,9 +5,11 @@ class String
 		slashes = self.count '/'
 		if     (slashes < 2)
 			if (args[:case_sensitive])
-				return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/
+				#return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/
+				return /\A#{Regexp.quote self}\z/
 			else
-				return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/i
+				#return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/i
+				return /\b#{Regexp.quote self}\b/i
 			end
 		end
 		return nil                         unless (self =~ /\A\/.+\/[xim]*\z/)

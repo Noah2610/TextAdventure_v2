@@ -8,7 +8,7 @@ keywords_unknown:    []
 keywords_self:
   - room
   - area
-  - /\Asurroundings?\z/i
+  - /surroundings?/i
 neighbors:           []
 keywords_neighbors:  {}
 items:               []

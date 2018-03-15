@@ -4,9 +4,9 @@ name_unknown:        "{ATTR:bold}Dark Field{RESET}"
 description:         "This is the {COLOR:magenta;ATTR:bold}sick {COLOR:yellow;ATTR:underline}cornfield{RESET}."
 description_unknown: "This is a very {ATTR:bold}dark{RESET} field."
 keywords:
-  - /\A(corn)?field\z/i
+  - /(corn)?field/i
 keywords_unknown:
-  - /\A(dark)? ?field\z/i
+  - /(dark)? ?field/i
 neighbors:
   - ParsleysTruck
 keywords_neighbors:

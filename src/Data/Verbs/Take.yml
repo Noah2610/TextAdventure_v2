@@ -2,7 +2,7 @@
 keywords:
   - take
   - grab
-  - /\Apick( up)?\z/i
+  - /pick up/i
 text:
   took:
     - "I took the [ITEM]."

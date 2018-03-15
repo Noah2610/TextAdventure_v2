@@ -36,9 +36,11 @@ module Instances
 				@known = true  unless (@known)
 			end
 
-			## Overwrite keywords method to include keywords_self
+			## Overwrite keywords method to include keywords_self and custom keywords only available from current Room, example:
+			#  from inside Room ParsleysTruck: $ go outside
+			#  outside refers to Cornfield, but only from within ParsleysTruck
 			def keywords
-				return [super, @data['keywords_self'] || []].flatten
+				return [super, @data['keywords_self'], PLAYER.current_room.keywords_neighbors(get_instance_type_and_class[1])].flatten.reject { |x| !x }
 			end
 
 			## Get keywords_neighbors; keywords for neighbors only applicable from this Room
@@ -50,14 +52,6 @@ module Instances
 					return nil  unless (@data['keywords_neighbors'].keys.include? target)
 					return @data['keywords_neighbors'][target]
 				end
-			end
-
-			## Custom keyword? method, add keywords_neighbors to keywords
-			def keyword? string
-				kw_neighbors = PLAYER.current_room.keywords_neighbors(get_instance_type_and_class[1])
-				return super || ( kw_neighbors ? kw_neighbors.any? do |kw|
-					string =~ kw.to_regex
-				end : false )
 			end
 
 			## Save neighbors as hash in instance variables

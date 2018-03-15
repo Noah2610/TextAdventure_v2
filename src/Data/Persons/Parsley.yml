@@ -4,13 +4,13 @@ name_unknown:        "{COLOR:green}Unknown Friend{RESET}"
 description:         "This is our Parsley boy."
 description_unknown: "This is our Friendly boy."
 keywords:
-  - /\Aparsle?y\z/i
+  - /parsle?y/i
   - friend
 keywords_unknown:
   - friend
 known:               true
 conversation:
-  keywords:
+  terms:
     - Hello
     - Bye
     - Take

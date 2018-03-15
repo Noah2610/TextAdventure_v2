@@ -1,39 +1,6 @@
 
 module Input
 	module Words
-		## Determine what Word class to create for string
-		def self.new_word text, line, args = {}
-			## VERBS
-			Verbs::VERBS.each do |v|
-				if (v.keyword? text)
-					args[:verb] = v
-					return Words::Verb.new text, line, args
-				end
-			end  unless (args[:no_verbs])
-			## INSTANCES
-			## The way to get instances here is to somehow figure out and get
-			## a list of all currently available Items/Persons/Rooms
-			## Examples:
-			# ITEMS:
-			#  inventory Items, Items in Room, Items in Person's inventory in Room
-			# PERSONS:
-			#  Persons in Room
-			# ROOMS:
-			#  current Room, adjacent Rooms (neighbors)
-			## Probably get this list through a new Player class
-			PLAYER.available_instances.each do |type, instances|
-				instances.each do |instance|
-					if (instance.keyword? text)
-						args[:instance] = instance
-						return Words.const_get(type.match(/\A(.+?)s?\z/)[1].capitalize).new text, line, args
-					end
-				end
-			end
-
-			return Word.new text, line, args  unless (args[:no_words])
-			return nil
-		end
-
 		## Base Word, a lot of inherits below,
 		## or if a word couldn't be categorized it will create a Word
 		class Word
@@ -90,20 +57,20 @@ module Input
 		end
 
 		## Conversational Word
-		class Conversation < Word
+		class Term < Word
 			attr_reader :keyword
 			def initialize line, args = {}
 				@position = args[:pos] || args[:position]
 				@line = line
-				@keyword = args[:keyword]
+				@term = args[:term]
 			end
 
 			def text
-				return @keyword.keywords.first
+				return @term.keywords.first
 			end
 
 			def action
-				return @keyword.action word: self, line: @line  if (@keyword)
+				return @term.action word: self, line: @line  if (@term)
 				return nil
 			end
 		end

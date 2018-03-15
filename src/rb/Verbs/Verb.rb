@@ -11,6 +11,7 @@ module Verbs
 	end
 
 	class Verb
+		include Keywords
 		def initialize args = {}
 			## Read data (text) from file
 			@data = read_data
@@ -28,13 +29,6 @@ module Verbs
 		## Return array of valid keywords for this Verb
 		def keywords
 			return @data['keywords']
-		end
-
-		## Check if string matches a keyword
-		def keyword? string
-			return @data['keywords'].any? do |kw|
-				string =~ kw.to_regex
-			end
 		end
 
 		## Do what the verb is supposed to do

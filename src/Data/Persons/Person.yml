@@ -7,7 +7,7 @@ keywords:            []
 keywords_unknown:    []
 known:               false
 conversation:
-  keywords:
+  terms:
     - Hello
     - Bye
   text: {}
