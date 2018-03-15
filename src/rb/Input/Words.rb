@@ -11,10 +11,11 @@ module Input
 				@line = line
 				@text = text
 				@position = args[:pos] || args[:position]
-				@instance = args[:instance]
+				@instance = args[:instance]  if (args[:instance])
 				init args  if (defined? init)
 			end
 
+			## Check Word or @instance type
 			def is? type
 				return !!(self.class.name.split('::').last.downcase.to_sym == type.downcase.to_sym)  if (@instance.nil?)
 				return @instance.is? type
@@ -34,7 +35,6 @@ module Input
 			def init args = {}
 				@verb = args[:verb]
 			end
-
 			def action
 				return @verb.action word: self, line: @line
 			end
@@ -42,33 +42,18 @@ module Input
 
 		## Instances
 		class Item < Word
-			def init args = {}
-			end
 		end
-
 		class Person < Word
-			def init args = {}
-			end
 		end
-
 		class Room < Word
-			def init args = {}
-			end
 		end
 
 		## Conversational Word
 		class Term < Word
 			attr_reader :keyword
-			def initialize line, args = {}
-				@position = args[:pos] || args[:position]
-				@line = line
+			def init args = {}
 				@term = args[:term]
 			end
-
-			def text
-				return @term.keywords.first
-			end
-
 			def action
 				return @term.action word: self, line: @line  if (@term)
 				return nil

@@ -113,9 +113,16 @@ class Player
 	## Leave conversation
 	def conversation_end args = {}
 		return nil  unless (mode? :conversation)
+		conversation_person.conversation_end
 		@mode = :normal
 		@talking_to = nil
-		$game.window(:conversation).hide  unless (args[:keep_window])
+		unless (args[:keep_window])
+			$game.window(:conversation).hide
+			$game.window(:conversation).clear
+		else
+			$game.queue 1, $game.window(:conversation), :hide
+			$game.queue 1, $game.window(:conversation), :clear
+		end
 		$game.window(:input).prompt = :normal
 	end
 
@@ -124,6 +131,11 @@ class Player
 		return nil  unless (mode? :conversation)
 		return @talking_to
 	end
+
+	## Conversation methods aliases
+	alias :talk_to    :conversation_start
+	alias :talk_end   :conversation_end
+	alias :talking_to :conversation_person
 
 	## Return available terms
 	def available_terms

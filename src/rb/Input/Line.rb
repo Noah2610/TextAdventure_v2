@@ -35,23 +35,27 @@ module Input
 	class Line
 		def initialize input, args = {}
 			@input_text = input
-			@words = adjust_words(create_words(input, args))
-			log @words.map { |w| [w.text, w.class.name] }
+			@words = create_words input, args
+			#log @words.map { |w| [w.text, w.class.name] }
 		end
 
+		## Parse input and create proper Words::* from it
 		def create_words input, args = {}
 			words = []                 # Created Words, will be returned
 			input_remains = input.dup  # Words::Word will be created from all remaining words (separated by word boundaries)
 			positions = []             # Save all positions to check for duplicate matches
 			prev_positions_size = -1   # Set to new position.size after each loop to check when to end
+
+			## Loop infinitely until no new Words are being created
 			while (positions.size > prev_positions_size)
 				prev_positions_size = positions.size
 				case PLAYER.mode
+				## NORMAL mode
 				when :normal
 					## VERBS
 					Verbs::VERBS.each do |v|
 						if (txt, pos = v.keyword? input)
-							next  if (positions.include? pos)
+							next  if (positions.include? pos)  # By doing this, we don't create duplicate Words
 							wargs = args.merge({
 								pos:  pos,
 								verb: v
@@ -62,6 +66,7 @@ module Input
 						end
 					end
 
+				## CONVERSATION mode
 				when :conversation
 					## TERMS
 					PLAYER.available_terms.each do |t|
@@ -103,7 +108,7 @@ module Input
 				words << Words::Word.new(w, self, wargs)
 			end
 
-			return words
+			return adjust_words words
 		end # END - METHOD
 
 		## Sort Words and set proper positions
@@ -119,7 +124,7 @@ module Input
 
 		## Do whatever the line is supposed to do, according to Player mode
 		#   :normal       - Call action on Verbs
-		#   :conversation - ???
+		#   :conversation - Call action on Terms
 		def process
 			case PLAYER.mode
 			when :normal
@@ -132,7 +137,7 @@ module Input
 				## Process for conversation mode
 				person = PLAYER.conversation_person
 				return nil  if (person.nil?)
-				return conversation_words.map do |x|
+				return terms.map do |x|
 					next x.action
 				end .reject { |x| !x }
 			end
@@ -145,10 +150,10 @@ module Input
 			end .reject { |x| !x }
 		end
 
-		## Return all conversational Words in @words
-		def conversation_words
+		## Return all Terms in @words
+		def terms
 			return @words.map do |word|
-				next word  if (word.is? :conversation)
+				next word  if (word.is? :term)
 			end .reject { |x| !x }
 		end
 

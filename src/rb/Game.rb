@@ -107,16 +107,21 @@ class Game
 			return false
 		end
 		tick = $game_loop + at
-		if (@queue[tick])
-			log "WARNING: Overwriting method '#{@queue[tick][0].class.name}.#{@queue[tick][1].to_s}(#{@queue[tick][2].join(', ')})' with method '#{on.class.name}.#{meth.to_s}(#{args.join(', ')})' in queue!"
+		if (@queue[tick].is_a? Array)
+			## Method has been set already, push to array
+			@queue[tick] << [on, meth, args]
+		else
+			## No method set, create array with method
+			@queue[tick] = [[on, meth, args]]
 		end
-		@queue[tick] = [on, meth, args]
 	end
 
 	## Check if method is ready for queue and execute
 	def handle_queue
-		if (meth = @queue[$game_loop])
-			return meth[0].method(meth[1]).call(*meth[2])
+		if (meths = @queue[$game_loop])
+			return meths.map do |meth|
+				next meth[0].method(meth[1]).call(*meth[2])
+			end .all?
 		end
 		return nil
 	end

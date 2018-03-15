@@ -6,7 +6,7 @@ module Instances
 				super
 				## Load Terms
 				@terms = Terms.get_for @data['conversation']['terms']  if (@data['conversation'] && @data['conversation']['terms'])
-				## Set person for every Keyword
+				## Set person for every Term
 				@terms.values.each { |k| k.person = self }
 
 				@can_take = []
@@ -17,6 +17,11 @@ module Instances
 				target = target.to_s
 				return @data['conversation']['text'][target]  if (@data['conversation'] && @data['conversation']['text'])
 				return nil
+			end
+
+			## Is called by Player when conversation ends
+			def conversation_end
+				return true
 			end
 
 			## Return Terms

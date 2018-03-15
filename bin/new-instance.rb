@@ -10,25 +10,25 @@ ROOT = File.dirname(Pathname.new(File.join(File.absolute_path(__FILE__), '..')).
 ## Directories for files
 DIR = {
 	src: {
-		verb:                 File.join(ROOT, 'src/rb/Verbs'),
-		item:                 File.join(ROOT, 'src/rb/Instances/Items'),
-		person:               File.join(ROOT, 'src/rb/Instances/Persons'),
-		room:                 File.join(ROOT, 'src/rb/Instances/Rooms'),
-		term: File.join(ROOT, 'src/rb/Terms')
+		verb:    File.join(ROOT, 'src/rb/Verbs'),
+		item:    File.join(ROOT, 'src/rb/Instances/Items'),
+		person:  File.join(ROOT, 'src/rb/Instances/Persons'),
+		room:    File.join(ROOT, 'src/rb/Instances/Rooms'),
+		term:    File.join(ROOT, 'src/rb/Terms')
 	},
 	data: {
-		verb:                 File.join(ROOT, 'src/Data/Verbs'),
-		item:                 File.join(ROOT, 'src/Data/Items'),
-		person:               File.join(ROOT, 'src/Data/Persons'),
-		room:                 File.join(ROOT, 'src/Data/Rooms'),
-		term: File.join(ROOT, 'src/Data/Terms')
+		verb:    File.join(ROOT, 'src/Data/Verbs'),
+		item:    File.join(ROOT, 'src/Data/Items'),
+		person:  File.join(ROOT, 'src/Data/Persons'),
+		room:    File.join(ROOT, 'src/Data/Rooms'),
+		term:    File.join(ROOT, 'src/Data/Terms')
 	},
 	templates: {
-		verb:                 File.join(ROOT, 'templates/Verb.rb'),
-		item:                 File.join(ROOT, 'templates/Item.rb'),
-		room:                 File.join(ROOT, 'templates/Person.rb'),
-		person:               File.join(ROOT, 'templates/Room.rb'),
-		term: File.join(ROOT, 'templates/Term.rb')
+		verb:    File.join(ROOT, 'templates/Verb.rb'),
+		item:    File.join(ROOT, 'templates/Item.rb'),
+		room:    File.join(ROOT, 'templates/Person.rb'),
+		person:  File.join(ROOT, 'templates/Room.rb'),
+		term:    File.join(ROOT, 'templates/Term.rb')
 	}
 }
 
@@ -63,7 +63,7 @@ USAGE = [
 	"      The Instance type to be created. Currently available:",
 	"        'verb', 'item', 'person', 'room', 'term'",
 	"      You can also use the first letter of each keyword:",
-	"        'v', 'i', 'p', 'r', and 'c', respectively.",
+	"        'v', 'i', 'p', 'r', and 't', respectively.",
 	"      Note that input is case-sensitive.",
 	"    NAME",
 	"      The name of the new Instance.",
@@ -78,19 +78,19 @@ USAGE = [
 
 VALID_ARGUMENTS = {
 	single: {
-		help:                 [[?h],      false],
-		force:                [[?f],      false]
+		help:    [[?h],      false],
+		force:   [[?f],      false]
 	},
 	double: {
-		help:                 [['help'],  false],
-		force:                [['force'], false]
+		help:    [['help'],  false],
+		force:   [['force'], false]
 	},
 	keywords: {
-		verb:                 [['verb',   ?v], :INPUT],
-		item:                 [['item',   ?i], :INPUT],
-		person:               [['person', ?p], :INPUT],
-		room:                 [['room',   ?r], :INPUT],
-		term: [['term','conversation','keyword','ck',?c], :INPUT]
+		verb:    [['verb',   ?v], :INPUT],
+		item:    [['item',   ?i], :INPUT],
+		person:  [['person', ?p], :INPUT],
+		room:    [['room',   ?r], :INPUT],
+		term:    [['term',   ?t], :INPUT]
 	}
 }
 
