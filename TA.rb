@@ -8,32 +8,36 @@ ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
 
 ## Set DIR constant with relevant paths
 DIR = {
-	src:          File.join(ROOT, 'src'),
-	rb:           File.join(ROOT, 'src/rb'),
-	misc:         File.join(ROOT, 'src/rb/misc'),
-	windows:      File.join(ROOT, 'src/rb/Windows'),
-	input:        File.join(ROOT, 'src/rb/Input'),
-	verbs:        File.join(ROOT, 'src/rb/Verbs'),
-	instances:    File.join(ROOT, 'src/rb/Instances'),
-	items:        File.join(ROOT, 'src/rb/Instances/Items'),
-	persons:      File.join(ROOT, 'src/rb/Instances/Persons'),
-	rooms:        File.join(ROOT, 'src/rb/Instances/Rooms'),
-	terms:        File.join(ROOT, 'src/rb/Terms'),
-	data: {       # Text files, etc
-		verbs:      File.join(ROOT, 'src/Data/Verbs'),
-		items:      File.join(ROOT, 'src/Data/Items'),
-		persons:    File.join(ROOT, 'src/Data/Persons'),
-		rooms:      File.join(ROOT, 'src/Data/Rooms'),
-		terms:      File.join(ROOT, 'src/Data/Terms')
+	src:            File.join(ROOT, 'src'),
+	rb:             File.join(ROOT, 'src/rb'),
+	misc:           File.join(ROOT, 'src/rb/misc'),
+	windows:        File.join(ROOT, 'src/rb/Windows'),
+	input:          File.join(ROOT, 'src/rb/Input'),
+	verbs:          File.join(ROOT, 'src/rb/Verbs'),
+	terms:          File.join(ROOT, 'src/rb/Terms'),
+	instances:      File.join(ROOT, 'src/rb/Instances'),
+	items:          File.join(ROOT, 'src/rb/Instances/Items'),
+	components:     File.join(ROOT, 'src/rb/Instances/Components'),
+	persons:        File.join(ROOT, 'src/rb/Instances/Persons'),
+	rooms:          File.join(ROOT, 'src/rb/Instances/Rooms'),
+	data: {         # Text files, etc
+		verbs:        File.join(ROOT, 'src/Data/Verbs'),
+		terms:        File.join(ROOT, 'src/Data/Terms'),
+		items:        File.join(ROOT, 'src/Data/Items'),
+		components:   File.join(ROOT, 'src/Data/Components'),
+		persons:      File.join(ROOT, 'src/Data/Persons'),
+		rooms:        File.join(ROOT, 'src/Data/Rooms')
 	},
-	test: {       # For Unit Tests
-		rb:         File.join(ROOT, 'src/Test/rb'),
+	test: {         # For Unit Tests
+		rb:           File.join(ROOT, 'src/Test/rb'),
 		data: {
-			verbs:    File.join(ROOT, 'src/Data/Verbs'),        # Same Verbs should be used for testing
-			items:    File.join(ROOT, 'src/Test/Data/Items'),
-			persons:  File.join(ROOT, 'src/Test/Data/Persons'),
-			rooms:    File.join(ROOT, 'src/Test/Data/Rooms'),
-			terms:    File.join(ROOT, 'src/Data/Terms')         # Same Terms should be used for testing
+			## Currently using same Instance data as in other environments
+			verbs:      File.join(ROOT, 'src/Data/Verbs'),
+			terms:      File.join(ROOT, 'src/Data/Terms'),
+			items:      File.join(ROOT, 'src/Data/Items'),
+			components: File.join(ROOT, 'src/Data/Components'),
+			persons:    File.join(ROOT, 'src/Data/Persons'),
+			rooms:      File.join(ROOT, 'src/Data/Rooms')
 		}
 	},
 	settings:     File.join(ROOT, 'src/settings.yml')  # Default Settings file

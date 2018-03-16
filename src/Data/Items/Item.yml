@@ -5,5 +5,5 @@ description:         "<DEFAULT ITEM DESCRIPTION>"
 description_unknown: "<DEFAULT UNKNOWN ITEM DESCRIPTION>"
 keywords:            []
 keywords_unknown:    []
-known: false
+known:               false
 ...

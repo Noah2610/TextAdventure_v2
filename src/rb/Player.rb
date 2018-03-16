@@ -97,12 +97,15 @@ class Player
 	#  current Room, adjacent Rooms (neighbors)
 	def available_instances
 		ret = {}
+		components = current_room.components || []
 		## Items
-		ret[:items] = [items, current_room.items].flatten
-		## Rooms
-		ret[:rooms] = [current_room, current_room.get_neighbors].flatten
+		ret[:items]      = [items, current_room.items, components.map { |c| c.items }] .flatten.reject { |i| !i }
+		## Components
+		ret[:components] = [components]                                                .flatten.reject { |i| !i }
 		## Persons
-		ret[:persons] = [current_room.persons].flatten
+		ret[:persons]    = [current_room.persons]                                      .flatten.reject { |i| !i }
+		## Rooms
+		ret[:rooms]      = [current_room, current_room.get_neighbors]                  .flatten.reject { |i| !i }
 		return ret
 	end
 

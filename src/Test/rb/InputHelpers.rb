@@ -11,10 +11,13 @@ module TestInputHelpers
 			@rooms[name].set_neighbors
 		end
 		@items = {
-			Apple:         @rooms[:ParsleysTruck].items.first
+			Apple:            @rooms[:ParsleysTruck].items.first
+		}
+		@components = {
+			GloveCompartment: @rooms[:ParsleysTruck].components.first
 		}
 		@persons = {
-			Parsley:       @rooms[:ParsleysTruck].persons.first
+			Parsley:          @rooms[:ParsleysTruck].persons.first
 		}
 		PLAYER.conversation_end
 		PLAYER.goto! :ParsleysTruck

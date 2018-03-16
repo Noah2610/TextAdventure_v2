@@ -40,11 +40,11 @@ module Verbs
 		end
 
 		## Return text(s) defined in config and perform substitution if instances given
-		def text target, *instances
-			instances = [instances].flatten
+		def text target, *words
+			words = [words].flatten
 			txt = [@data['text'][target]].flatten.sample
-			return nil                              if (txt.nil?)
-			return Input.substitute txt, instances  unless  (instances.empty?)
+			return nil                          if     (txt.nil?)
+			return Input.substitute txt, words  unless (words.empty?)
 			return txt
 		end
 

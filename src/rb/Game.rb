@@ -29,7 +29,7 @@ require File.join DIR[:rb], 'Inventory'
 ## Terms
 require File.join DIR[:terms], 'Term'
 
-## Instances (Items, Persons, Rooms)
+## Instances (Items, Persons, Rooms, Components)
 require File.join DIR[:instances], 'Instance'
 
 ## Player

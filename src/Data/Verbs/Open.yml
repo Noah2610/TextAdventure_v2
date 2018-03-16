@@ -1,0 +1,14 @@
+---
+keywords:
+  - /\bopen( ?up)?\b/i
+text:
+  opened:
+    - "I opened [WORD]."
+    - "[WORD] is now open."
+    - "[WORD] has been opened."
+  cannot_open:
+    - "I couldn't open [WORD]."
+    - "[WORD] cannot be openend."
+    - "I am having trouble opening [WORD]."
+  not_found: "Open what?"
+...

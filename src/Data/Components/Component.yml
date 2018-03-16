@@ -1,0 +1,10 @@
+---
+name:                "<DEFAULT COMPONENT NAME>"
+name_unknown:        "<DEFAULT UNKNOWN COMPONENT NAME>"
+description:         "<DEFAULT COMPONENT DESCRIPTION>"
+description_unknown: "<DEFAULT UNKNOWN COMPONENT DESCRIPTION>"
+keywords:            []
+keywords_unknown:    []
+known:               false
+items:               []
+...

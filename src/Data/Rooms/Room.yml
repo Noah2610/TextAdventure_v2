@@ -5,6 +5,7 @@ description:         "<DEFAULT ROOM DESCRIPTION>"
 description_unknown: "<DEFAULT UNKNOWN ROOM DESCRIPTION>"
 keywords:            []
 keywords_unknown:    []
+known:               false
 keywords_self:
   - room
   - area
@@ -13,5 +14,5 @@ neighbors:           []
 keywords_neighbors:  {}
 items:               []
 persons:             []
-known:               false
+components:          []
 ...

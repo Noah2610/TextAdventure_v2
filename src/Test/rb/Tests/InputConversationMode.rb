@@ -12,8 +12,9 @@ class TestInputConversationMode < MiniTest::Test
 	## CONVERSATION MODE ##
 	def test_talk_to_unknown_person
 		reset no_talk: true
+		@persons[:Parsley].unknown!
 
-		output = process_line 'Talk to Unknown Person'
+		output = process_line 'Talk to Friend'
 
 		assert_equal :conversation, PLAYER.mode, "Player should talk to unknown Person: #{output}"
 	end

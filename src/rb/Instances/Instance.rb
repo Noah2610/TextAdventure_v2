@@ -3,13 +3,14 @@
 # Items
 # Persons
 # Rooms
+# Components
 
 module Instances
 	### Module Methods
 	## Read all Instance data files and return them
 	## Group by Instance type and classnames
 	def self.load_data dir = DIR[:data]
-		return ( [:Items, :Persons, :Rooms].map do |type|
+		return ( [:Items, :Components, :Persons, :Rooms].map do |type|
 			next [type, ( self.const_get(type).constants.map do |classname|
 				data = read_yaml(File.join(dir[type.downcase], "#{classname.to_s}.yml"))
 				next [classname, data]  unless (data.nil?)
@@ -89,20 +90,20 @@ module Instances
 			return [@data['description_unknown']].flatten.sample  if (unknown?)
 		end
 
+		## Return text(s) defined in config and perform substitution if instances given
+		def text target, *words
+			words = [words].flatten
+			txt = [@data['text'][target]].flatten.sample
+			return nil                          if     (txt.nil?)
+			return Input.substitute txt, words  unless (words.empty?)
+			return txt
+		end
+
 		## Keywords of Instance
 		def keywords
 			return @data['keywords']                              if (known?)
 			return @data['keywords_unknown']                      if (unknown?)
 		end
-
-=begin
-		## Check if string matches a keyword
-		def keyword? string
-			return keywords.any? do |kw|
-				string =~ kw.to_regex
-			end
-		end
-=end
 
 		## Check if Instance is known, ex.:
 		def known?
@@ -125,12 +126,24 @@ module Instances
 			return false
 		end
 
+		## Check if Instance can be opened and closed
+		def can_open?
+			return false
+		end
+		def can_close?
+			return false
+		end
+
 	end # END - CLASS
 end # END - MODULE
 
 ## Require Items
 require File.join DIR[:items], 'Item'
 require_files DIR[:items], except: 'Item'
+
+## Require Components
+require File.join DIR[:components], 'Component'
+require_files DIR[:components], except: 'Component'
 
 ## Require Persons
 require File.join DIR[:persons], 'Person'

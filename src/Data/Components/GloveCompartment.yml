@@ -1,0 +1,23 @@
+### Auto-generated on 2018-03-16 by Noah Rosenzweig.
+---
+name:                "{COLOR:blue}Parsley's Glove Compartment{RESET}"
+name_unknown:        "{COLOR:blue}Glove Compartment{RESET}"
+description:         "This is Parsley's {COLOR:blue}Glove Compartment{RESET}.\nI don't think it contains any gloves :("
+description_unknown: "Some sort of {ATTR:bold}Compartment{RESET}."
+keywords:
+  - /\b(glove ?)?compartment|box\b/i
+  - glove
+keywords_unknown:
+  - /\b(glove ?)?compartment|box\b/i
+  - glove
+known:               true
+items:
+  - Joint
+text:
+  is_open:
+    - "It is currently {ATTR:bold}open{RESET}."
+    - "It is {ATTR:bold}open{RESET} currently."
+  is_closed:
+    - "It is currently {ATTR:bold}closed{RESET}."
+    - "It is {ATTR:bold}closed{RESET} currently."
+...

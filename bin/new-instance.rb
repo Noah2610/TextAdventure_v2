@@ -10,25 +10,28 @@ ROOT = File.dirname(Pathname.new(File.join(File.absolute_path(__FILE__), '..')).
 ## Directories for files
 DIR = {
 	src: {
-		verb:    File.join(ROOT, 'src/rb/Verbs'),
-		item:    File.join(ROOT, 'src/rb/Instances/Items'),
-		person:  File.join(ROOT, 'src/rb/Instances/Persons'),
-		room:    File.join(ROOT, 'src/rb/Instances/Rooms'),
-		term:    File.join(ROOT, 'src/rb/Terms')
+		verb:      File.join(ROOT, 'src/rb/Verbs'),
+		term:      File.join(ROOT, 'src/rb/Terms'),
+		item:      File.join(ROOT, 'src/rb/Instances/Items'),
+		component: File.join(ROOT, 'src/rb/Instances/Components'),
+		person:    File.join(ROOT, 'src/rb/Instances/Persons'),
+		room:      File.join(ROOT, 'src/rb/Instances/Rooms')
 	},
 	data: {
-		verb:    File.join(ROOT, 'src/Data/Verbs'),
-		item:    File.join(ROOT, 'src/Data/Items'),
-		person:  File.join(ROOT, 'src/Data/Persons'),
-		room:    File.join(ROOT, 'src/Data/Rooms'),
-		term:    File.join(ROOT, 'src/Data/Terms')
+		verb:      File.join(ROOT, 'src/Data/Verbs'),
+		term:      File.join(ROOT, 'src/Data/Terms'),
+		item:      File.join(ROOT, 'src/Data/Items'),
+		component: File.join(ROOT, 'src/Data/Components'),
+		person:    File.join(ROOT, 'src/Data/Persons'),
+		room:      File.join(ROOT, 'src/Data/Rooms')
 	},
 	templates: {
-		verb:    File.join(ROOT, 'templates/Verb.rb'),
-		item:    File.join(ROOT, 'templates/Item.rb'),
-		room:    File.join(ROOT, 'templates/Person.rb'),
-		person:  File.join(ROOT, 'templates/Room.rb'),
-		term:    File.join(ROOT, 'templates/Term.rb')
+		verb:      File.join(ROOT, 'templates/Verb.rb'),
+		term:      File.join(ROOT, 'templates/Term.rb'),
+		item:      File.join(ROOT, 'templates/Item.rb'),
+		component: File.join(ROOT, 'templates/Component.rb'),
+		room:      File.join(ROOT, 'templates/Person.rb'),
+		person:    File.join(ROOT, 'templates/Room.rb')
 	}
 }
 
@@ -61,9 +64,9 @@ USAGE = [
 	"",
 	"    TYPE",
 	"      The Instance type to be created. Currently available:",
-	"        'verb', 'item', 'person', 'room', 'term'",
+	"        'verb', 'term', 'item', 'component', 'person', 'room'",
 	"      You can also use the first letter of each keyword:",
-	"        'v', 'i', 'p', 'r', and 't', respectively.",
+	"        'v', 't', 'i', 'c', 'p', and 'r', respectively.",
 	"      Note that input is case-sensitive.",
 	"    NAME",
 	"      The name of the new Instance.",
@@ -78,19 +81,20 @@ USAGE = [
 
 VALID_ARGUMENTS = {
 	single: {
-		help:    [[?h],      false],
-		force:   [[?f],      false]
+		help:      [[?h],         false],
+		force:     [[?f],         false]
 	},
 	double: {
-		help:    [['help'],  false],
-		force:   [['force'], false]
+		help:      [['help'],     false],
+		force:     [['force'],    false]
 	},
 	keywords: {
-		verb:    [['verb',   ?v], :INPUT],
-		item:    [['item',   ?i], :INPUT],
-		person:  [['person', ?p], :INPUT],
-		room:    [['room',   ?r], :INPUT],
-		term:    [['term',   ?t], :INPUT]
+		verb:      [['verb',      ?v], :INPUT],
+		term:      [['term',      ?t], :INPUT],
+		item:      [['item',      ?i], :INPUT],
+		component: [['component', ?c], :INPUT],
+		person:    [['person',    ?p], :INPUT],
+		room:      [['room',      ?r], :INPUT]
 	}
 }
 
@@ -176,6 +180,39 @@ when :verb
 	f.write content
 	f.close
 
+when :term
+	#### term
+	### CODE FILE
+	codefile = File.join DIR[:src][:term], "#{name}.rb"
+	check_file codefile
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:term]).sub('REPLACE_NAME', name)
+	puts [
+		"Writing Term template code to file:",
+		"  '#{codefile}'"
+	].join("\n")
+	## Write to file
+	f = File.open codefile, ?w
+	f.write content
+	f.close
+
+	### CONFIGURATION FILE
+	datafile = File.join DIR[:data][:term], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:term], 'Term.yml'
+	content = [
+		"### Auto-generated on #{date} by #{username}.",
+		File.read(datafile_template)
+	].join("\n")
+	puts [
+		"Writing Term default configuration to file:",
+		"  '#{datafile}'"
+	].join("\n")
+	## Write to file
+	f = File.open datafile, ?w
+	f.write content
+	f.close
+
 when :item
 	#### ITEM
 	### CODE FILE
@@ -202,6 +239,39 @@ when :item
 	].join("\n")
 	puts [
 		"Writing Item default configuration to file:",
+		"  '#{datafile}'"
+	].join("\n")
+	## Write to file
+	f = File.open datafile, ?w
+	f.write content
+	f.close
+
+when :component
+	#### COMPONENT
+	### CODE FILE
+	codefile = File.join DIR[:src][:component], "#{name}.rb"
+	check_file codefile
+	content = comment
+	content += "\n" + File.read(DIR[:templates][:component]).sub('REPLACE_NAME', name)
+	puts [
+		"Writing Component template code to file:",
+		"  '#{codefile}'"
+	].join("\n")
+	## Write to file
+	f = File.open codefile, ?w
+	f.write content
+	f.close
+
+	### CONFIGURATION FILE
+	datafile = File.join DIR[:data][:component], "#{name}.yml"
+	check_file datafile
+	datafile_template = File.join DIR[:data][:component], 'Component.yml'
+	content = [
+		"### Auto-generated on #{date} by #{username}.",
+		File.read(datafile_template)
+	].join("\n")
+	puts [
+		"Writing Component default configuration to file:",
 		"  '#{datafile}'"
 	].join("\n")
 	## Write to file
@@ -268,39 +338,6 @@ when :room
 	].join("\n")
 	puts [
 		"Writing Room default configuration to file:",
-		"  '#{datafile}'"
-	].join("\n")
-	## Write to file
-	f = File.open datafile, ?w
-	f.write content
-	f.close
-
-when :term
-	#### term
-	### CODE FILE
-	codefile = File.join DIR[:src][:term], "#{name}.rb"
-	check_file codefile
-	content = comment
-	content += "\n" + File.read(DIR[:templates][:term]).sub('REPLACE_NAME', name)
-	puts [
-		"Writing Term template code to file:",
-		"  '#{codefile}'"
-	].join("\n")
-	## Write to file
-	f = File.open codefile, ?w
-	f.write content
-	f.close
-
-	### CONFIGURATION FILE
-	datafile = File.join DIR[:data][:term], "#{name}.yml"
-	check_file datafile
-	datafile_template = File.join DIR[:data][:term], 'Term.yml'
-	content = [
-		"### Auto-generated on #{date} by #{username}.",
-		File.read(datafile_template)
-	].join("\n")
-	puts [
-		"Writing Term default configuration to file:",
 		"  '#{datafile}'"
 	].join("\n")
 	## Write to file

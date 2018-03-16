@@ -30,5 +30,5 @@ VERBS:
 
 OTHER:
 	- General Commands
-	- WRITE TESTS
+	- Adjust Test Data properly
 

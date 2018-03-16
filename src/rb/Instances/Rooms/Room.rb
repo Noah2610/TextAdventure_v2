@@ -14,33 +14,66 @@ module Instances
 		class Room < Instances::Instance
 			def initialize args = {}
 				super
-				## Load Persons
-				@persons = @data['persons'].map do |personstr|
+				@persons = load_persons
+				@components = load_components
+			end
+
+			## Load and create Persons
+			def load_persons
+				return @data['persons'].map do |personstr|
 					person = personstr.to_sym
 					if (Instances::Persons.constants.include? person)
-						next Instances::Persons.const_get(person).new
+						next [person, Instances::Persons.const_get(person).new]
 					else
-						## Item doesn't exist, display warning
+						## Person doesn't exist, display warning
 						classtype, clazz = get_instance_type_and_class
 						log "WARNING: #{classtype} '#{clazz}' tried to load Person '#{personstr}' which doesn't exist."
 						next nil
 					end
-				end  if (@data['persons'])
+				end .reject { |x| !x } .to_h  if (@data['persons'])
+			end
+
+			## Load and create Components
+			def load_components
+				return @data['components'].map do |componentstr|
+					component = componentstr.to_sym
+					if (Instances::Components.constants.include? component)
+						next [component, Instances::Components.const_get(component).new]
+					else
+						## Component doesn't exist, display warning
+						classtype, clazz = get_instance_type_and_class
+						log "WARNING: #{classtype} '#{clazz}' tried to load Component '#{componentstr}' which doesn't exist."
+						next nil
+					end
+				end .reject { |x| !x } .to_h  if (@data['components'])
 			end
 
 			## Default items method
-			def items; nil; end
+			def items
+				nil
+			end
 
-			## This method is called everytime the Player goes to this Room
-			def went!
-				@known = true  unless (@known)
+			## Return all Persons in Room
+			def persons
+				return @persons.values     unless (@persons.nil?)
+				return nil
+			end
+
+			## Return all Components in Room
+			def components
+				return @components.values  unless (@components.nil?)
+				return nil
 			end
 
 			## Overwrite keywords method to include keywords_self and custom keywords only available from current Room, example:
 			#  from inside Room ParsleysTruck: $ go outside
 			#  outside refers to Cornfield, but only from within ParsleysTruck
 			def keywords
-				return [super, @data['keywords_self'], PLAYER.current_room.keywords_neighbors(get_instance_type_and_class[1])].flatten.reject { |x| !x }
+				return [
+					super,
+					@data['keywords_self'],
+					PLAYER.current_room.keywords_neighbors(get_instance_type_and_class[1])
+				].flatten.reject { |x| !x }
 			end
 
 			## Get keywords_neighbors; keywords for neighbors only applicable from this Room
@@ -52,6 +85,11 @@ module Instances
 					return nil  unless (@data['keywords_neighbors'].keys.include? target)
 					return @data['keywords_neighbors'][target]
 				end
+			end
+
+			## Get all adjacent Rooms (neighbors)
+			def get_neighbors
+				return @neighbors.values
 			end
 
 			## Save neighbors as hash in instance variables
@@ -68,9 +106,9 @@ module Instances
 				end .reject { |x| !x } .to_h
 			end
 
-			## Get all adjacent Rooms (neighbors)
-			def get_neighbors
-				return @neighbors.values
+			## This method is called everytime the Player goes to this Room
+			def went!
+				@known = true  unless (@known)
 			end
 
 			## Check if Player can go to Room from this Room
@@ -83,11 +121,6 @@ module Instances
 					return true  if (@neighbors.keys.include? room.to_sym)
 				end
 				return false
-			end
-
-			## Return all Persons in Room
-			def persons
-				return @persons
 			end
 
 		end  # END - CLASS

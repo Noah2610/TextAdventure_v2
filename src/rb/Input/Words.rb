@@ -41,11 +41,13 @@ module Input
 		end
 
 		## Instances
-		class Item < Word
+		class Item      < Word
 		end
-		class Person < Word
+		class Component < Word
 		end
-		class Room < Word
+		class Person    < Word
+		end
+		class Room      < Word
 		end
 
 		## Conversational Word

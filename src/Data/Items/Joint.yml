@@ -1,0 +1,8 @@
+---
+name:                "{COLOR:green;ATTR:bold}Joint{RESET}"
+description:         "Smells pretty {COLOR:green}DOPE{RESET}."
+keywords:
+  - /\b(d\s*?a\s*?n\s*?k\s*?)?j(oint)?\b/i
+  - pot
+known: true
+...

@@ -9,6 +9,7 @@ keywords:
 keywords_unknown:
   - truck
   - car
+known:               true
 neighbors:
   - Cornfield
 keywords_neighbors:
@@ -18,5 +19,6 @@ items:
   - Apple
 persons:
   - Parsley
-known: true
+components:
+  - GloveCompartment
 ...

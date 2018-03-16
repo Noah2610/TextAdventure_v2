@@ -14,12 +14,11 @@ module Inventory
 		@data['items'].each do |itemstr|
 			item = itemstr.to_sym
 			if (Instances::Items.constants.include? item)
-				@inventory.item_add Instances::Items.const_get(item).new
+				@inventory.item_add Instances::Items.const_get(item).new(belongs_to: self)
 			else
 				## Item doesn't exist, display warning
 				classtype, clazz = get_instance_type_and_class
 				log "WARNING: #{classtype} '#{clazz}' tried to load Item '#{itemstr}' which doesn't exist."
-				next nil
 			end
 		end  if (@data && @data['items'])
 	end
@@ -41,6 +40,7 @@ module Inventory
 		## Add Item from Inventory
 		def item_add item
 			## Add Item by key of Item's classname as symbol
+			item.belongs_to = self
 			return (@items[item.class.name.split('::').last.to_sym] = item)
 		end
 
@@ -119,7 +119,6 @@ module Inventory
 	def give item, person
 		if (has_item?(item) && give?(item))
 			if (person.take item)
-				item_remove item
 				return true
 			end
 		end
@@ -128,6 +127,7 @@ module Inventory
 
 	def take item
 		if (take? item)
+			item.owner.item_remove item  if (item.owner)
 			item_add item
 			return true
 		end

@@ -39,5 +39,14 @@ class TestInputNormalMode < MiniTest::Test
 
 		assert_equal 'Cornfield', PLAYER.current_room.get_instance_type_and_class[1], "Player should have gone to known Room: #{output}"
 	end
+
+	## COMPONENTS ##
+	def test_open_glove_compartment
+		reset
+
+		output = process_line 'Open this Glove Compartment'
+
+		assert_equal true, @components[:GloveCompartment].is_open?, "Player should have opened Component: #{output}"
+	end
 end
 
