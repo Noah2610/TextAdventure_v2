@@ -6,7 +6,7 @@ class String
 		if     (slashes < 2)
 			if (args[:case_sensitive])
 				#return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/
-				return /\A#{Regexp.quote self}\z/
+				return /\b#{Regexp.quote self}\b/
 			else
 				#return /#{args[:word] ? '\b' : '\A'}#{Regexp.quote self}#{args[:word] ? '\b' : '\z'}/i
 				return /\b#{Regexp.quote self}\b/i

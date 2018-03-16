@@ -15,7 +15,7 @@ class Verbs::Take < Verbs::Verb
 		## Is ITEM
 		## Check if Item is already in Player's Inventory
 		unless (PLAYER.has_item? word.instance)
-			return text 'took', word  if (PLAYER.item_add word.instance)
+			return text 'took', word  if (PLAYER.take word.instance)
 			return text 'cannot_take', word
 		else
 			return text 'in_inventory', word

@@ -6,8 +6,8 @@ module Verbs
 	def self.init_verbs
 		return (self.constants.map do |clazz|
 			next nil  if (clazz == :Verb)
-			next self.const_get(clazz).new
-		end .reject { |x| !x })
+			next [clazz, self.const_get(clazz).new]
+		end .reject { |x| !x }) .to_h
 	end
 
 	class Verb

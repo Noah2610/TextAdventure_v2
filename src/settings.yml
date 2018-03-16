@@ -1,6 +1,9 @@
 ---
 ### Settings for differnet environments, these take priority
 ENVIRONMENTS:
+  production:
+    logfile: 'production.log'
+
   development:
     logfile: 'development.log'
     input:
@@ -14,8 +17,8 @@ ENVIRONMENTS:
   debug:
     logfile: 'development.log'
 
-  production:
-    logfile: 'production.log'
+  test:
+    logfile: 'test.log'
 
 
 ### Regular settings, environment settings overwrite these

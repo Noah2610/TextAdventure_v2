@@ -53,7 +53,7 @@ module Input
 				## NORMAL mode
 				when :normal
 					## VERBS
-					Verbs::VERBS.each do |v|
+					PLAYER.available_verbs.each do |v|
 						if (txt, pos = v.keyword? input)
 							next  if (positions.include? pos)  # By doing this, we don't create duplicate Words
 							wargs = args.merge({
@@ -88,6 +88,7 @@ module Input
 					instances.each do |instance|
 						if (txt, pos = instance.keyword? input)
 							next  if (positions.include? pos)
+							log txt
 							wargs = args.merge({
 								pos:      pos,
 								instance: instance
@@ -179,7 +180,7 @@ module Input
 				when :special
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
+						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is_not? :word)
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
@@ -188,7 +189,7 @@ module Input
 				when :word
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
+						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is? :word)
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]
@@ -197,7 +198,7 @@ module Input
 				when nil
 					(@words.size - args[:pos] - 1).times do |n|
 						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
+						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word
 					end
 					return nil
@@ -205,8 +206,8 @@ module Input
 					## Prioritze specific special word
 				else
 					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n
-						next         if (args[:ignore] && !!(args[:ignore].any? { |i| word.text =~ i.to_regex }))
+						word = word_at args[:pos] + n + 1
+						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
 						return word  if (word.is? args[:priority])
 					end
 					return next_word pos: args[:pos], ignore: args[:ignore]

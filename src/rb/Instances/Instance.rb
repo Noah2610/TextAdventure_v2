@@ -8,10 +8,10 @@ module Instances
 	### Module Methods
 	## Read all Instance data files and return them
 	## Group by Instance type and classnames
-	def self.load_data
+	def self.load_data dir = DIR[:data]
 		return ( [:Items, :Persons, :Rooms].map do |type|
 			next [type, ( self.const_get(type).constants.map do |classname|
-				data = read_yaml(File.join(DIR[:data][type.downcase], "#{classname.to_s}.yml"))
+				data = read_yaml(File.join(dir[type.downcase], "#{classname.to_s}.yml"))
 				next [classname, data]  unless (data.nil?)
 				log "WARNING: #{type.match(/\A(.+)s\z/)[1]} '#{classname.to_s}' has no data file!"
 				next nil

@@ -98,7 +98,7 @@ module Inventory
 
 	## Can take Item?
 	def take? item
-		if (@can_take.include? item.get_instance_type_and_class[1].to_sym)
+		if (is?(:player) || @can_take.include?(item.get_instance_type_and_class[1].to_sym))
 			return true
 		end
 		return false

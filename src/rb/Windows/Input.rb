@@ -59,8 +59,6 @@ module Windows
 			@border_attr = SETTINGS.input['border_attr']
 
 			@prompt = PROMPT
-
-			redraw
 		end
 
 		## Overwrite height with fixed hight
@@ -141,6 +139,8 @@ module Windows
 		end
 
 		def redraw
+			return nil                                             if (ENVT.debug? || ENVT.test?)
+
 			## Clear all text in window
 			@window.clear
 			## Move window to proper position on screen

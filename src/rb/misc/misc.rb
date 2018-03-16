@@ -43,8 +43,12 @@ def log *args
 
 	file = File.new filepath, opts[:mode] || default_mode
 	msgs.each_with_index do |msg, index|
-		m = msg.ai(LOG_AP_OPTIONS)  if (opts[:ap].nil? || opts[:ap] == true)
-		m = msg                     if (opts[:ap] == false)
+		unless (ENVT.prod? || ENVT.test?)
+			m = msg.ai(LOG_AP_OPTIONS)  if (opts[:ap].nil? || opts[:ap] == true)
+			m = msg.to_s                if (opts[:ap] == false)
+		else
+			m = msg.to_s
+		end
 		file.write m + (index < msgs.size - 1 ? ?\t : '')
 	end
 	file.write "\n"

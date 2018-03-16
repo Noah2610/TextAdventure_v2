@@ -11,6 +11,7 @@ ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
 DIR = {
 	src:        File.join(ROOT, 'src'),
 	rb:         File.join(ROOT, 'src/rb'),
+	tests:      File.join(ROOT, 'src/rb/UnitTests'),
 	misc:       File.join(ROOT, 'src/rb/misc'),
 	windows:    File.join(ROOT, 'src/rb/Windows'),
 	input:      File.join(ROOT, 'src/rb/Input'),
@@ -34,7 +35,7 @@ require File.join DIR[:misc], 'handle_argument_parser'
 
 ## Load Environment class and set Environment
 require File.join DIR[:rb], 'Environment'
-ENVT = Environment.new CL_ARGS[:options][:env] || 'production'
+ENVT = Environment.new CL_ARGS[:options][:env] || ENV['TA_ENV'] || 'production'
 
 if (ENVT.dev? || ENVT.debug?)
 	## Require development gems

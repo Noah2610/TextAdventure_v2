@@ -10,7 +10,6 @@ module Windows
 			@indent       = SETTINGS.output['indent'] || 2
 			@history_size = SETTINGS.output['history_size'] || 100
 			@lines = []
-			redraw
 		end
 
 		def print text, args = {}
@@ -21,8 +20,6 @@ module Windows
 			end
 			## Clear early lines
 			@lines = @lines[-@history_size .. -1]  if (@lines.size > @history_size)
-			## Set Curses attributes if given
-			redraw
 		end
 
 		def clear

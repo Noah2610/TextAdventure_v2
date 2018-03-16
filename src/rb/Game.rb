@@ -34,16 +34,11 @@ require File.join DIR[:instances], 'Instance'
 
 ## Player
 require File.join DIR[:rb], 'Player'
+
 # Initialize Player
 PLAYER = Player.new
 # Move Player to Room
 PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
-
-### Start byebug then exit if in environment debug
-if (ENVT.debug?)
-	debugger
-	exit
-end
 
 ### Game
 class Game
@@ -52,8 +47,10 @@ class Game
 		@queue = {}
 
 		## Initialize Curses screen
-		Curses.init_screen
-		Curses.start_color
+		unless (ENVT.debug? || ENVT.test?)
+			Curses.init_screen
+			Curses.start_color
+		end
 		## Initialize custom color-pairs
 		Windows::Color.init
 		## Set Escape delay
@@ -61,7 +58,7 @@ class Game
 
 		## Initialize main curses windows
 		@windows = {
-			input:        Windows::Input.new,
+			input:          Windows::Input.new,
 			outputs: {
 				primary:      Windows::PrimaryOut.new,
 				conversation: Windows::ConversationOut.new,
@@ -70,7 +67,7 @@ class Game
 			}
 		}
 
-		Curses.refresh
+		update  if (running?)
 	end
 
 	def handle_input input
@@ -127,7 +124,7 @@ class Game
 	end
 
 	def running?
-		true
+		return ENVT.prod? || ENVT.dev?
 	end
 
 	def update
@@ -149,5 +146,18 @@ $game = Game.new
 while ($game.running?)
 	$game.update
 	$game_loop += 1
+end
+
+### Exit Curses mode
+Curses.close_screen
+
+### Start byebug then exit if in environment debug
+if (ENVT.debug?)
+	debugger
+	exit
+
+### Unit tests
+elsif (ENVT.test?)
+	require File.join DIR[:tests], 'Entry'
 end
 

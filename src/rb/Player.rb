@@ -83,6 +83,11 @@ class Player
 		return goto room, force: true
 	end
 
+	## Return available Verbs (usually all Verbs)
+	def available_verbs
+		return Verbs::VERBS.values
+	end
+
 	## Return all currently available Instances. These include:
 	# ITEMS:
 	#  inventory Items, Items in Room, Items in Person's inventory in Room
@@ -99,6 +104,12 @@ class Player
 		## Persons
 		ret[:persons] = [current_room.persons].flatten
 		return ret
+	end
+
+	## Return available Terms
+	def available_terms
+		return nil  unless (mode? :conversation)
+		return conversation_person.terms
 	end
 
 	## Enter conversation mode with Person
@@ -136,12 +147,6 @@ class Player
 	alias :talk_to    :conversation_start
 	alias :talk_end   :conversation_end
 	alias :talking_to :conversation_person
-
-	## Return available terms
-	def available_terms
-		return nil  unless (mode? :conversation)
-		return conversation_person.terms
-	end
 
 end
 
