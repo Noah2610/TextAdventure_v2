@@ -4,6 +4,7 @@
 class TestInputNormalMode < MiniTest::Test
 	include TestInputHelpers
 
+	## ITEMS ##
 	def test_take_unknown_item
 		reset
 
@@ -21,6 +22,7 @@ class TestInputNormalMode < MiniTest::Test
 		assert_equal true, PLAYER.has_item?(@items[:Apple]), "Player should have taken known Item: #{output}"
 	end
 
+	## ROOMS ##
 	def test_goto_unknown_room
 		reset
 

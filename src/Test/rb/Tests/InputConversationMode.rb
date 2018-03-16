@@ -9,6 +9,7 @@ class TestInputConversationMode < MiniTest::Test
 		PLAYER.talk_to @persons[:Parsley]  unless (args[:no_talk] == true)
 	end
 
+	## CONVERSATION MODE ##
 	def test_talk_to_unknown_person
 		reset no_talk: true
 
@@ -36,6 +37,7 @@ class TestInputConversationMode < MiniTest::Test
 		assert_equal :normal, PLAYER.mode, "Player should have left conversation mode: #{output}"
 	end
 
+	## TERMS ##
 	def test_give_item_to_person
 		reset
 		item = @items[:Apple]
