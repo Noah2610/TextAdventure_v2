@@ -48,5 +48,14 @@ class TestInputNormalMode < MiniTest::Test
 
 		assert_equal true, @components[:GloveCompartment].is_open?, "Player should have opened Component: #{output}"
 	end
+
+	def test_close_glove_compartment
+		reset
+		@components[:GloveCompartment].open!
+
+		output = process_line 'Close this Glove Compartment'
+
+		assert_equal true, @components[:GloveCompartment].is_closed?, "Player should have closed Component: #{output}"
+	end
 end
 
