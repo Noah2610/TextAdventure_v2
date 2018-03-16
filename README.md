@@ -16,7 +16,7 @@ Execute the following in the root directory of the project:
 $ bundle install
 ```
 This will install the required Ruby gems.  
-Starting the game the first time will download my [Ruby Command-Line Argument Parser Gem](https://github.com/Noah2610/ArgumentParser)  
+Starting the game the first time will download my Ruby Command-Line [Argument Parser](https://github.com/Noah2610/ArgumentParser) Gem  
 into `./lib/argument_parser.rb`.
   
 ## Start Game
@@ -30,11 +30,21 @@ $ ./TA.rb
 There is a configuration file at `./src/settings.yml` which contains some general settings for the game.  
 It mainly defines some minor tweaks used throughout the game. It has a bunch of comments decribing  
 each value so you can check it out there if you are curious.
+### Game Modes
+There are two Game Modes in the game currently,  
+which are states the Player is in that switch during gameplay:
+* __Normal Mode__:  
+This is the main mode.  
+The Player uses __Verbs__ to interact with their Items and the environment.
+* __Conversation Mode__:  
+The Player enters this mode when they start a conversation with a Person.  
+In this mode, you interact with the person you are talking to with __Terms__.
+
 ### Window Layout
 There are 5 main Curses Windows used.
 #### INPUT
 This is the window the user types their commands in.  
-It starts with a prompt which will be different according to the current game mode (see below).
+It starts with a prompt which will be different according to the current game mode.
 ```
 Normal Mode       = "> "
 Conversation Mode = ">> "
@@ -68,11 +78,12 @@ This Line processes the user's input and splits the words into `Input::Words`.
 module Input::Words
   class Word
   end
-  class Verb   < Word  end
-  class Item   < Word  end
-  class Person < Word  end
-  class Room   < Word  end
-  class Term   < Word  end
+  class Verb      < Word  end
+  class Term      < Word  end
+  class Item      < Word  end
+  class Component < Word  end
+  class Person    < Word  end
+  class Room      < Word  end
 end
 ```
 Before an Input Word is created, it is decided what type of Word it will be (types being Verb, Term, or Instance types)  
@@ -100,7 +111,7 @@ Verbs have YAML configuration files in `./src/Data/Verbs` under their respective
 These configuration files contain the `keywords` used to address and use the Verb in-game  
 and `text` to be printed to the screen.  
 `keywords` can be normal text or regular expressions.
-#### TERM
+#### TERMS
 ```ruby
 module Terms
   class Term
@@ -146,7 +157,8 @@ module Instances::Components
   end
 end
 ```
-Components are Instances that can be placed inside Rooms.
+Components are Instances that can be placed inside Rooms.  
+They will usually have an Inventory.
 ##### PERSONS
 ```ruby
 module Instances::Persons
