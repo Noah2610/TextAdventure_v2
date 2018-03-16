@@ -41,10 +41,11 @@ input:
 
 ## Text output settings
 output:
-  padding:        3  # Padding of text to curses window edge, left and right
-  padding_height: 1  # Padding of text to curses window edges, top and bottom
-  indent:         2  # Indent of continuation lines
-  history_size: 100  # Amount of lines to be saved at a time
-  min_width:     16  # Minimum amount of width a Window has to have to be drawn
-  min_height:     2  # Minimum amount of height a Window has to have to be drawn
+  padding:             3         # Padding of text to curses window edge, left and right
+  padding_height:      1         # Padding of text to curses window edges, top and bottom
+  indent:              2         # Indent of continuation lines
+  history_size:        100       # Amount of lines to be saved at a time
+  min_width:           16        # Minimum amount of width a Window has to have to be drawn
+  min_height:          2         # Minimum amount of height a Window has to have to be drawn
+  prompt_conversation: '=> '     # Text in front of conversation output lines
 ...

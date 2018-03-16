@@ -4,6 +4,7 @@
 
 module Windows
 	class Input < Window
+		attr_reader :padding  #TODO: <<< this is lazy, avoid this
 		include Color
 
 		## Define valid input keys

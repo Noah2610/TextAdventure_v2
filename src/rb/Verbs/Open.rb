@@ -8,8 +8,12 @@ class Verbs::Open < Verbs::Verb
 		word = args[:line].next_word pos: args[:word].position, priority: :special, ignore: ignore
 		return text 'not_found'  unless (word)
 		if (instance = word.instance)
-			if (instance.can_open? && instance.open!)
-				return text 'opened', word
+			if (instance.can_open?)
+				unless (instance.is_open?)
+					return text 'opened', word  if (instance.open!)
+				else
+					return text 'already_open', word
+				end
 			else
 				return text 'cannot_open', word
 			end

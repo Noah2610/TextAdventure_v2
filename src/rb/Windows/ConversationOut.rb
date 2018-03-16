@@ -17,6 +17,8 @@ class Windows::ConversationOut < Windows::Output
 
 		## Hidden by default
 		@hidden = true
+
+		@prompt = SETTINGS.output['prompt_conversation']
 	end
 
 	## Overwrite height to be half of PrimaryOut's height
@@ -27,6 +29,13 @@ class Windows::ConversationOut < Windows::Output
 	## Overwrite pos_y to be half of PrimaryOut's height
 	def pos_y
 		return ((screen_size(:h) - 5).to_f * 0.5).ceil
+	end
+
+	## Overwrite print to include prompt if in conversation mode
+	def print text, args = {}
+		text = [text].flatten
+		text[0] = "#{@prompt}#{text[0]}"
+		super text, args
 	end
 end
 

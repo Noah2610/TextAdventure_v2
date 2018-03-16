@@ -6,6 +6,10 @@ text:
     - "I opened [WORD]."
     - "[WORD] is now open."
     - "[WORD] has been opened."
+  already_open:
+    - "[WORD] is open already."
+    - "[WORD] is already open."
+    - "[WORD] is open."
   cannot_open:
     - "I couldn't open [WORD]."
     - "[WORD] cannot be openend."

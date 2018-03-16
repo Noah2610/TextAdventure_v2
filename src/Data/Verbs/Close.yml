@@ -1,7 +1,19 @@
-### Auto-generated on 2018-03-16 by Noah Rosenzweig.
 ---
-keywords:    []
+keywords:
+  - close
 text:
-  not_found: "<DEFAULT NOT FOUND TEXT>"
-ignore:      []
+  closed:
+    - "I closed the [WORD]."
+    - "[WORD] has been closed."
+  already_closed:
+    - "[WORD] is closed already."
+    - "[WORD] is already closed."
+    - "[WORD] is closed."
+  cannot_close:
+    - "I cannot close [WORD]."
+    - "[WORD] cannot be closed."
+    - "How do I close [WORD]?"
+  not_found:
+    - "Close what?"
+    - "What should I close?"
 ...
