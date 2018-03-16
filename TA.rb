@@ -1,6 +1,5 @@
 #!/bin/env ruby
 
-require 'curses'
 require 'pathname'
 require 'yaml'
 
@@ -9,26 +8,35 @@ ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
 
 ## Set DIR constant with relevant paths
 DIR = {
-	src:        File.join(ROOT, 'src'),
-	rb:         File.join(ROOT, 'src/rb'),
-	tests:      File.join(ROOT, 'src/rb/UnitTests'),
-	misc:       File.join(ROOT, 'src/rb/misc'),
-	windows:    File.join(ROOT, 'src/rb/Windows'),
-	input:      File.join(ROOT, 'src/rb/Input'),
-	verbs:      File.join(ROOT, 'src/rb/Verbs'),
-	instances:  File.join(ROOT, 'src/rb/Instances'),
-	items:      File.join(ROOT, 'src/rb/Instances/Items'),
-	persons:    File.join(ROOT, 'src/rb/Instances/Persons'),
-	rooms:      File.join(ROOT, 'src/rb/Instances/Rooms'),
-	terms:      File.join(ROOT, 'src/rb/Terms'),
-	data: {     # Text files, etc
-		verbs:    File.join(ROOT, 'src/Data/Verbs'),
-		items:    File.join(ROOT, 'src/Data/Items'),
-		persons:  File.join(ROOT, 'src/Data/Persons'),
-		rooms:    File.join(ROOT, 'src/Data/Rooms'),
-		terms:    File.join(ROOT, 'src/Data/Terms')
+	src:          File.join(ROOT, 'src'),
+	rb:           File.join(ROOT, 'src/rb'),
+	misc:         File.join(ROOT, 'src/rb/misc'),
+	windows:      File.join(ROOT, 'src/rb/Windows'),
+	input:        File.join(ROOT, 'src/rb/Input'),
+	verbs:        File.join(ROOT, 'src/rb/Verbs'),
+	instances:    File.join(ROOT, 'src/rb/Instances'),
+	items:        File.join(ROOT, 'src/rb/Instances/Items'),
+	persons:      File.join(ROOT, 'src/rb/Instances/Persons'),
+	rooms:        File.join(ROOT, 'src/rb/Instances/Rooms'),
+	terms:        File.join(ROOT, 'src/rb/Terms'),
+	data: {       # Text files, etc
+		verbs:      File.join(ROOT, 'src/Data/Verbs'),
+		items:      File.join(ROOT, 'src/Data/Items'),
+		persons:    File.join(ROOT, 'src/Data/Persons'),
+		rooms:      File.join(ROOT, 'src/Data/Rooms'),
+		terms:      File.join(ROOT, 'src/Data/Terms')
 	},
-	settings:   File.join(ROOT, 'src/settings.yml')  # Default Settings file
+	test: {       # For Unit Tests
+		rb:         File.join(ROOT, 'src/Test/rb'),
+		data: {
+			verbs:    File.join(ROOT, 'src/Data/Verbs'),        # Same Verbs should be used for testing
+			items:    File.join(ROOT, 'src/Test/Data/Items'),
+			persons:  File.join(ROOT, 'src/Test/Data/Persons'),
+			rooms:    File.join(ROOT, 'src/Test/Data/Rooms'),
+			terms:    File.join(ROOT, 'src/Data/Terms')         # Same Terms should be used for testing
+		}
+	},
+	settings:     File.join(ROOT, 'src/settings.yml')  # Default Settings file
 }
 
 require File.join DIR[:misc], 'handle_argument_parser'
@@ -36,6 +44,9 @@ require File.join DIR[:misc], 'handle_argument_parser'
 ## Load Environment class and set Environment
 require File.join DIR[:rb], 'Environment'
 ENVT = Environment.new CL_ARGS[:options][:env] || ENV['TA_ENV'] || 'production'
+
+## Require Curses library
+require 'curses'  unless (ENVT.debug? || ENVT.test?)
 
 if (ENVT.dev? || ENVT.debug?)
 	## Require development gems

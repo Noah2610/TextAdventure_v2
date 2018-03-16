@@ -10,7 +10,7 @@ module Inventory
 		super  if (self.class.name =~ /\AInstances::.+?::.+\z/)
 		## Initialize Inventory
 		@inventory = Inventory.new
-		## Load all Items that Room is supposed to have
+		## Load and create all Items that Room is supposed to have
 		@data['items'].each do |itemstr|
 			item = itemstr.to_sym
 			if (Instances::Items.constants.include? item)
@@ -50,6 +50,11 @@ module Inventory
 			return @items.delete item.class.name.split('::').last.to_sym
 		end
 
+		## Remove ALL Items from Inventory
+		def items_clear
+			return @items.clear
+		end
+
 		def has_item? item
 			if    (item.is_a? Instances::Items::Item)
 				return items.any? { |i| i.is_a? item.class }
@@ -61,6 +66,7 @@ module Inventory
 			return false
 		end
 	end # END - CLASS
+
 
 	## Check if Inventory contains any Items
 	def any_items?
@@ -83,6 +89,11 @@ module Inventory
 	def item_remove item
 		return false  unless (item.is? :item)
 		return @inventory.item_remove item
+	end
+
+	## Remove ALL Items from Inventory
+	def items_clear
+		return @inventory.items_clear
 	end
 
 	## Check if Inventory has Item item

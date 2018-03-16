@@ -1,6 +1,6 @@
 ---
 keywords:
-  - /(good)? ?(bye){1,2}/i
+  - /\b(good ?)?bye{1,2}\b/i
 text:
   default:
     - "Goodbye [PLAYER]."

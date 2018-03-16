@@ -18,7 +18,7 @@ ENVIRONMENTS:
     logfile: 'development.log'
 
   test:
-    logfile: 'test.log'
+    logfile: 'development.log'
 
 
 ### Regular settings, environment settings overwrite these

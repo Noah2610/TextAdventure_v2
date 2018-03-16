@@ -2,7 +2,7 @@
 keywords:
   - take
   - grab
-  - /pick up/i
+  - /\bpick up\b/i
 text:
   took:
     - "I took the [ITEM]."

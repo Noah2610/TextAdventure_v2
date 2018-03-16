@@ -41,7 +41,7 @@ module Instances
 		include Keywords
 		def initialize args = {}
 			@data = Instances.data self.class
-			@known = !!@data['known']
+			@known = @data['known']
 		end
 
 		## Check if Instance class is Instance type target_type and optionally is class target_class
@@ -142,7 +142,11 @@ require_files DIR[:rooms], except: 'Room'
 
 module Instances
 	## Load all Instance data files
-	DATA = self.load_data
+	unless (ENVT.test?)
+		DATA = self.load_data
+	else
+		DATA = self.load_data DIR[:test][:data]
+	end
 
 	#TODO:
 	## Load Rooms specified in Player savefile

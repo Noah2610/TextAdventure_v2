@@ -14,12 +14,15 @@ module Windows
 			@pos    = ( args[:pos]   || (
 				(args[:x] && args[:y]) ? { x: args[:x], y: args[:y] } : { x: 0.0, y: 0.0 }
 			))
+			@border = [?|, ?-]
+		end
+
+		def init_curses
 			## Init Curses Window
 			@window = Curses::Window.new(
 				height,  width,
 				pos(:y), pos(:x)
 			)
-			@border = [?|, ?-]
 		end
 
 		## Return wanted width for window

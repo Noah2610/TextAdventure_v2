@@ -1,11 +1,11 @@
 
 module Terms
 	## Load all Term data files and return them
-	def self.load_data
+	def self.load_data dir = DIR[:data][:terms]
 		return self.constants.map do |constname|
 			constant = self.const_get constname
 			next nil                unless (constant.is_a? Class)
-			data = read_yaml(File.join(DIR[:data][:terms], "#{constname.to_s}.yml"))
+			data = read_yaml(File.join(dir, "#{constname.to_s}.yml"))
 			next [constname.to_s, data]  unless (data.nil?)
 			log "WARNING: Term '#{constname.to_s}' has no data file!"
 			next nil
@@ -86,5 +86,9 @@ end
 ## Require all Terms
 require_files DIR[:terms], except: 'Term'
 ## Load all Term data files
-Terms::DATA = Terms.load_data
+unless (ENVT.test?)
+	Terms::DATA = Terms.load_data
+else
+	Terms::DATA = Terms.load_data DIR[:test][:data][:terms]
+end
 

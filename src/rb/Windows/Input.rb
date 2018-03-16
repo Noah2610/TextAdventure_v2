@@ -29,17 +29,6 @@ module Windows
 			@width  = 0.75
 			@height = 0.1
 
-			## Initialize Curses Window
-			@window = Curses::Window.new(
-				# height,  width
-				height,  width,
-				# top,     left
-				pos(:y), pos(:x)
-			)
-
-			## Enable keypad, fixes curses' constants
-			@window.keypad true
-
 			## Set text instance variable
 			@text = ''
 			@text_tmp = ''
@@ -59,6 +48,19 @@ module Windows
 			@border_attr = SETTINGS.input['border_attr']
 
 			@prompt = PROMPT
+		end
+
+		## Initialize Curses Window
+		def init_curses
+			@window = Curses::Window.new(
+				# height,  width
+				height,  width,
+				# top,     left
+				pos(:y), pos(:x)
+			)
+
+			## Enable keypad, fixes curses' constants
+			@window.keypad true
 		end
 
 		## Overwrite height with fixed hight

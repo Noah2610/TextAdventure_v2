@@ -6,6 +6,6 @@ description_unknown: "An orange bally boy."
 keywords:
   - orange
 keywords_unknown:
-  - /(orange)?(ball)?/i
+  - /\b(orange ?)?ball\b/i
 known: true
 ...

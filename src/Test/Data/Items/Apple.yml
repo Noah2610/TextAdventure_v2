@@ -8,6 +8,5 @@ keywords:
   - apfel
 keywords_unknown:
   - /\b(red ?)?ball\b/i
-  - foo
 known: false
 ...

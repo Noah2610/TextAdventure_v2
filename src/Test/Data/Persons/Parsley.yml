@@ -5,9 +5,10 @@ description:         "This is our Parsley boy."
 description_unknown: "This is our Friendly boy."
 keywords:
   - /\bparsle?y\b/i
-keywords_unknown:
   - friend
-known:               true
+keywords_unknown:
+  - unknown person
+known:               false
 conversation:
   terms:
     - Hello

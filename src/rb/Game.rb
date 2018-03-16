@@ -46,17 +46,7 @@ class Game
 		## Method queue
 		@queue = {}
 
-		## Initialize Curses screen
-		unless (ENVT.debug? || ENVT.test?)
-			Curses.init_screen
-			Curses.start_color
-		end
-		## Initialize custom color-pairs
-		Windows::Color.init
-		## Set Escape delay
-		Curses.ESCDELAY = SETTINGS.input['ESCDELAY']
-
-		## Initialize main curses windows
+		## Initialize main Windows
 		@windows = {
 			input:          Windows::Input.new,
 			outputs: {
@@ -66,6 +56,21 @@ class Game
 				status:       Windows::StatusOut.new
 			}
 		}
+
+		## Initialize Curses screen
+		unless (ENVT.debug? || ENVT.test?)
+			## Initialize Curses screen
+			Curses.init_screen
+			Curses.start_color
+			## Initialize custom color-pairs
+			Windows::Color.init
+			## Set Escape delay
+			Curses.ESCDELAY = SETTINGS.input['ESCDELAY']
+
+			## Initialise Curses Windows
+			@windows[:input].init_curses
+			@windows[:outputs].values.each &:init_curses
+		end
 
 		update  if (running?)
 	end
@@ -149,15 +154,15 @@ while ($game.running?)
 end
 
 ### Exit Curses mode
-Curses.close_screen
+Curses.close_screen  unless (ENVT.debug? || ENVT.test?)
 
 ### Start byebug then exit if in environment debug
 if (ENVT.debug?)
 	debugger
 	exit
 
-### Unit tests
+	### Unit tests
 elsif (ENVT.test?)
-	require File.join DIR[:tests], 'Entry'
+	require File.join DIR[:test][:rb], 'Entry'
 end
 

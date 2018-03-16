@@ -88,7 +88,6 @@ module Input
 					instances.each do |instance|
 						if (txt, pos = instance.keyword? input)
 							next  if (positions.include? pos)
-							log txt
 							wargs = args.merge({
 								pos:      pos,
 								instance: instance

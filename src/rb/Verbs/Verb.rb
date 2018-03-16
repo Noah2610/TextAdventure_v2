@@ -14,12 +14,16 @@ module Verbs
 		include Keywords
 		def initialize args = {}
 			## Read data (text) from file
-			@data = read_data
+			unless (ENVT.test?)
+				@data = read_data
+			else
+				@data = read_data DIR[:test][:data][:verbs]
+			end
 		end
 
 		## Read extra data from yaml file
-		def read_data
-			filepath = File.join DIR[:data][:verbs], "#{self.class.name.sub('Verbs::','')}.yml"
+		def read_data dir = DIR[:data][:verbs]
+			filepath = File.join dir, "#{self.class.name.sub('Verbs::','')}.yml"
 			return {
 				'keywords' => [self.class.to_s.downcase]
 			}  unless (File.file? filepath)
