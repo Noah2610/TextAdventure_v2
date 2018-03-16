@@ -100,8 +100,24 @@ Verbs have YAML configuration files in `./src/Data/Verbs` under their respective
 These configuration files contain the `keywords` used to address and use the Verb in-game  
 and `text` to be printed to the screen.  
 `keywords` can be normal text or regular expressions.
-
-#### INSTANCE
+#### TERM
+```ruby
+module Terms
+  class Term
+  end
+  class Take < Term
+  end
+end
+```
+Terms are used in conversations. They are keywords that can trigger specific code.  
+They also have configuration files in `./src/Data/Terms`.  
+Usually they work together with Instances. For example:
+```
+>> take this apple
+```
+Where `take` it the Term and `apple` is an Item that will be passed to `take`'s `action` method.  
+In this example the user tries to give the apple to the person they are in a conversation with.
+#### INSTANCES
 ```ruby
 module Instances
   class Instance
@@ -121,6 +137,16 @@ end
 Items are, as you would think, takeable and useable objects.  
 They can be placed in Rooms or Inventories which can be attached to any Instance.  
 The Player also has an Inventory of course, although they are not an Instance.  
+##### COMPONENTS
+```ruby
+module Instances::Components
+  class Component < Instances::Instance
+  end
+  class GloveCompartment < Component
+  end
+end
+```
+Components are Instances that can be placed inside Rooms.
 ##### PERSONS
 ```ruby
 module Instances::Persons
@@ -130,8 +156,7 @@ module Instances::Persons
   end
 end
 ```
-A Person can be placed inside a Room; they can be talked to.  
-They can also have an Inventory so they are able to carry Items.  
+A Person can be placed inside a Room; they can be talked to.
 ##### ROOMS
 ```ruby
 module Instances::Rooms
@@ -141,28 +166,11 @@ module Instances::Rooms
   end
 end
 ```
-The Player is always in a Room. Persons are also placed in a Room.  
-Rooms can also have an Inventory and store Items.  
+The Player is always in a Room. Persons are also placed in a Room.
   
-All Instances also have YAML configuration files located in `./src/Data` under their respective directories.  
+All Instances can include an Inventory, so all Instances have the ability to carry Items.  
+They also have YAML configuration files located in `./src/Data` under their respective directories.  
 These config files contain text such as Instance name(s) and description(s)  
 and other text that might be used in their associated classes in the code.  
 `keywords` are also defined in the configs.
-#### TERM
-```ruby
-module Terms
-  class Term
-  end
-  class Take < Term
-  end
-end
-```
-Terms are used in conversations. They are keywords that can trigger specific code.  
-They also have configuration files in `./src/Data/Terms`.  
-Usually they work together with Instances. For example:
-```
->> take this apple
-```
-Where `take` it the Term and `apple` is an Item that will be passed to `take`'s `action` method.  
-In this example the user tries to give the apple to the person they are in a conversation with.
 
