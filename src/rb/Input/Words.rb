@@ -31,12 +31,18 @@ module Input
 			end
 		end
 
+		# TODO:
+		## Remove unnecessary classes!
+		##  - Combine Verb, Term, and Event classes
+		##  - Combine all Instance Word classes
+
+		## Verb
 		class Verb < Word
 			def init args = {}
 				@verb = args[:verb]
 			end
 			def action
-				return @verb.action word: self, line: @line
+				return @verb.action word: self, line: @line  if (@verb)
 			end
 		end
 
@@ -50,7 +56,7 @@ module Input
 		class Room      < Word
 		end
 
-		## Conversational Word
+		## Term
 		class Term < Word
 			attr_reader :keyword
 			def init args = {}
@@ -61,6 +67,17 @@ module Input
 				return nil
 			end
 		end
-	end
-end
+
+		## Event
+		class Event < Word
+			def init args = {}
+				@event = args[:event]
+			end
+			def action
+				return @event.action word: self, line: @line  if (@event)
+				return nil
+			end
+		end
+	end # END - MODULE Words
+end # END - MODULE Input
 

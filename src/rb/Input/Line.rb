@@ -48,16 +48,32 @@ module Input
 			input_tmp = input.dup      # Input string which's words will be replaced when matched to matching same word twice
 			replchar = ?^              # Character to replace words as they are being matched, should be character unavailable to user
 
-			## Loop infinitely until no new Words are being created
+			## Loop indefinitely until no new Words are being created
 			while (positions.size > prev_positions_size)
 				prev_positions_size = positions.size
 				case PLAYER.mode
 				## NORMAL mode
 				when :normal
+					## EVENTS
+					next  if ( PLAYER.available_events.map do |e|
+						if (txt, pos = e.keyword? input_tmp)
+							next true  if (positions.include? pos)  # By doing this, we don't create duplicate Words
+							wargs = args.merge({
+								pos:  pos,
+								event: e
+							})
+							words << Words::Event.new(txt, self, wargs)
+							input_tmp.sub! txt, (replchar * txt.size)
+							input_remains.sub! txt, ''
+							positions << pos
+							next true
+						end
+					end ).any?
+
 					## VERBS
-					PLAYER.available_verbs.each do |v|
+					next  if ( PLAYER.available_verbs.map do |v|
 						if (txt, pos = v.keyword? input_tmp)
-							next  if (positions.include? pos)  # By doing this, we don't create duplicate Words
+							next true  if (positions.include? pos)
 							wargs = args.merge({
 								pos:  pos,
 								verb: v
@@ -66,15 +82,16 @@ module Input
 							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
+							next true
 						end
-					end
+					end ).any?
 
 				## CONVERSATION mode
 				when :conversation
 					## TERMS
-					PLAYER.available_terms.each do |t|
+					next  if ( PLAYER.available_terms.map do |t|
 						if (txt, pos = t.keyword? input_tmp)
-							next  if (positions.include? pos)
+							next true  if (positions.include? pos)
 							wargs = args.merge({
 								pos:  pos,
 								term: t
@@ -83,15 +100,16 @@ module Input
 							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
+							next true
 						end
-					end
+					end ).any?
 				end
 
 				## INSTANCES
-				PLAYER.available_instances.each do |type, instances|
-					instances.each do |instance|
+				next  if ( PLAYER.available_instances.map do |type, instances|
+					next (instances.map do |instance|
 						if (txt, pos = instance.keyword? input_tmp)
-							next  if (positions.include? pos)
+							next true  if (positions.include? pos)
 							wargs = args.merge({
 								pos:      pos,
 								instance: instance
@@ -100,9 +118,10 @@ module Input
 							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
+							next true
 						end
-					end
-				end
+					end ).any?
+				end ).any?
 			end # END - LOOP
 
 			## Create Words::Word (multiple) from remaining input
@@ -119,13 +138,11 @@ module Input
 
 		## Sort Words and set proper positions
 		def adjust_words words
-			words.sort! do |w1,w2|
+			return words.sort do |w1,w2|
 				w1.position - w2.position
-			end
-			words.each_with_index do |w, i|
+			end .each_with_index do |w, i|
 				w.position = i
 			end
-			return words
 		end
 
 		## Do whatever the line is supposed to do, according to Player mode
@@ -135,8 +152,10 @@ module Input
 			case PLAYER.mode
 			when :normal
 				## Process for normal mode
-				return verbs.map do |verb|
-					next verb.action
+				return [verbs, events].flatten.sort do |w1, w2|
+					next w1.position - w2.position
+				end .map do |word|
+					next word.action
 				end .reject { |x| !x }
 
 			when :conversation
@@ -153,6 +172,13 @@ module Input
 		def verbs
 			return @words.map do |word|
 				next word  if (word.is? :verb)
+			end .reject { |x| !x }
+		end
+
+		## Return all Events in @words
+		def events
+			return @words.map do |word|
+				next word  if (word.is? :event)
 			end .reject { |x| !x }
 		end
 
@@ -185,8 +211,8 @@ module Input
 			@words[(pos + 1) .. -1].each do |word|
 				## Skip Word if it should be ignored
 				next  if (ignore.any? { |i| word.text =~ i.to_regex })
-				## Break out of loop if it hits another Verb
-				if (word.is? :verb)
+				## Break out of loop if it hits another Verb or a chain_keyword
+				if (word.is?(:verb) || !!SETTINGS.chain_keyword?(word.text))
 					break
 				end
 

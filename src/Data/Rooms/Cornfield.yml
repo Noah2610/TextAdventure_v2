@@ -15,4 +15,11 @@ keywords_neighbors:
 items:
   - Orange
 persons: []
+events:
+  Pee:
+    keywords:
+      - pee
+      - piss
+      - take a piss
+      - /\bgo to (the )?toilet\b/i
 ...

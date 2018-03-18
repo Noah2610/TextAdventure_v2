@@ -28,6 +28,12 @@ logdir: 'log'
 ## Default logfile, relative path from 'logdir' directory
 logfile: 'default.log'
 
+## Keywords that chain multiple input lines
+## Can be regular expressions
+chain_keywords:
+  - and
+
+
 ## Input settings
 input:
   ESCDELAY:            1000      # Curses ESCDELAY, in ms (default = 1000ms)

@@ -79,5 +79,17 @@ class Settings
 	def input
 		return @SETTINGS['input'] || {}
 	end
+
+	def chain_keyword? string
+		return false  unless (kws = @SETTINGS['chain_keywords'])
+		kws.each do |kw|
+			kwregex = kw.to_regex
+			if (m = string.match(kwregex))
+				ret = [m[0], string =~ kwregex]
+				return ret
+			end
+		end
+		return false
+	end
 end
 

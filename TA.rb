@@ -20,6 +20,7 @@ DIR = {
 	components:     File.join(ROOT, 'src/rb/Instances/Components'),
 	persons:        File.join(ROOT, 'src/rb/Instances/Persons'),
 	rooms:          File.join(ROOT, 'src/rb/Instances/Rooms'),
+	events:         File.join(ROOT, 'src/rb/Events'),
 	data: {         # Text files, etc
 		verbs:        File.join(ROOT, 'src/Data/Verbs'),
 		terms:        File.join(ROOT, 'src/Data/Terms'),

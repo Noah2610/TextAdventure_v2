@@ -14,7 +14,7 @@ module Keywords
 	## Return matched string and match position in string:
 	#   return ['keyword', 0]
 	def keyword? string
-		return nil  unless (kws = keywords)
+		return false  unless (kws = keywords)
 		kws.each do |kw|
 			kwregex = kw.to_regex
 			if (m = string.match(kwregex))

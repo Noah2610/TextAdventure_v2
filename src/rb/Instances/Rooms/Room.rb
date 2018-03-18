@@ -14,8 +14,9 @@ module Instances
 		class Room < Instances::Instance
 			def initialize args = {}
 				super
-				@persons = load_persons
+				@persons    = load_persons
 				@components = load_components
+				@events     = load_events
 			end
 
 			## Load and create Persons
@@ -48,6 +49,21 @@ module Instances
 				end .reject { |x| !x } .to_h  if (@data['components'])
 			end
 
+			## Load and create Events
+			def load_events
+				return @data['events'].map do |eventstr, eventdata|
+					event = eventstr.to_sym
+					if (Events.constants.include? event)
+						next [event, Events.const_get(event).new(eventdata)]
+					else
+						## Event doesn't exist, display warning
+						classtype, clazz = get_instance_type_and_class
+						log "WARNING: #{classtype} '#{clazz}' tried to load Event '#{eventstr}' which doesn't exist."
+						next nil
+					end
+				end .reject { |x| !x } .to_h  if (@data['events'])
+			end
+
 			## Default items method
 			def items
 				nil
@@ -62,6 +78,12 @@ module Instances
 			## Return all Components in Room
 			def components
 				return @components.values  unless (@components.nil?)
+				return nil
+			end
+
+			## Return all Room Events
+			def events
+				return @events.values      unless (@events.nil?)
 				return nil
 			end
 

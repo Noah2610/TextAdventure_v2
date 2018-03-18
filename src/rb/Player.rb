@@ -88,13 +88,13 @@ class Player
 		return Verbs::VERBS.values
 	end
 
-	## Return all currently available Instances. These include:
-	# ITEMS:
-	#  inventory Items, Items in Room, Items in Person's inventory in Room
-	# PERSONS:
-	#  Persons in Room
-	# ROOMS:
-	#  current Room, adjacent Rooms (neighbors)
+	## Return available Terms
+	def available_terms
+		return nil  unless (mode? :conversation)
+		return conversation_person.terms
+	end
+
+	## Return all currently available Instances
 	def available_instances
 		ret = {}
 		components = current_room.components || []
@@ -109,10 +109,9 @@ class Player
 		return ret
 	end
 
-	## Return available Terms
-	def available_terms
-		return nil  unless (mode? :conversation)
-		return conversation_person.terms
+	## Return available Room Events of current_room
+	def available_events
+		return current_room.events || []
 	end
 
 	## Enter conversation mode with Person
