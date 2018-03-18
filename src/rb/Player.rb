@@ -74,7 +74,7 @@ class Player
 		elsif (room.is_a?(Symbol) || room.is_a?(String))
 			@room = Instances::Rooms::ROOMS[room.to_sym]
 		end
-		@room.went!  unless (@room.nil?)
+		@room.went!   unless (@room.nil?)
 		return @room
 	end
 

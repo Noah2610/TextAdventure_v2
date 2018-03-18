@@ -66,6 +66,14 @@ end
 ## Clear log
 clear_log  unless (ENVT.prod?)
 
+## Close Curses screen and start Byebug debugger
+## Usage: debug.call
+def debug
+	Curses.close_screen
+	return method(:debugger)
+end
+alias :dbg :debug
+
 ## Require multiple files from directory
 def require_files dir, args = {}
 	return nil  unless (File.directory? dir)

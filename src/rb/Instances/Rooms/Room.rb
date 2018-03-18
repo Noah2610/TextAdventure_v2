@@ -1,14 +1,25 @@
 
 module Instances
 	module Rooms
+		## ROOMS constant in which all loaded Rooms will be stored
+		ROOMS = {}
+
 		## Initialize / load all rooms and return them
 		def self.init_rooms
 			return self.constants.map do |constname|
-				next nil  if     (constname == :Room)
-				clazz = self.const_get(constname)
-				next nil  unless (clazz.is_a? Class)
-				next [constname, clazz.new]
+				room = self.init_room(constname)
+				next [constname, room]  unless (room.nil?)
+				next nil
 			end .reject { |x| !x } .to_h
+		end
+
+		## Initialize a single Room by their classname
+		def self.init_room classname
+			return nil  if     ([:Room, :ROOMS].include? classname)
+			return nil  unless (self.constants.include?(classname))
+			clazz = self.const_get(classname)
+			return nil  unless (clazz.is_a? Class)
+			return clazz.new
 		end
 
 		class Room < Instances::Instance
@@ -114,23 +125,50 @@ module Instances
 				return @neighbors.values
 			end
 
+			#TODO:
+			## Method not used anymore, cleanup!
 			## Save neighbors as hash in instance variables
 			def set_neighbors
 				## Get all neighbors
-				@neighbors = @data['neighbors'].map do |roomname|
-					if (room = Instances::Rooms::ROOMS[roomname.to_sym])
-						next [roomname.to_sym, room]
+				@neighbors = @data['neighbors'].map do |roomstr|
+					roomname = roomstr.to_sym
+					if (room = Instances::Rooms::ROOMS[roomname])
+						next [roomname, room]
 					else
 						## Room doesn't exist, log warning
 						classtype, clazz = get_instance_type_and_class
-						log "WARNING: Room '#{clazz}'"
+						log "WARNING: Room '#{clazz}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
+						next nil
 					end
 				end .reject { |x| !x } .to_h
 			end
 
+			## Load / create neighboring Rooms
+			def load_neighbors
+				return @neighbors  unless (@neighbors.nil?)
+				@neighbors = @data['neighbors'].map do |roomstr|
+					roomname = roomstr.to_sym
+					## Don't create new Room but get already created Room from constant
+					next [roomname, Instances::Rooms::ROOMS[roomname]]  if (Instances::Rooms::ROOMS.keys.include?(roomname))
+					## Create new Room
+					if (room = Instances::Rooms.init_room(roomname))
+						Instances::Rooms::ROOMS[roomname] = room
+						next [roomname, room]
+					else
+						## Room doesn't exist, log warning
+						classtype, clazz = get_instance_type_and_class
+						log "WARNING: Room '#{clazz}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
+						next nil
+					end
+				end .reject { |x| !x } .to_h
+				return @neighbors
+			end
+
 			## This method is called everytime the Player goes to this Room
 			def went!
-				@known = true  unless (@known)
+				## Load all neighboring Rooms when going to the Room the first time
+				load_neighbors
+				@known = true  if (unknown?)
 			end
 
 			## Check if Player can go to Room from this Room

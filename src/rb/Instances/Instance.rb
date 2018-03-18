@@ -11,7 +11,9 @@ module Instances
 	## Group by Instance type and classnames
 	def self.load_data dir = DIR[:data]
 		return ( [:Items, :Components, :Persons, :Rooms].map do |type|
-			next [type, ( self.const_get(type).constants.map do |classname|
+			instance = self.const_get(type)
+			next [type, ( instance.constants.map do |classname|
+				next nil  unless (instance.const_get(classname).is_a? Class)
 				data = read_yaml(File.join(dir[type.downcase], "#{classname.to_s}.yml"))
 				next [classname, data]  unless (data.nil?)
 				log "WARNING: #{type.match(/\A(.+)s\z/)[1]} '#{classname.to_s}' has no data file!"
@@ -166,7 +168,7 @@ module Instances
 	#TODO:
 	## Load Rooms dynamically; Current Room loads adjacent Rooms but not further
 	## Load all Rooms for now
-	Rooms::ROOMS = Rooms.init_rooms
-	Rooms::ROOMS.values.each &:set_neighbors
+	#Rooms::ROOMS = Rooms.init_rooms
+	#Rooms::ROOMS.values.each &:set_neighbors
 end
 

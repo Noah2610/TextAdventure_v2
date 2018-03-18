@@ -41,7 +41,8 @@ require File.join DIR[:rb], 'Player'
 # Initialize Player
 PLAYER = Player.new
 # Move Player to Room
-PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
+#PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
+PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 
 ### Game
 class Game

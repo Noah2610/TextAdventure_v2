@@ -30,8 +30,8 @@ DIR = {
 		term:      File.join(ROOT, 'templates/Term.rb'),
 		item:      File.join(ROOT, 'templates/Item.rb'),
 		component: File.join(ROOT, 'templates/Component.rb'),
-		room:      File.join(ROOT, 'templates/Person.rb'),
-		person:    File.join(ROOT, 'templates/Room.rb')
+		person:    File.join(ROOT, 'templates/Person.rb'),
+		room:      File.join(ROOT, 'templates/Room.rb')
 	}
 }
 
