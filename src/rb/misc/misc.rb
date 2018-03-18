@@ -64,7 +64,7 @@ def clear_log
 end
 
 ## Clear log
-clear_log  if (ENVT.dev?)
+clear_log  unless (ENVT.prod?)
 
 ## Require multiple files from directory
 def require_files dir, args = {}

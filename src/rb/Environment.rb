@@ -34,9 +34,6 @@ class Environment
 	def development?
 		return @ENV == :development
 	end
-	def dev?
-		return development?
-	end
 
 	def debug?
 		return @ENV == :debug
@@ -45,13 +42,13 @@ class Environment
 	def production?
 		return @ENV == :production
 	end
-	def prod?
-		return production?
-	end
 
 	def test?
 		return @ENV == :test
 	end
 
+	## Set some aliases
+	alias :dev?  :development?
+	alias :prod? :production?
 end
 
