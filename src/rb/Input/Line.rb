@@ -36,7 +36,7 @@ module Input
 		def initialize input, args = {}
 			@input_text = input
 			@words = create_words input, args
-			#log @words.map { |w| [w.text, w.class.name] }
+			#log @words.map { |w| [w.text, w.class.name, w.position] }
 		end
 
 		## Parse input and create proper Words::* from it
@@ -45,6 +45,8 @@ module Input
 			input_remains = input.dup  # Words::Word will be created from all remaining words (separated by word boundaries)
 			positions = []             # Save all positions to check for duplicate matches
 			prev_positions_size = -1   # Set to new position.size after each loop to check when to end
+			input_tmp = input.dup      # Input string which's words will be replaced when matched to matching same word twice
+			replchar = ?^              # Character to replace words as they are being matched, should be character unavailable to user
 
 			## Loop infinitely until no new Words are being created
 			while (positions.size > prev_positions_size)
@@ -54,13 +56,14 @@ module Input
 				when :normal
 					## VERBS
 					PLAYER.available_verbs.each do |v|
-						if (txt, pos = v.keyword? input)
+						if (txt, pos = v.keyword? input_tmp)
 							next  if (positions.include? pos)  # By doing this, we don't create duplicate Words
 							wargs = args.merge({
 								pos:  pos,
 								verb: v
 							})
 							words << Words::Verb.new(txt, self, wargs)
+							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
 						end
@@ -70,13 +73,14 @@ module Input
 				when :conversation
 					## TERMS
 					PLAYER.available_terms.each do |t|
-						if (txt, pos = t.keyword? input)
+						if (txt, pos = t.keyword? input_tmp)
 							next  if (positions.include? pos)
 							wargs = args.merge({
 								pos:  pos,
 								term: t
 							})
 							words << Words::Term.new(txt, self, wargs)
+							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
 						end
@@ -86,13 +90,14 @@ module Input
 				## INSTANCES
 				PLAYER.available_instances.each do |type, instances|
 					instances.each do |instance|
-						if (txt, pos = instance.keyword? input)
+						if (txt, pos = instance.keyword? input_tmp)
 							next  if (positions.include? pos)
 							wargs = args.merge({
 								pos:      pos,
 								instance: instance
 							})
 							words << Words.const_get(type.match(/\A(.+?)s?\z/)[1].capitalize).new(txt, self, wargs)
+							input_tmp.sub! txt, (replchar * txt.size)
 							input_remains.sub! txt, ''
 							positions << pos
 						end
@@ -103,9 +108,10 @@ module Input
 			## Create Words::Word (multiple) from remaining input
 			input_remains.scan /\b\S+\b/ do |w|
 				wargs = args.merge({
-					pos: input.index(w)
+					pos: input_tmp.index(w)
 				})
 				words << Words::Word.new(w, self, wargs)
+				input_tmp.sub! w, (replchar * w.size)
 			end
 
 			return adjust_words words
@@ -167,55 +173,79 @@ module Input
 			return @words[pos]
 		end
 
-		#TODO: Refactor this method
-		## Return next word at and with some options
 		def next_word args = {}
-			return @words.first  if (args.empty?)
-			## Return next word after position pos
-			if (args[:pos])
-				## Check for additional options, like priority of word type
-				case args[:priority]
-					## Prioritze special words (all words except Words::Word)
-				when :special
-					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
-						return word  if (word.is_not? :word)
-					end
-					return next_word pos: args[:pos], ignore: args[:ignore]
+			return nil  if (args.empty?)
+			pos      = args[:pos]
+			priority = args[:priority]
+			ignore   = args[:ignore] || []
+			return nil  if (pos.nil?)
 
-					## Prioritze Words::Word
-				when :word
-					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
-						return word  if (word.is? :word)
-					end
-					return next_word pos: args[:pos], ignore: args[:ignore]
+			ret = nil
 
-					## No priority
-				when nil
-					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
-						return word
-					end
-					return nil
-
-					## Prioritze specific special word
-				else
-					(@words.size - args[:pos] - 1).times do |n|
-						word = word_at args[:pos] + n + 1
-						next         if (args[:ignore] && (args[:ignore].any? { |i| word.text =~ i.to_regex }))
-						return word  if (word.is? args[:priority])
-					end
-					return next_word pos: args[:pos], ignore: args[:ignore]
+			@words[(pos + 1) .. -1].each do |word|
+				## Skip Word if it should be ignored
+				next  if (ignore.any? { |i| word.text =~ i.to_regex })
+				## Break out of loop if it hits another Verb
+				if (word.is? :verb)
+					break
 				end
 
-			else
-				return nil
+				case priority
+				## No priority
+				when nil
+					ret = word
+					break
+
+				## Any special Word - No Words::Word
+				when :special
+					if (word.is_not? :word)
+						ret = word
+						break
+					end
+
+				## Any Instance Words
+				when :instance
+					if (word.is_not?(:word) && word.is_not?(:verb))
+						ret = word
+						break
+					end
+
+				## Only Words::Word
+				when :word
+					if (word.is? :word)
+						ret = word
+						break
+					end
+
+				## Specific Words::* type
+				else
+					if (word.is? priority)
+						ret = word
+						break
+					end
+				end # END - CASE
+
+			end # END - LOOP
+
+			## Call method again with different priority depending on priority if no word was found
+			if (ret.nil?)
+				case priority
+				when nil
+					return ret
+				when :special
+					args[:priority] = :word
+					return next_word args
+				when :word
+					args[:priority] = nil
+					return next_word args
+				else
+					args[:priority] = :special
+					return next_word args
+				end
 			end
-		end
+
+			return ret
+		end # END - METHOD
 
 		## Call next_word multiple times until it reaches the end of Line
 		def next_words args = {}
