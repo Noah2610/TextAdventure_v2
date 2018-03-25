@@ -22,18 +22,6 @@ module Windows
 		def initialize args = {}
 			super
 
-			#@manager = args[:manager] || args[:window_manager]
-
-=begin
-			## Set position and hight relative to terminal window
-			@pos = {
-				x: 0.0,
-				y: 0.90
-			}
-			@width  = 0.75
-			@height = 0.1
-=end
-
 			## Set text instance variable
 			@text = ''
 			@text_tmp = ''
@@ -67,18 +55,6 @@ module Windows
 			## Enable keypad, fixes curses' constants
 			@window.keypad true
 		end
-
-=begin
-		## Overwrite height with fixed hight
-		def height
-			return 3
-		end
-
-		## Overwrite position y with fixed position
-		def pos_y
-			return screen_size(:h) - height
-		end
-=end
 
 		## Change prompt
 		def prompt= target = :normal

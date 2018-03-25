@@ -1,12 +1,10 @@
 
 ## Require other Window files
 require File.join DIR[:windows], 'Window'
+require File.join DIR[:windows], 'Color'
 require File.join DIR[:windows], 'Input'
-require File.join DIR[:windows], 'Output'
-require File.join DIR[:windows], 'PrimaryOut'
-require File.join DIR[:windows], 'ConversationOut'
-require File.join DIR[:windows], 'UserOut'
-require File.join DIR[:windows], 'StatusOut'
+require File.join DIR[:windows], 'Outputs/Output'
+require_files File.join(DIR[:windows], 'Outputs'), except: 'Output'
 
 class Windows::Manager
 	## The order in which Windows' dimenstions and positions should be updated
@@ -23,10 +21,10 @@ class Windows::Manager
 		@windows = {
 			input:          Windows::Input.new,
 			outputs: {
-				primary:      Windows::PrimaryOut.new,
-				conversation: Windows::ConversationOut.new,
-				user:         Windows::UserOut.new,
-				status:       Windows::StatusOut.new
+				primary:      Windows::Outputs::Primary.new,
+				conversation: Windows::Outputs::Conversation.new,
+				user:         Windows::Outputs::User.new,
+				status:       Windows::Outputs::Status.new
 			}
 		}
 	end
