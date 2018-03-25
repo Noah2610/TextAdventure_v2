@@ -30,7 +30,7 @@ module Windows
 			@window.clear
 
 			## Don't draw if too small or shouldn't show
-			if (@hidden || (width < MIN_WIDTH || height < MIN_HEIGHT))
+			if (hidden?)
 				return false
 			end
 
@@ -118,23 +118,6 @@ module Windows
 			@window.refresh
 
 			return true
-		end
-
-		## Check if Window is hidden
-		def hidden?
-			return !!@hidden
-		end
-
-		## Hide Window
-		def hide
-			@hidden = true
-			return hidden?
-		end
-
-		## Show Window
-		def show
-			@hidden = false
-			return !hidden?
 		end
 
 		def update

@@ -9,8 +9,9 @@ module Windows
 
 	class Window
 		def initialize args = {}
-			@width  = args[:width]   || args[:w] || 0.0
-			@height = args[:height]  || args[:h] || 0.0
+			@hidden = false
+			@width  = args[:width]   || args[:w] || 1.0
+			@height = args[:height]  || args[:h] || 1.0
 			@pos    = ( args[:pos]   || (
 				(args[:x] && args[:y]) ? { x: args[:x], y: args[:y] } : { x: 0.0, y: 0.0 }
 			))
@@ -25,14 +26,43 @@ module Windows
 			)
 		end
 
+		## Set width, height, and position
+		def set_width amount, type = :percent
+			case type
+			when :percent, :perc
+				@width = (screen_size(:w) * amount).floor
+			when :absolute, :abs
+				@width = amount
+			end
+		end
+		def set_height amount, type = :percent
+			case type
+			when :percent, :perc
+				@height = [(screen_size(:h) * amount).floor, 3].max
+			when :absolute, :abs
+				@height = amount
+			end
+		end
+		def set_pos target, amount, type = :percent
+			return nil  unless (@pos.keys.include? target)
+			screen_axis = :w  if (target == :x)
+			screen_axis = :h  if (target == :y)
+			case type
+			when :percent, :perc
+				@pos[target] = (screen_size(screen_axis) * amount).floor
+			when :absolute, :abs
+				@pos[target] = amount
+			end
+		end
+
 		## Return wanted width for window
 		def width
-			return (screen_size(:w) * @width).round
+			return @width
 		end
 
 		## Return wanted height for window
 		def height
-			return [(screen_size(:h) * @height).round, 3].max
+			return @height
 		end
 
 		## Return wanted position in screen for window
@@ -41,13 +71,13 @@ module Windows
 			case target
 			when :x
 				return pos_x  if (defined? pos_x)
-				ret = (screen_size(:w) * @pos[:x]).round
+				ret = @pos[:x]
 				if (ret + width > screen_size(:w))
 					ret = screen_size(:w) - width
 				end
 			when :y
 				return pos_y  if (defined? pos_y)
-				ret = (screen_size(:h) * @pos[:y]).round
+				ret = @pos[:y]
 				if (ret + height > screen_size(:h))
 					ret = screen_size(:h) - height
 				end
@@ -76,7 +106,28 @@ module Windows
 			end
 			return ret
 		end
-	end
+
+		## Check if Window is hidden
+		def hidden?
+			return (!!@hidden || (width < MIN_WIDTH || height < MIN_HEIGHT))
+		end
+		## Check if Window is shown
+		def shown?
+			return !hidden?
+		end
+
+		## Hide Window
+		def hide
+			@hidden = true
+			return hidden?
+		end
+
+		## Show Window
+		def show
+			@hidden = false
+			return shown?
+		end
+	end # END - CLASS
 
 
 	module Color
@@ -246,6 +297,7 @@ module Windows
 		def attr_reset
 			@window.attrset Curses::A_NORMAL
 		end
-	end
-end
+
+	end # END - MODULE Color
+end # END - MODULE Windows
 

@@ -4,6 +4,7 @@
 class Windows::ConversationOut < Windows::Output
 	def initialize args = {}
 		super
+=begin
 		## Set position and hight relative to terminal window
 		@pos = {
 			x: 0.0,
@@ -11,6 +12,7 @@ class Windows::ConversationOut < Windows::Output
 		}
 		@width  = 0.75
 		@height = 0.35
+=end
 
 		@border = [?#, ?#]
 		@border_color = 'magenta'
@@ -21,6 +23,11 @@ class Windows::ConversationOut < Windows::Output
 		@prompt = SETTINGS.output['prompt_conversation']
 	end
 
+	def redraw
+		log 'draw'  if (super)
+	end
+
+=begin
 	## Overwrite height to be half of PrimaryOut's height
 	def height
 		return ((screen_size(:h) - 5).to_f * 0.5).floor
@@ -30,6 +37,7 @@ class Windows::ConversationOut < Windows::Output
 	def pos_y
 		return ((screen_size(:h) - 5).to_f * 0.5).ceil
 	end
+=end
 
 	## Overwrite print to include prompt if in conversation mode
 	def print text, args = {}

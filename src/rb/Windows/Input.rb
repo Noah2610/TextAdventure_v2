@@ -22,6 +22,9 @@ module Windows
 		def initialize args = {}
 			super
 
+			#@manager = args[:manager] || args[:window_manager]
+
+=begin
 			## Set position and hight relative to terminal window
 			@pos = {
 				x: 0.0,
@@ -29,6 +32,7 @@ module Windows
 			}
 			@width  = 0.75
 			@height = 0.1
+=end
 
 			## Set text instance variable
 			@text = ''
@@ -64,6 +68,7 @@ module Windows
 			@window.keypad true
 		end
 
+=begin
 		## Overwrite height with fixed hight
 		def height
 			return 3
@@ -73,6 +78,7 @@ module Windows
 		def pos_y
 			return screen_size(:h) - height
 		end
+=end
 
 		## Change prompt
 		def prompt= target = :normal
@@ -137,7 +143,7 @@ module Windows
 				@history << @text.dup
 			end
 			## Send @text to game to process
-			$game.handle_input @text
+			GAME.handle_input @text
 			clear_text
 		end
 
@@ -173,7 +179,7 @@ module Windows
 			topborder_string += "{ATTR:#{@border_attr}}"    if (@border_attr)
 			topborder_string += ?+
 			topborder_string.sub! '}{', ';'                 if (@border_color && @border_attr)
-			topborder_string += "#{'-' * (width - 2)}"
+			topborder_string += "#{'-' * ([width - 2, 0].max)}"
 			topborder_string += ?+
 			topborder_string += "{RESET}"                   if (@border_color || @border_attr)
 			topborder = process_attribute_codes topborder_string
@@ -234,7 +240,7 @@ module Windows
 
 		def update
 			redraw
-			read    unless ($game_loop == 0)
+			read    unless (GAME.get_tick == 0)
 		end
 	end
 end

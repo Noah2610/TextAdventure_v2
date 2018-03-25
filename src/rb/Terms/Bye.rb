@@ -6,7 +6,7 @@ class Terms::Bye < Terms::Term
 
 	## Exit conversation
 	def action args = {}
-		$game.queue 1, PLAYER, :conversation_end, { keep_window: true }
+		GAME.queue 1, PLAYER, :conversation_end, { keep_window: true }
 		return super
 	end
 end

@@ -6,6 +6,7 @@ class Windows::StatusOut < Windows::Output
 	def initialize args = {}
 		super
 
+=begin
 		## Set position and hight relative to terminal window
 		@pos = {
 			x: 0.75,
@@ -13,6 +14,7 @@ class Windows::StatusOut < Windows::Output
 		}
 		@width  = 0.25
 		@height = 1.0
+=end
 
 		@padding = 4
 		@border = [?#, ?=]
@@ -21,7 +23,7 @@ class Windows::StatusOut < Windows::Output
 	def create_lines
 		@lines = [
 			PLAYER.current_room.name,
-			"{COLOR:red}#{(?- * (size(:w) - (@padding * 2)))}"
+			"{COLOR:red}#{(?- * ([size(:w) - (@padding * 2), 0].max))}"
 		]
 
 		if (PLAYER.any_items?)
@@ -31,7 +33,7 @@ class Windows::StatusOut < Windows::Output
 	end
 
 	def update
-		create_lines
+		create_lines  if (shown?)
 		redraw
 	end
 end

@@ -5,6 +5,7 @@ class Windows::UserOut < Windows::Output
 	def initialize args = {}
 		super
 
+=begin
 		## Set position and hight relative to terminal window
 		@pos = {
 			x: 0.0,
@@ -12,6 +13,7 @@ class Windows::UserOut < Windows::Output
 		}
 		@width  = 0.75
 		@height = 0.2
+=end
 
 		@padding_default = 4
 		@padding_h = 1
@@ -21,6 +23,7 @@ class Windows::UserOut < Windows::Output
 		@border_attr = SETTINGS.input['border_attr']
 	end
 
+=begin
 	## Overwrite height
 	def height
 		#return screen_size(:h) - pos(:y) - 3
@@ -33,6 +36,7 @@ class Windows::UserOut < Windows::Output
 		#return (screen_size(:h) * @pos[:y]).round
 		return (screen_size(:h) - 2 - height)
 	end
+=end
 
 	## Overwrite print to include prompt if in conversation mode
 	def print text, args = {}
@@ -40,7 +44,7 @@ class Windows::UserOut < Windows::Output
 		if (PLAYER.mode? :conversation)
 			prompt = SETTINGS.input['prompt_conversation']
 			text[0] = "#{prompt}#{text[0]}"
-			@padding = $game.window(:input).padding
+			@padding = GAME.window(:input).padding
 		else
 			@padding = @padding_default  unless (@padding == @padding_default)
 		end

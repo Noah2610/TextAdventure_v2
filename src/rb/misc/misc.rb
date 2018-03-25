@@ -42,6 +42,7 @@ def log *args
 	filepath = SETTINGS.logfile
 
 	file = File.new filepath, opts[:mode] || default_mode
+	# Print tick
 	msgs.each_with_index do |msg, index|
 		unless (ENVT.prod? || ENVT.test?)
 			m = msg.ai(LOG_AP_OPTIONS)  if (opts[:ap].nil? || opts[:ap] == true)
@@ -90,5 +91,15 @@ end
 def read_yaml file
 	return nil  unless (File.file? file)
 	return YAML.load_file file
+end
+
+## Sort a Hash by its key names in the order of given Array
+def sort_hash hash, args
+	return nil  unless (args.is_a?(Hash) && args.key?(:by) && args[:by].is_a?(Array))
+	return hash.sort do |item_a, item_b|
+		index_a = args[:by].index item_a.first
+		index_b = args[:by].index item_b.first
+		next index_a - index_b
+	end .to_h
 end
 

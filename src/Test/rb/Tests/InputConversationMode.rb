@@ -32,8 +32,8 @@ class TestInputConversationMode < MiniTest::Test
 		reset
 
 		output = process_line 'Good Bye friend!'
-		$game_loop += 1
-		$game.handle_queue
+		GAME.tick_increase
+		GAME.handle_queue
 
 		assert_equal :normal, PLAYER.mode, "Player should have left conversation mode: #{output}"
 	end

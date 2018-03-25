@@ -1,13 +1,7 @@
 
 ### Require Files
-## curses windows
-require File.join DIR[:windows], 'Window'
-require File.join DIR[:windows], 'Input'
-require File.join DIR[:windows], 'Output'
-require File.join DIR[:windows], 'PrimaryOut'
-require File.join DIR[:windows], 'ConversationOut'
-require File.join DIR[:windows], 'UserOut'
-require File.join DIR[:windows], 'StatusOut'
+## curses windows - window manager
+require File.join DIR[:windows], 'Manager'
 
 ## Input stuff
 require File.join DIR[:input], 'Input'
@@ -47,19 +41,11 @@ PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 ### Game
 class Game
 	def initialize
+		## Global game tick variable, increases by one every time #update is called
+		@tick = 0
+
 		## Method queue
 		@queue = {}
-
-		## Initialize main Windows
-		@windows = {
-			input:          Windows::Input.new,
-			outputs: {
-				primary:      Windows::PrimaryOut.new,
-				conversation: Windows::ConversationOut.new,
-				user:         Windows::UserOut.new,
-				status:       Windows::StatusOut.new
-			}
-		}
 
 		## Initialize Curses screen
 		unless (ENVT.debug? || ENVT.test?)
@@ -70,12 +56,13 @@ class Game
 			Windows::Color.init
 			## Set Escape delay
 			Curses.ESCDELAY = SETTINGS.input['ESCDELAY']
-
-			## Initialise Curses Windows
-			@windows[:input].init_curses
-			@windows[:outputs].values.each &:init_curses
 		end
+	end
 
+	def init
+		## Initialize Curses Window Manager
+		@window_manager = Windows::Manager.new
+		@window_manager.init_curses
 		update  if (running?)
 	end
 
@@ -97,22 +84,20 @@ class Game
 
 	## Return Window
 	def window target
-		return @windows[target]            if (@windows[target])
-		return @windows[:outputs][target]  if (@windows[:outputs][target])
-		return nil
+		return @window_manager.get_window target
 	end
 
 	## Add methods to queue; queueing system
 	#  When to execute          On which object  The method to call;  Optional parameters
-	#  according to $game_loop  to call method   either Symbol        to be passed to
-	#  ($game_loop + at)             on          or String            method when called
+	#  according to tick        to call method   either Symbol        to be passed to
+	#  (GAME.get_tick + at)          on          or String            method when called
 	#         vv                     vv             vvvv                 vvvvv
 	def queue at,                    on,            meth,                *args
 		unless (on.methods.include? meth)
 			log "WARNING: Tried to queue non-existent method '#{meth.to_s}'!"
 			return false
 		end
-		tick = $game_loop + at
+		tick = GAME.get_tick + at
 		if (@queue[tick].is_a? Array)
 			## Method has been set already, push to array
 			@queue[tick] << [on, meth, args]
@@ -124,12 +109,22 @@ class Game
 
 	## Check if method is ready for queue and execute
 	def handle_queue
-		if (meths = @queue[$game_loop])
+		if (meths = @queue[get_tick])
 			return meths.map do |meth|
 				next meth[0].method(meth[1]).call(*meth[2])
 			end .all?
 		end
 		return nil
+	end
+
+	## Get current game tick
+	def get_tick
+		return @tick
+	end
+
+	## Increase game tick (by one)
+	def tick_increase amount = 1
+		@tick += amount
 	end
 
 	def running?
@@ -142,19 +137,18 @@ class Game
 
 		Curses.clear
 		Curses.refresh
-		# Update Output Windows
-		@windows[:outputs].values.each &:update
-		# Update Input Window - Should be called last because it reads input
-		@windows[:input].update
+		@window_manager.update
+
+		## Increase game tick counter
+		tick_increase
 	end
 end
 
 ### Start Game
-$game_loop = 0
-$game = Game.new
-while ($game.running?)
-	$game.update
-	$game_loop += 1
+GAME = Game.new
+GAME.init
+while (GAME.running?)
+	GAME.update
 end
 
 ### Exit Curses mode

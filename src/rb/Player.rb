@@ -119,8 +119,8 @@ class Player
 		return nil  if (person.is_not? :person)
 		@mode = :conversation
 		@talking_to = person
-		$game.window(:conversation).show
-		$game.window(:input).prompt = :conversation
+		GAME.window(:conversation).show
+		GAME.window(:input).prompt = :conversation
 	end
 
 	## Leave conversation
@@ -130,13 +130,13 @@ class Player
 		@mode = :normal
 		@talking_to = nil
 		unless (args[:keep_window])
-			$game.window(:conversation).hide
-			$game.window(:conversation).clear
+			GAME.window(:conversation).hide
+			GAME.window(:conversation).clear
 		else
-			$game.queue 1, $game.window(:conversation), :hide
-			$game.queue 1, $game.window(:conversation), :clear
+			GAME.queue 1, GAME.window(:conversation), :hide
+			GAME.queue 1, GAME.window(:conversation), :clear
 		end
-		$game.window(:input).prompt = :normal
+		GAME.window(:input).prompt = :normal
 	end
 
 	## Person Player is talking to
