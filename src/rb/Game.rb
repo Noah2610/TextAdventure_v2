@@ -1,40 +1,12 @@
 
-### Require Files
-## curses windows - window manager
-require File.join DIR[:windows], 'Manager'
+## Require all Game files (Verbs, Instances, etc.)
+require File.join DIR[:misc], 'require_game_files'
 
-## Input stuff
-require File.join DIR[:input], 'Input'
-require File.join DIR[:input], 'Line'
-require File.join DIR[:input], 'Words'
-
-## Keywords
-require File.join DIR[:rb], 'Keywords'
-
-## Inventory
-require File.join DIR[:rb], 'Inventory'
-
-## Verbs
-require File.join DIR[:verbs], 'Verb'
-require_files DIR[:verbs], except: 'Verb'
-# Initialize all verbs
+# Initialize Verbs
 Verbs::VERBS = Verbs.init_verbs
-
-## Terms
-require File.join DIR[:terms], 'Term'
-
-## Events
-require File.join DIR[:events], 'Event'
-
-## Instances (Items, Persons, Rooms, Components)
-require File.join DIR[:instances], 'Instance'
-
-## Player
-require File.join DIR[:rb], 'Player'
-
-# Initialize Player
+## Initialize Player
 PLAYER = Player.new
-# Move Player to Room
+## Move Player to Room
 #PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
 PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 
@@ -66,6 +38,28 @@ class Game
 		update  if (running?)
 	end
 
+	## Return current Curses screen size
+	def self.screen_size target = :all
+		ret = nil
+		case target
+		when :width, :w
+			ret = Curses.cols
+		when :height, :h
+			ret = Curses.lines
+		when :all
+			ret = {
+				w: self.class.screen_size(:w),
+				h: self.class.screen_size(:h)
+			}
+		end
+		return ret
+	end
+
+	def screen_size target = :all
+		return self.class.screen_size target
+	end
+
+	## Handle submitted User input
 	def handle_input input
 		## Create Input::Line from user input
 		line = Input::Line.new input

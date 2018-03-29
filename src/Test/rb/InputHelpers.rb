@@ -20,7 +20,7 @@ module TestInputHelpers
 			Parsley:          @rooms[:ParsleysTruck].persons.first
 		}
 		PLAYER.conversation_end
-		PLAYER.goto! :ParsleysTruck
+		PLAYER.goto! @rooms[:ParsleysTruck]
 		PLAYER.items_clear
 	end
 

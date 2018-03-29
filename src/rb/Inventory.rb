@@ -17,8 +17,9 @@ module Inventory
 				@inventory.item_add Instances::Items.const_get(item).new(belongs_to: self)
 			else
 				## Item doesn't exist, display warning
-				classtype, clazz = get_instance_type_and_class
-				log "WARNING: #{classtype} '#{clazz}' tried to load Item '#{itemstr}' which doesn't exist."
+				instance_type = get_instance_type_classname
+				classname     = get_classname
+				log "WARNING: #{instance_type} '#{classname}' tried to load Item '#{itemstr}' which doesn't exist."
 			end
 		end  if (@data && @data['items'])
 	end
@@ -109,7 +110,7 @@ module Inventory
 
 	## Can take Item?
 	def take? item
-		if (is?(:player) || @can_take.include?(item.get_instance_type_and_class[1].to_sym))
+		if (is?(:player) || @can_take.include?(item.get_classname.to_sym))
 			return true
 		end
 		return false

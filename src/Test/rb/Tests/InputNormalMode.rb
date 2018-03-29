@@ -28,7 +28,7 @@ class TestInputNormalMode < MiniTest::Test
 
 		output = process_line 'Go to Dark Field'
 
-		assert_equal 'Cornfield', PLAYER.current_room.get_instance_type_and_class[1], "Player should have gone to unknown Room: #{output}"
+		assert_equal 'Cornfield', PLAYER.current_room.get_classname, "Player should have gone to unknown Room: #{output}"
 	end
 
 	def test_goto_known_room
@@ -37,7 +37,7 @@ class TestInputNormalMode < MiniTest::Test
 
 		output = process_line 'Go to Cornfield'
 
-		assert_equal 'Cornfield', PLAYER.current_room.get_instance_type_and_class[1], "Player should have gone to known Room: #{output}"
+		assert_equal 'Cornfield', PLAYER.current_room.get_classname, "Player should have gone to known Room: #{output}"
 	end
 
 	## COMPONENTS ##

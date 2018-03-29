@@ -14,7 +14,7 @@ class Player
 		## Read savefile content
 
 		## Current Room
-		@room = nil
+		@current_room = nil
 
 		## Interaction mode, available:
 		#   :normal       - normal mode, use Verbs to interact with anything
@@ -52,11 +52,6 @@ class Player
 		return nil
 	end
 
-	## Return current Room
-	def current_room
-		return @room
-	end
-
 	## Add Item to Inventory; super actually adds it
 	def item_add item
 		ret = super
@@ -66,21 +61,28 @@ class Player
 
 	## Goto other Room; Check if that's possible first
 	def goto room, args = {}
-		return false  unless (args[:force] || current_room.can_goto?(room))
-		if    (room.is_a? Instances::Rooms::Room)
-			@room = room
-		elsif (room.is_a? Class)
-			@room = Instances::Rooms::ROOMS.values.map { |r| r  if (r.is_a? room) } .reject { |x| !x } .first
-		elsif (room.is_a?(Symbol) || room.is_a?(String))
-			@room = Instances::Rooms::ROOMS[room.to_sym]
-		end
-		@room.went!   unless (@room.nil?)
-		return @room
+		return false  unless (can_goto?(room) && current_room.can_goto?(room))
+		@current_room = room
+		goto! @current_room
+		return @current_room
+	end
+
+	## Check if Player can goto Room; check if Room is proper Room
+	def can_goto? room
+		return false  unless (room.is_a?(Instances::Rooms::Room))
+		return true
 	end
 
 	## Force goto Room
 	def goto! room
-		return goto room, force: true
+		@current_room = room
+		@current_room.went!
+		return current_room
+	end
+
+	## Return current Room
+	def current_room
+		return @current_room
 	end
 
 	## Return available Verbs (usually all Verbs)

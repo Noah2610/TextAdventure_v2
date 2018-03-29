@@ -18,41 +18,12 @@ module Windows
 			@border = [?|, ?-]
 		end
 
+		## Init Curses Window
 		def init_curses
-			## Init Curses Window
 			@window = Curses::Window.new(
 				height,  width,
 				pos(:y), pos(:x)
 			)
-		end
-
-		## Set width, height, and position
-		def set_width amount, type = :percent
-			case type
-			when :percent, :perc
-				@width = (screen_size(:w) * amount).floor
-			when :absolute, :abs
-				@width = amount
-			end
-		end
-		def set_height amount, type = :percent
-			case type
-			when :percent, :perc
-				@height = [(screen_size(:h) * amount).floor, 3].max
-			when :absolute, :abs
-				@height = amount
-			end
-		end
-		def set_pos target, amount, type = :percent
-			return nil  unless (@pos.keys.include? target)
-			screen_axis = :w  if (target == :x)
-			screen_axis = :h  if (target == :y)
-			case type
-			when :percent, :perc
-				@pos[target] = (screen_size(screen_axis) * amount).floor
-			when :absolute, :abs
-				@pos[target] = amount
-			end
 		end
 
 		## Return wanted width for window
@@ -72,14 +43,14 @@ module Windows
 			when :x
 				return pos_x  if (defined? pos_x)
 				ret = @pos[:x]
-				if (ret + width > screen_size(:w))
-					ret = screen_size(:w) - width
+				if (ret + width > GAME.screen_size(:w))
+					ret = GAME.screen_size(:w) - width
 				end
 			when :y
 				return pos_y  if (defined? pos_y)
 				ret = @pos[:y]
-				if (ret + height > screen_size(:h))
-					ret = screen_size(:h) - height
+				if (ret + height > GAME.screen_size(:h))
+					ret = GAME.screen_size(:h) - height
 				end
 			when :all
 				ret = {
@@ -105,6 +76,37 @@ module Windows
 				}
 			end
 			return ret
+		end
+
+		## Set width, height, and position
+		def set_width amount, type = :percent
+			case type
+			when :percent, :perc
+				@width = (GAME.screen_size(:w) * amount).floor
+			when :absolute, :abs
+				@width = amount
+			end
+		end
+
+		def set_height amount, type = :percent
+			case type
+			when :percent, :perc
+				@height = [(GAME.screen_size(:h) * amount).floor, 3].max
+			when :absolute, :abs
+				@height = amount
+			end
+		end
+
+		def set_pos target, amount, type = :percent
+			return nil  unless (@pos.keys.include? target)
+			screen_axis = :w  if (target == :x)
+			screen_axis = :h  if (target == :y)
+			case type
+			when :percent, :perc
+				@pos[target] = (GAME.screen_size(screen_axis) * amount).floor
+			when :absolute, :abs
+				@pos[target] = amount
+			end
 		end
 
 		## Check if Window is hidden

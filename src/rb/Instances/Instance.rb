@@ -1,24 +1,28 @@
 
 ## Instances are:
-# Items
-# Persons
-# Rooms
-# Components
+#   Items
+#   Persons
+#   Rooms
+#   Components
 
 module Instances
 	### Module Methods
 	## Read all Instance data files and return them
 	## Group by Instance type and classnames
 	def self.load_data dir = DIR[:data]
-		return ( [:Items, :Components, :Persons, :Rooms].map do |type|
-			instance = self.const_get(type)
-			next [type, ( instance.constants.map do |classname|
-				next nil  unless (instance.const_get(classname).is_a? Class)
-				data = read_yaml(File.join(dir[type.downcase], "#{classname.to_s}.yml"))
-				next [classname, data]  unless (data.nil?)
-				log "WARNING: #{type.match(/\A(.+)s\z/)[1]} '#{classname.to_s}' has no data file!"
-				next nil
-			end .reject { |x| !x } .to_h ) ]
+		return ( [:Items, :Components, :Persons, :Rooms].map do |instance_type|
+			instance = self.const_get(instance_type)
+			next [
+				instance_type,
+				instance.constants.map do |classname|
+					next nil  unless (instance.const_get(classname).is_a? Class)
+					filepath = File.join dir[instance_type.downcase], "#{classname.to_s}.yml"
+					data = read_yaml filepath
+					next [classname, data]  unless (data.nil?)
+					log "WARNING: #{instance_type.match(/\A(.+)s\z/)[1]} '#{classname.to_s}' has no data file!"
+					next nil
+				end .reject { |x| !x } .to_h
+			]
 		end .to_h )
 	end
 
@@ -49,20 +53,20 @@ module Instances
 
 		## Check if Instance class is Instance type target_type and optionally is class target_class
 		def self.is? target_type, target_class = nil
-			target_type = target_type.downcase.to_sym
+			target_type  = target_type.downcase.to_sym
 			target_class = target_class.downcase.to_sym  if (target_class)
-			type, clazz = self.name.sub('Instances::','').split('::')
-			type = type.match(/\A(.+)s\z/)[1].downcase.to_sym
-			clazz = clazz.downcase.to_sym
+			type, clazz  = self.name.sub('Instances::','').split('::')
+			type         = type.match(/\A(.+)s\z/)[1].downcase.to_sym
+			clazz        = clazz.downcase.to_sym
 			return (type == target_type)                 unless (target_class)
 			return (type == target_type && clazz == target_class)
 		end
 		def self.is_not? target_type, target_class = nil
-			target_type = target_type.downcase.to_sym
+			target_type  = target_type.downcase.to_sym
 			target_class = target_class.downcase.to_sym  if (target_class)
-			type, clazz = self.name.sub('Instances::','').split('::')
-			type = type.match(/\A(.+)s\z/)[1].downcase.to_sym
-			clazz = clazz.downcase.to_sym
+			type, clazz  = self.name.sub('Instances::','').split('::')
+			type         = type.match(/\A(.+)s\z/)[1].downcase.to_sym
+			clazz        = clazz.downcase.to_sym
 			return (type != target_type)                 unless (target_class)
 			return (type != target_type && clazz != target_class)
 		end
@@ -73,11 +77,30 @@ module Instances
 			self.class.is_not? target_type, target_class
 		end
 
-		## Return Instance type's classname and own classname, ex.:
-		#   Instances::Items::Apple.new.get_instance_type_and_class
-		#   => ['Item', 'Apple']
-		def get_instance_type_and_class
-			return self.class.name.match(/\AInstances::(.+?)s::(.+)\z/).to_a[1 .. -1]
+		## Return Instance type's classname
+		def get_instance_type_classname
+			return self.class.name.match(/\AInstances::(.+?)s::.+\z/).to_a[1]
+		end
+
+		## Return Instance's classname
+		def get_classname
+			return self.class.name.match(/\AInstances::.+?s::(.+)\z/).to_a[1]
+		end
+
+		## Check if Instance is known or unknown
+		def known?
+			return !!@known
+		end
+		def unknown?
+			return !@known
+		end
+
+		## Mark Instance as known or unknown
+		def known!
+			return @known = true
+		end
+		def unknown!
+			return @known = false
 		end
 
 		## Name of Instance
@@ -92,6 +115,12 @@ module Instances
 			return [@data['description_unknown']].flatten.sample  if (unknown?)
 		end
 
+		## Keywords of Instance
+		def keywords
+			return @data['keywords']                              if (known?)
+			return @data['keywords_unknown']                      if (unknown?)
+		end
+
 		## Return text(s) defined in config and perform substitution if instances given
 		def text target, *words
 			words = [words].flatten
@@ -101,34 +130,12 @@ module Instances
 			return txt
 		end
 
-		## Keywords of Instance
-		def keywords
-			return @data['keywords']                              if (known?)
-			return @data['keywords_unknown']                      if (unknown?)
-		end
-
-		## Check if Instance is known, ex.:
-		def known?
-			return !!@known
-		end
-		def unknown?
-			return !@known
-		end
-
-		## Mark Instance as known
-		def known!
-			return @known = true
-		end
-		def unknown!
-			return @known = false
-		end
-
-		## Check if Instance has an Inventory
+		## Check if Instance has an Inventory (fallback methods, will be overwritten when necessary)
 		def has_inventory?
 			return false
 		end
 
-		## Check if Instance can be opened and closed
+		## Check if Instance can be opened and closed (fallback methods, will be overwritten when necessary)
 		def can_open?
 			return false
 		end
@@ -163,6 +170,7 @@ module Instances
 		DATA = self.load_data DIR[:test][:data]
 	end
 
+	# CLEANUP
 	#TODO:
 	## Load Rooms specified in Player savefile
 	#TODO:

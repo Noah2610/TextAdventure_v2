@@ -52,15 +52,15 @@ module Input
 			while (positions.size > prev_positions_size)
 				prev_positions_size = positions.size
 				case PLAYER.mode
-				## NORMAL mode
+					## NORMAL mode
 				when :normal
 					## EVENTS
-					next  if ( PLAYER.available_events.map do |e|
-						if (txt, pos = e.keyword? input_tmp)
+					next  if ( PLAYER.available_events.map do |event|
+						if (txt, pos = event.keyword? input_tmp)
 							next true  if (positions.include? pos)  # By doing this, we don't create duplicate Words
 							wargs = args.merge({
 								pos:  pos,
-								event: e
+								event: event
 							})
 							words << Words::Event.new(txt, self, wargs)
 							input_tmp.sub! txt, (replchar * txt.size)
@@ -71,12 +71,12 @@ module Input
 					end ).any?
 
 					## VERBS
-					next  if ( PLAYER.available_verbs.map do |v|
-						if (txt, pos = v.keyword? input_tmp)
+					next  if ( PLAYER.available_verbs.map do |verb|
+						if (txt, pos = verb.keyword? input_tmp)
 							next true  if (positions.include? pos)
 							wargs = args.merge({
 								pos:  pos,
-								verb: v
+								verb: verb
 							})
 							words << Words::Verb.new(txt, self, wargs)
 							input_tmp.sub! txt, (replchar * txt.size)
@@ -86,15 +86,15 @@ module Input
 						end
 					end ).any?
 
-				## CONVERSATION mode
+					## CONVERSATION mode
 				when :conversation
 					## TERMS
-					next  if ( PLAYER.available_terms.map do |t|
-						if (txt, pos = t.keyword? input_tmp)
+					next  if ( PLAYER.available_terms.map do |term|
+						if (txt, pos = term.keyword? input_tmp)
 							next true  if (positions.include? pos)
 							wargs = args.merge({
 								pos:  pos,
-								term: t
+								term: term
 							})
 							words << Words::Term.new(txt, self, wargs)
 							input_tmp.sub! txt, (replchar * txt.size)
@@ -151,21 +151,28 @@ module Input
 		def process
 			case PLAYER.mode
 			when :normal
-				## Process for normal mode
-				return [verbs, events].flatten.sort do |w1, w2|
-					next w1.position - w2.position
-				end .map do |word|
-					next word.action
-				end .reject { |x| !x }
-
+				return process_normal
 			when :conversation
-				## Process for conversation mode
-				person = PLAYER.conversation_person
-				return nil  if (person.nil?)
-				return terms.map do |x|
-					next x.action
-				end .reject { |x| !x }
+				return process_conversation
 			end
+		end
+
+		## Process for normal mode
+		def process_normal
+			return [verbs, events].flatten.sort do |w1, w2|
+				next w1.position - w2.position
+			end .map do |word|
+				next word.action
+			end .reject { |x| !x }
+		end
+
+		## Process for conversation mode
+		def process_conversation
+			person = PLAYER.conversation_person
+			return nil  if (person.nil?)
+			return terms.map do |x|
+				next x.action
+			end .reject { |x| !x }
 		end
 
 		## Return all Verbs in @words
@@ -199,6 +206,11 @@ module Input
 			return @words[pos]
 		end
 
+		## Get next_word according to parameter args
+		#   pos      : position pos + 1 to start searching for Word
+		#   priority : which Word type to prioritize (:special, :word, :item, :component, :person, :room, :term)
+		#   ignore   : Word texts to ignore
+		#TODO: Split into smaller methods
 		def next_word args = {}
 			return nil  if (args.empty?)
 			pos      = args[:pos]
@@ -217,33 +229,33 @@ module Input
 				end
 
 				case priority
-				## No priority
+					## No priority
 				when nil
 					ret = word
 					break
 
-				## Any special Word - No Words::Word
+					## Any special Word - No Words::Word
 				when :special
 					if (word.is_not? :word)
 						ret = word
 						break
 					end
 
-				## Any Instance Words
+					## Any Instance Words
 				when :instance
 					if (word.is_not?(:word) && word.is_not?(:verb))
 						ret = word
 						break
 					end
 
-				## Only Words::Word
+					## Only Words::Word
 				when :word
 					if (word.is? :word)
 						ret = word
 						break
 					end
 
-				## Specific Words::* type
+					## Specific Words::* type
 				else
 					if (word.is? priority)
 						ret = word
@@ -273,6 +285,7 @@ module Input
 			return ret
 		end # END - METHOD
 
+		#TODO: Cleanup, deprecated
 		## Call next_word multiple times until it reaches the end of Line
 		def next_words args = {}
 			return nil  if (args.empty?)

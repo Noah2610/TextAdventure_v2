@@ -38,8 +38,9 @@ module Instances
 						next [person, Instances::Persons.const_get(person).new]
 					else
 						## Person doesn't exist, display warning
-						classtype, clazz = get_instance_type_and_class
-						log "WARNING: #{classtype} '#{clazz}' tried to load Person '#{personstr}' which doesn't exist."
+						instance_type = get_instance_type_classname
+						classname     = get_classname
+						log "WARNING: #{instance_type} '#{classname}' tried to load Person '#{personstr}' which doesn't exist."
 						next nil
 					end
 				end .reject { |x| !x } .to_h  if (@data['persons'])
@@ -53,8 +54,9 @@ module Instances
 						next [component, Instances::Components.const_get(component).new]
 					else
 						## Component doesn't exist, display warning
-						classtype, clazz = get_instance_type_and_class
-						log "WARNING: #{classtype} '#{clazz}' tried to load Component '#{componentstr}' which doesn't exist."
+						instance_type = get_instance_type_classname
+						classname     = get_classname
+						log "WARNING: #{instance_type} '#{classname}' tried to load Component '#{componentstr}' which doesn't exist."
 						next nil
 					end
 				end .reject { |x| !x } .to_h  if (@data['components'])
@@ -68,14 +70,15 @@ module Instances
 						next [event, Events.const_get(event).new(eventdata)]
 					else
 						## Event doesn't exist, display warning
-						classtype, clazz = get_instance_type_and_class
-						log "WARNING: #{classtype} '#{clazz}' tried to load Event '#{eventstr}' which doesn't exist."
+						instance_type = get_instance_type_classname
+						classname     = get_classname
+						log "WARNING: #{instance_type} '#{classname}' tried to load Event '#{eventstr}' which doesn't exist."
 						next nil
 					end
 				end .reject { |x| !x } .to_h  if (@data['events'])
 			end
 
-			## Default items method
+			## Default items method (fallback)
 			def items
 				nil
 			end
@@ -105,7 +108,7 @@ module Instances
 				return [
 					super,
 					@data['keywords_self'],
-					PLAYER.current_room.keywords_neighbors(get_instance_type_and_class[1])
+					PLAYER.current_room.keywords_neighbors(get_classname)
 				].flatten.reject { |x| !x }
 			end
 
@@ -122,6 +125,7 @@ module Instances
 
 			## Get all adjacent Rooms (neighbors)
 			def get_neighbors
+				dbg.call  unless @neighbors
 				return @neighbors.values
 			end
 
@@ -136,8 +140,8 @@ module Instances
 						next [roomname, room]
 					else
 						## Room doesn't exist, log warning
-						classtype, clazz = get_instance_type_and_class
-						log "WARNING: Room '#{clazz}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
+						classname = get_classname
+						log "WARNING: Room '#{classname}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
 						next nil
 					end
 				end .reject { |x| !x } .to_h
@@ -156,8 +160,8 @@ module Instances
 						next [roomname, room]
 					else
 						## Room doesn't exist, log warning
-						classtype, clazz = get_instance_type_and_class
-						log "WARNING: Room '#{clazz}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
+						classname = get_classname
+						log "WARNING: Room '#{classname}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
 						next nil
 					end
 				end .reject { |x| !x } .to_h

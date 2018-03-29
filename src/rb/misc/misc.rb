@@ -5,24 +5,7 @@ LOG_AP_OPTIONS = {
 }
 
 ### Misc methods
-## Get current Curses screen size
-def screen_size target = :all
-	ret = nil
-	case target
-	when :width, :w
-		ret = Curses.cols
-	when :height, :h
-		ret = Curses.lines
-	when :all
-		ret = {
-			w: screen_size(:w),
-			h: screen_size(:h)
-		}
-	end
-	return ret
-end
-
-### Log, debug output
+## Log, debug output
 ## USAGE:
 ## log 'message one', 'message two', ..., mode: ?w, ap: true
 #      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^
