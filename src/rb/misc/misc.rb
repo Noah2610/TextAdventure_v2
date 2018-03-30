@@ -3,6 +3,9 @@ LOG_AP_OPTIONS = {
 	indent: 2,
 	plain:  true
 }
+LOG_METHOD_OPTIONS = [
+	:ap
+]
 
 ### Misc methods
 ## Log, debug output
@@ -13,11 +16,17 @@ LOG_AP_OPTIONS = {
 def log *args
 	return nil  if (args.empty?)
 	## Parse args to separate messages from options
+	opts = {}
+	msgs = []
 	if (args.last.is_a?(Hash) && args.size > 1)
-		opts = args.last
-		msgs = args[0 ... -1]
+		# Check if Hash contains any pre-defined option, if not then handle Hash as message
+		if ((args.last.keys & LOG_METHOD_OPTIONS).any?)
+			opts = args.last
+			msgs = args[0 ... -1]
+		else
+			msgs = args[0 .. -1]
+		end
 	else
-		opts = {}
 		msgs = args
 	end
 

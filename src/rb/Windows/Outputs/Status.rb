@@ -23,8 +23,10 @@ class Windows::Outputs::Status < Windows::Outputs::Output
 	end
 
 	def update
-		create_lines  if (shown?)
-		redraw
+		if (shown?)
+			create_lines
+			redraw
+		end
 	end
 end
 

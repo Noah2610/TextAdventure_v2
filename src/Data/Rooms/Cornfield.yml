@@ -18,8 +18,8 @@ persons: []
 events:
   Pee:
     keywords:
-      - pee
-      - piss
+      - /\A\s*pee/i
+      - /\A\s*piss/i
       - take a piss
       - /\bgo to (the )?toilet\b/i
 ...

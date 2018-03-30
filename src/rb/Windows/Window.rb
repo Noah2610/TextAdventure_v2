@@ -28,12 +28,12 @@ module Windows
 
 		## Return wanted width for window
 		def width
-			return @width
+			return @width.floor
 		end
 
 		## Return wanted height for window
 		def height
-			return @height
+			return @height.floor
 		end
 
 		## Return wanted position in screen for window

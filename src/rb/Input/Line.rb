@@ -45,7 +45,7 @@ module Input
 			input_remains = input.dup  # Words::Word will be created from all remaining words (separated by word boundaries)
 			positions = []             # Save all positions to check for duplicate matches
 			prev_positions_size = -1   # Set to new position.size after each loop to check when to end
-			input_tmp = input.dup      # Input string which's words will be replaced when matched to matching same word twice
+			input_tmp = input.dup      # Input string which's words will be removed when matched to avoid matching same word twice
 			replchar = ?^              # Character to replace words as they are being matched, should be character unavailable to user
 
 			## Loop indefinitely until no new Words are being created
@@ -270,6 +270,9 @@ module Input
 				case priority
 				when nil
 					return ret
+				when :instance
+					args[:priority] = :special
+					return next_word args
 				when :special
 					args[:priority] = :word
 					return next_word args
