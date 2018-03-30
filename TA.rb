@@ -32,7 +32,7 @@ DIR = {
 	test: {         # For Unit Tests
 		rb:           File.join(ROOT, 'src/Test/rb'),
 		data: {
-			## Currently using same Instance data as in other environments
+			# Currently using same Instance data as in other environments
 			verbs:      File.join(ROOT, 'src/Data/Verbs'),
 			terms:      File.join(ROOT, 'src/Data/Terms'),
 			items:      File.join(ROOT, 'src/Data/Items'),
@@ -53,8 +53,8 @@ ENVT = Environment.new CL_ARGS[:options][:env] || ENV['TA_ENV'] || 'production'
 ## Require Curses library
 require 'curses'  unless (ENVT.debug? || ENVT.test?)
 
+## Require development gems
 if (ENVT.dev? || ENVT.debug?)
-	## Require development gems
 	require 'awesome_print'
 	require 'byebug'
 end

@@ -7,7 +7,6 @@ Verbs::VERBS = Verbs.init_verbs
 ## Initialize Player
 PLAYER = Player.new
 ## Move Player to Room
-#PLAYER.goto! Instances::Rooms::ROOMS[:ParsleysTruck]
 PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 
 ### Game
@@ -76,7 +75,7 @@ class Game
 		end
 	end
 
-	## Return Window
+	## Return target Window from @window_manager
 	def window target
 		return @window_manager.get_window target
 	end
@@ -121,10 +120,12 @@ class Game
 		@tick += amount
 	end
 
+	## Return true if game is running
 	def running?
 		return ENVT.prod? || ENVT.dev?
 	end
 
+	## Redraw all Windows and read user input
 	def update
 		## Handle method queue
 		handle_queue
@@ -153,7 +154,7 @@ if (ENVT.debug?)
 	debugger
 	exit
 
-	### Unit tests
+### Unit tests
 elsif (ENVT.test?)
 	require File.join DIR[:test][:rb], 'Entry'
 end
