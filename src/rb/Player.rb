@@ -4,7 +4,14 @@
 ## Get available Instances, ...
 
 class Player
+	include Saves::Savable
 	include Inventory
+
+	def to_save
+		return {
+			current_room: @current_room.get_classname
+		}
+	end
 
 	def initialize args = {}
 		## Init Inventory
@@ -12,6 +19,7 @@ class Player
 
 		#TODO:
 		## Read savefile content
+		@savefile = Saves::Savefile.new 'development'
 
 		## Current Room
 		@current_room = nil

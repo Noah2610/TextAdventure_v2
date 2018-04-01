@@ -1,4 +1,8 @@
 
+### Require Files
+## Savefile
+require File.join DIR[:rb], 'Savefile'
+
 ## Require all Game files (Verbs, Instances, etc.)
 require File.join DIR[:misc], 'require_game_files'
 
@@ -8,6 +12,8 @@ Verbs::VERBS = Verbs.init_verbs
 PLAYER = Player.new
 ## Move Player to Room
 PLAYER.goto! Instances::Rooms::ParsleysTruck.new
+
+
 
 ### Game
 class Game

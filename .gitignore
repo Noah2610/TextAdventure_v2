@@ -4,3 +4,5 @@ log/*.log
 lib/
 **/.virb/
 .byebug_history
+saves/*
+!saves/development.json

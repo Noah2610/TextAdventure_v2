@@ -1,0 +1,32 @@
+{
+	"Player": {
+		"current_room": "Cornfield",
+		"Inventory": {
+			"items": [
+				{
+					"classname": "Apple",
+					"known":     true
+				}
+			]
+		}
+	},
+	"Rooms": [
+		{
+			"classname": "ParsleysTruck",
+			"known":     true,
+			"Inventory": {
+				"items": []
+			},
+			"components": [
+				{
+					"classname": "GloveCompartment",
+					"open":      true
+				}
+			]
+		},
+		{
+			"classname": "Cornfield",
+			"known":     true
+		}
+	]
+}

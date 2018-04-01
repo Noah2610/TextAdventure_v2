@@ -7,7 +7,7 @@ module Inventory
 	## Overwrite initialize method of object to set some Inventory stuff
 	## Still call super though
 	def initialize args = {}
-		super  if (self.class.name =~ /\AInstances::.+?::.+\z/)
+		super  # if (self.class.name =~ /\AInstances::.+?::.+\z/)
 		## Initialize Inventory
 		@inventory = Inventory.new
 		## Load and create all Items that Room is supposed to have

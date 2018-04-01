@@ -1,5 +1,6 @@
 #!/bin/env ruby
 
+require 'json'
 require 'pathname'
 require 'yaml'
 
@@ -41,7 +42,8 @@ DIR = {
 			rooms:      File.join(ROOT, 'src/Data/Rooms')
 		}
 	},
-	settings:     File.join(ROOT, 'src/settings.yml')  # Default Settings file
+	settings:       File.join(ROOT, 'src/settings.yml'),  # Default Settings file
+	saves:          File.join(ROOT, 'saves')              # Savefiles directory
 }
 
 require File.join DIR[:misc], 'handle_argument_parser'
