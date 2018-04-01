@@ -27,7 +27,7 @@ module Saves
 			begin
 				return JSON.parse File.read(@savefile)
 			rescue
-				log ["WARNING: Couldn't load savefile '#{@savefile}'; Is it JSON?"].join("\n")
+				log "WARNING: Couldn't load savefile '#{@savefile}'; Is it JSON?"
 				return nil
 			end
 		end

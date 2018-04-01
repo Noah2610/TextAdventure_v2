@@ -23,6 +23,42 @@ module Instances
 		end
 
 		class Room < Instances::Instance
+			include Saves::Savable
+
+			### SAVE STUFF
+			## Room data to save; includes Instances inside Room, such as Persons and Items
+			def to_save
+				return super.merge get_content_to_save
+			end
+
+			def get_content_to_save
+				content = {
+					Persons:    get_content_to_save_from_persons,
+					Components: get_content_to_save_from_components,
+					Events:     get_content_to_save_from_events
+				}
+				content[:Inventory] = @inventory.to_save  if (has_inventory?)
+				return content
+			end
+
+			def get_content_to_save_from_persons
+				return persons.map do |person|
+					next person.to_save
+				end
+			end
+
+			def get_content_to_save_from_components
+				return components.map do |component|
+					next component.to_save
+				end
+			end
+
+			def get_content_to_save_from_events
+				return events.map do |event|
+					next event.to_save
+				end
+			end
+
 			def initialize args = {}
 				super
 				@persons    = load_persons
@@ -86,19 +122,19 @@ module Instances
 			## Return all Persons in Room
 			def persons
 				return @persons.values     unless (@persons.nil?)
-				return nil
+				return []
 			end
 
 			## Return all Components in Room
 			def components
 				return @components.values  unless (@components.nil?)
-				return nil
+				return []
 			end
 
 			## Return all Room Events
 			def events
 				return @events.values      unless (@events.nil?)
-				return nil
+				return []
 			end
 
 			## Overwrite keywords method to include keywords_self and custom keywords only available from current Room, example:
@@ -172,7 +208,7 @@ module Instances
 			def went!
 				## Load all neighboring Rooms when going to the Room the first time
 				load_neighbors
-				@known = true  if (unknown?)
+				known!  if (unknown?)
 			end
 
 			## Check if Player can go to Room from this Room

@@ -67,6 +67,11 @@ class Game
 		line = Input::Line.new input
 		return  unless (line)
 
+		if (['dbg', 'debug'].include? line.text.downcase.strip)
+			dbg.call
+			return
+		end
+
 		## Print User's Input to UserOut output Window
 		window(:user).print line.text
 		## Process Line

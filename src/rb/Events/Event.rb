@@ -4,6 +4,18 @@
 module Events
 	class Event
 		include Keywords
+
+		## Data to save
+		def to_save
+			return get_content_to_save
+		end
+
+		def get_content_to_save
+			return {
+				classname: self.class.name
+			}
+		end
+
 		def initialize data
 			@data = data
 		end

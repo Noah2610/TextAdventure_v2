@@ -2,23 +2,28 @@
 module Instances
 	module Persons
 		class Person < Instances::Instance
+
+			## Data to save
+			def to_save
+				return super.merge get_content_to_save
+			end
+
+			def get_content_to_save
+				content = {}
+				content[:Inventory] = @inventory.to_save  if (has_inventory?)
+			end
+
 			def initialize args = {}
 				super
 				## Load Terms
 				@terms = Terms.get_for @data['conversation']['terms']  if (@data['conversation'] && @data['conversation']['terms'])
 				## Set person for every Term
 				@terms.values.each { |k| k.person = self }
-				## Items as Symbols the Person can take
-				@can_take = []
 			end
 
 			## Return text when Player starts conversation (optional)
 			def conversation_start_text
 				return nil
-			end
-
-			def can_take? item
-				return @can_take.include? item.get_classname.to_sym
 			end
 
 			## Return conversational text

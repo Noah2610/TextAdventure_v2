@@ -44,7 +44,7 @@ class Player
 	end
 
 	## is? method for some compatibility with methods used on Instances (kinda hacky)
-	def is? target
+	def is? target, uneccessary = nil
 		return target.downcase.to_sym == :player
 	end
 

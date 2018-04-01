@@ -38,21 +38,27 @@ module Inventory
 
 	### INVENTORY CLASS
 	class Inventory
-		def initialize args = {}
-			@items = {}
+		## Data to save to savefile
+		def to_save
+			return get_content_to_save
 		end
 
-		## Item data to save to savefile
-		def to_save
+		def get_content_to_save
 			return {
-				Items: get_item_data_to_save
+				Items:    get_content_to_save_from_items,
+				can_take: @can_take
 			}
 		end
 
-		def get_item_data_to_save
+		def get_content_to_save_from_items
 			return items.map do |item|
 				next item.to_save
 			end
+		end
+
+		def initialize args = {}
+			@items = {}
+			@can_take = []
 		end
 
 		## Return items
@@ -87,6 +93,14 @@ module Inventory
 				return @items.keys.include? item.to_sym
 			end
 			return false
+		end
+
+		def can_take= items
+			@can_take.concat items
+		end
+
+		def can_take? item
+			return @can_take.include? item.get_classname.to_sym
 		end
 	end # END - CLASS
 
@@ -138,10 +152,20 @@ module Inventory
 		return false
 	end
 
+	## Set can_take items as Symbols
+	def can_take= items
+		@inventory.can_take = [items].flatten
+	end
+
+	def can_take? item
+		return @inventory.can_take? item
+	end
+
 	## Give Item to Person
 	def give item, person
 		if (has_item?(item) && give?(item))
-			if (person.take item)
+			if (person.take? item)
+				person.take item
 				return true
 			end
 		end
@@ -149,12 +173,8 @@ module Inventory
 	end
 
 	def take item
-		if (take? item)
-			item.owner.item_remove item  if (item.owner)
-			item_add item
-			return true
-		end
-		return false
+		item.owner.item_remove item  if (item.owner)
+		item_add item
 	end
 end # END - MODULE
 
