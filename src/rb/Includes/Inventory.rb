@@ -11,26 +11,48 @@ module Inventory
 		## Initialize Inventory
 		@inventory = Inventory.new
 		## Load and create all Items that Room is supposed to have
+		load_items_from_data  if (@data && @data['items'])
+	end
+
+	def load_items_from_data
 		@data['items'].each do |itemstr|
 			item = itemstr.to_sym
 			if (Instances::Items.constants.include? item)
 				@inventory.item_add Instances::Items.const_get(item).new(belongs_to: self)
 			else
 				## Item doesn't exist, display warning
-				instance_type = get_instance_type_classname
-				classname     = get_classname
-				log "WARNING: #{instance_type} '#{classname}' tried to load Item '#{itemstr}' which doesn't exist."
+				log_warning_item_doesnt_exist itemstr
 			end
-		end  if (@data && @data['items'])
+		end
+	end
+
+	def log_warning_item_doesnt_exist itemname
+		instance_type = get_instance_type_classname
+		classname     = get_classname
+		log "WARNING: #{instance_type} '#{classname}' tried to load Item '#{itemname}' which doesn't exist."
 	end
 
 	def has_inventory?
 		return true
 	end
 
+	### INVENTORY CLASS
 	class Inventory
 		def initialize args = {}
 			@items = {}
+		end
+
+		## Item data to save to savefile
+		def to_save
+			return {
+				Items: get_item_data_to_save
+			}
+		end
+
+		def get_item_data_to_save
+			return items.map do |item|
+				next item.to_save
+			end
 		end
 
 		## Return items
@@ -110,7 +132,7 @@ module Inventory
 
 	## Can take Item?
 	def take? item
-		if (is?(:player) || @can_take.include?(item.get_classname.to_sym))
+		if (is?(:player) || (defined?(can_take?) && can_take?(item)))
 			return true
 		end
 		return false

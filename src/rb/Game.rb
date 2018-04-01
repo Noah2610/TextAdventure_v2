@@ -1,8 +1,5 @@
 
 ### Require Files
-## Savefile
-require File.join DIR[:rb], 'Savefile'
-
 ## Require all Game files (Verbs, Instances, etc.)
 require File.join DIR[:misc], 'require_game_files'
 

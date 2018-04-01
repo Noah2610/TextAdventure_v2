@@ -9,7 +9,8 @@ class Player
 
 	def to_save
 		return {
-			current_room: @current_room.get_classname
+			current_room: @current_room.get_classname,
+			Inventory:    @inventory.to_save
 		}
 	end
 
@@ -31,6 +32,10 @@ class Player
 
 		## Person Player is in conversation with, used for conversation mode
 		@talking_to = nil
+	end
+
+	def save
+		@savefile.save!
 	end
 
 	def name
@@ -136,7 +141,6 @@ class Player
 	## Leave conversation
 	def conversation_end args = {}
 		return nil  unless (mode? :conversation)
-		conversation_person.conversation_end
 		@mode = :normal
 		@talking_to = nil
 		unless (args[:keep_window])

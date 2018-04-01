@@ -42,6 +42,7 @@ DIR = {
 			rooms:      File.join(ROOT, 'src/Data/Rooms')
 		}
 	},
+	includes:       File.join(ROOT, 'src/rb/Includes'),   # Modules that should be included to classes (Inventory, Keywords, Savable, ...)
 	settings:       File.join(ROOT, 'src/settings.yml'),  # Default Settings file
 	saves:          File.join(ROOT, 'saves')              # Savefiles directory
 }

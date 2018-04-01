@@ -51,6 +51,14 @@ module Instances
 			@known = @data['known']
 		end
 
+		## Return Data to save
+		def to_save
+			return {
+				classname: get_classname,
+				known:     known?
+			}
+		end
+
 		## Check if Instance class is Instance type target_type and optionally is class target_class
 		def self.is? target_type, target_class = nil
 			target_type  = target_type.downcase.to_sym

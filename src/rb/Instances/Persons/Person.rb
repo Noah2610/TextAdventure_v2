@@ -8,8 +8,17 @@ module Instances
 				@terms = Terms.get_for @data['conversation']['terms']  if (@data['conversation'] && @data['conversation']['terms'])
 				## Set person for every Term
 				@terms.values.each { |k| k.person = self }
-
+				## Items as Symbols the Person can take
 				@can_take = []
+			end
+
+			## Return text when Player starts conversation (optional)
+			def conversation_start_text
+				return nil
+			end
+
+			def can_take? item
+				return @can_take.include? item.get_classname.to_sym
 			end
 
 			## Return conversational text
@@ -19,9 +28,8 @@ module Instances
 				return nil
 			end
 
-			## Is called by Player when conversation ends
+			## Is called when conversation ends
 			def conversation_end
-				return true
 			end
 
 			## Return Terms

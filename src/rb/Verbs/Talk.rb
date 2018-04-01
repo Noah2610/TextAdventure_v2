@@ -8,10 +8,10 @@ class Verbs::Talk < Verbs::Verb
 		word = args[:line].next_word pos: args[:word].position, priority: :instance, ignore: ignore
 		return text 'not_found'  unless (word)
 		if    (word.is?(:person) && instance = word.instance)
-			# Word IS Person
+			# Word is Person
 			## Set to conversation-mode
 			PLAYER.conversation_start instance
-			return nil
+			return PLAYER.talking_to.conversation_start_text
 		elsif (word.is_not? :person)
 			# Word is not Person
 			return text 'cannot_talk', word

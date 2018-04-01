@@ -7,11 +7,8 @@ require File.join DIR[:input],     'Input'
 require File.join DIR[:input],     'Line'
 require File.join DIR[:input],     'Words'
 
-## Keywords
-require File.join DIR[:rb],        'Keywords'
-
-## Inventory
-require File.join DIR[:rb],        'Inventory'
+## Includes (Inventory, Keywords, Savable)
+require_files DIR[:includes]
 
 ## Verbs
 require File.join DIR[:verbs],     'Verb'
@@ -25,6 +22,9 @@ require File.join DIR[:events],    'Event'
 
 ## Instances (Items, Persons, Rooms, Components)
 require File.join DIR[:instances], 'Instance'
+
+## Savefile
+require File.join DIR[:rb],        'Savefile'
 
 ## Player
 require File.join DIR[:rb],        'Player'
