@@ -38,23 +38,7 @@ module Inventory
 
 	### INVENTORY CLASS
 	class Inventory
-		## Data to save to savefile
-		def to_save
-			return get_content_to_save
-		end
-
-		def get_content_to_save
-			return {
-				Items:    get_content_to_save_from_items,
-				can_take: @can_take
-			}
-		end
-
-		def get_content_to_save_from_items
-			return items.map do |item|
-				next item.to_save
-			end
-		end
+		include Saves::Methods::Inventory
 
 		def initialize args = {}
 			@items = {}

@@ -7,8 +7,13 @@ require File.join DIR[:input],     'Input'
 require File.join DIR[:input],     'Line'
 require File.join DIR[:input],     'Words'
 
+#TODO: Clean up
+module Saves end
+## Methods for saving and loading objects
+require_files File.join(DIR[:includes], 'SaveMethods')
+#require File.join DIR[:includes],  'Savable'
 ## Includes (Inventory, Keywords, Savable)
-require_files DIR[:includes]
+require_files DIR[:includes] #, except: 'Savable'
 
 ## Verbs
 require File.join DIR[:verbs],     'Verb'

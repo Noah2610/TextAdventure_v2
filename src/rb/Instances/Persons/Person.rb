@@ -2,16 +2,7 @@
 module Instances
 	module Persons
 		class Person < Instances::Instance
-
-			## Data to save
-			def to_save
-				return super.merge get_content_to_save
-			end
-
-			def get_content_to_save
-				content = {}
-				content[:Inventory] = @inventory.to_save  if (has_inventory?)
-			end
+			include Saves::Methods::Person
 
 			def initialize args = {}
 				super

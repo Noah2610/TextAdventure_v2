@@ -5,22 +5,12 @@
 
 class Player
 	include Saves::Savable
+	include Saves::Methods::Player
 	include Inventory
-
-	def to_save
-		return {
-			current_room: @current_room.get_classname,
-			Inventory:    @inventory.to_save
-		}
-	end
 
 	def initialize args = {}
 		## Init Inventory
 		super
-
-		#TODO:
-		## Read savefile content
-		@savefile = Saves::Savefile.new 'development'
 
 		## Current Room
 		@current_room = nil
@@ -32,10 +22,6 @@ class Player
 
 		## Person Player is in conversation with, used for conversation mode
 		@talking_to = nil
-	end
-
-	def save
-		@savefile.save!
 	end
 
 	def name

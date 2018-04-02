@@ -24,40 +24,7 @@ module Instances
 
 		class Room < Instances::Instance
 			include Saves::Savable
-
-			### SAVE STUFF
-			## Room data to save; includes Instances inside Room, such as Persons and Items
-			def to_save
-				return super.merge get_content_to_save
-			end
-
-			def get_content_to_save
-				content = {
-					Persons:    get_content_to_save_from_persons,
-					Components: get_content_to_save_from_components,
-					Events:     get_content_to_save_from_events
-				}
-				content[:Inventory] = @inventory.to_save  if (has_inventory?)
-				return content
-			end
-
-			def get_content_to_save_from_persons
-				return persons.map do |person|
-					next person.to_save
-				end
-			end
-
-			def get_content_to_save_from_components
-				return components.map do |component|
-					next component.to_save
-				end
-			end
-
-			def get_content_to_save_from_events
-				return events.map do |event|
-					next event.to_save
-				end
-			end
+			include Saves::Methods::Room
 
 			def initialize args = {}
 				super

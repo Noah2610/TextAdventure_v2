@@ -5,7 +5,7 @@ class Verbs::Save < Verbs::Verb
 	end
 
 	def action args = {}
-		PLAYER.save
+		SAVEFILE.save!
 		return '{COLOR:green}SAVED{RESET}'
 	end
 end

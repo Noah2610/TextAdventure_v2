@@ -50,5 +50,18 @@ module Saves
 			savefile.write json
 			savefile.close
 		end
+
+		## Load savefile
+		def load_data
+			return  unless (@savefile_content)
+			Saves::OBJECTS_TO_SAVE.each do |object|
+				content = @savefile_content[object.class.name]
+				unless (content)
+					log "WARNING: Tried loading data for object '#{object.class.name}' from savefile, which doesn't exist! Outdated savefile?"
+					next
+				end
+				object.load_data content
+			end
+		end
 	end # END - CLASS Savefile
 end # END - MODULE Saves

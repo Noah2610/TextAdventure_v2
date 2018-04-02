@@ -45,18 +45,12 @@ module Instances
 
 	### Instance Class
 	class Instance
+		include Saves::Methods::Instance
 		include Keywords
+
 		def initialize args = {}
 			@data = Instances.data self.class
 			@known = @data['known']
-		end
-
-		## Return Data to save
-		def to_save
-			return {
-				classname: get_classname,
-				known:     known?
-			}
 		end
 
 		## Check if Instance class is Instance type target_type and optionally is class target_class
@@ -140,6 +134,11 @@ module Instances
 
 		## Check if Instance has an Inventory (fallback methods, will be overwritten when necessary)
 		def has_inventory?
+			return false
+		end
+
+		## Check if Instance is openable (fallback methods, will be overwritten when necessary)
+		def is_openable?
 			return false
 		end
 

@@ -11,8 +11,9 @@ class Windows::Outputs::Status < Windows::Outputs::Output
 	end
 
 	def create_lines
+		current_room_name = PLAYER.current_room ? PLAYER.current_room.name : '{ATTR:standout}NOWHERE{RESET}'
 		@lines = [
-			PLAYER.current_room.name,
+			current_room_name,
 			"{COLOR:red}#{(?- * ([size(:w) - (@padding * 2), 0].max))}"
 		]
 
