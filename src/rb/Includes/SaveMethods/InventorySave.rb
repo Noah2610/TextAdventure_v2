@@ -2,10 +2,11 @@ module Saves::Methods
 	module Inventory
 		## Data to save to savefile
 		def to_save
-			return {
-				Items:    get_content_to_save_from_items,
-				can_take: @can_take
+			content_to_save = {
+				Items: get_content_to_save_from_items
 			}
+			content_to_save[:can_take] = @can_take  if (@can_take)
+			return content_to_save
 		end
 
 		def get_content_to_save_from_items
@@ -19,7 +20,6 @@ module Saves::Methods
 			items_clear
 			restore_items content['Items']
 			if (content['can_take'])
-				clear_can_take
 				self.can_take = content['can_take']
 			end
 		end

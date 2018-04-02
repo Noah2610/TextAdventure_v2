@@ -38,35 +38,30 @@ module Inventory
 
 	### INVENTORY CLASS
 	class Inventory
-		attr_reader :can_take
 		include Saves::Methods::Inventory
 
 		def initialize args = {}
-			@items = {}
-			@can_take = []
+			@items = []
+			@can_take = nil
 		end
 
 		## Return items
 		def items
-			return @items.values
+			return @items
 		end
 
 		## Add Item from Inventory
 		def item_add item
 			## Add Item by key of Item's classname as symbol
 			item.belongs_to = self
-			return (@items[item.class.name.split('::').last.to_sym] = item)
+			return (@items << item)
 		end
 
 		## Remove Item from Inventory
 		def item_remove item
-			return false  unless (has_item? item)
-			return @items.delete item.class.name.split('::').last.to_sym
-		end
-
-		## Remove ALL Items from Inventory
-		def items_clear
-			return @items.clear
+			return nil  unless (has_item? item)
+			@items.delete item
+			return item
 		end
 
 		def has_item? item
@@ -75,24 +70,32 @@ module Inventory
 			elsif (item.is_a? Class)
 				return items.any? { |i| i.is_a? item }
 			elsif (item.is_a?(Symbol) || item.is_a?(String))
-				return @items.keys.include? item.to_sym
+				return @items.any? do |i|
+					next i.get_classname == item.to_s
+				end
 			end
 			return false
+		end
+
+		## Remove ALL Items from Inventory
+		def items_clear
+			return @items.clear
 		end
 
 		def can_take= itemnames
 			itemnames = itemnames.map do |itemname|
 				next itemname.to_sym
 			end
-			@can_take.concat itemnames
+			@can_take = itemnames
 		end
 
 		def can_take? item
+			return false  unless (@can_take)
 			return @can_take.include? item.get_classname.to_sym
 		end
 
 		def clear_can_take
-			@can_take.clear
+			@can_take = nil
 		end
 	end # END - CLASS
 
@@ -145,8 +148,8 @@ module Inventory
 	end
 
 	## Set can_take items as Symbols
-	def can_take= items
-		@inventory.can_take = [items].flatten
+	def can_take= itemnames
+		@inventory.can_take = [itemnames].flatten
 	end
 
 	def can_take? item
