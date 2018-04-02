@@ -11,10 +11,6 @@ module Saves
 			Saves::OBJECTS_TO_SAVE << self
 		end
 
-		## Load savefile content
-		# def load_data content
-		# end
-
 		## Returns all values / attributes that should be saved
 		## Method should be overwritten by class including this module
 		# def to_save

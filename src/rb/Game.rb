@@ -11,12 +11,12 @@ Verbs::VERBS = Verbs.init_verbs
 # Initialize Player
 PLAYER = Player.new
 # Move Player to Room
-#PLAYER.goto! Instances::Rooms::ParsleysTruck.new
+PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 
 ## Savefile
 # Load development Savefile
 SAVEFILE = Saves::Savefile.new 'development'
-SAVEFILE.load_data
+SAVEFILE.restore_savefile
 
 ### Game
 class Game

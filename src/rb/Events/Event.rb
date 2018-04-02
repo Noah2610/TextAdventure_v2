@@ -3,18 +3,8 @@
 
 module Events
 	class Event
+		include Saves::Methods::Event
 		include Keywords
-
-		## Data to save
-		def to_save
-			return get_content_to_save
-		end
-
-		def get_content_to_save
-			return {
-				classname: self.class.name
-			}
-		end
 
 		def initialize data
 			@data = data
@@ -26,6 +16,10 @@ module Events
 
 		## Method to be called when an Event Keyword is used
 		def action args = {}
+		end
+
+		def get_classname
+			return self.class.name.match(/\A.+?::(.+)\z/)[1]
 		end
 	end
 end

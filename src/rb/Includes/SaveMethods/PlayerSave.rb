@@ -9,19 +9,19 @@ module Saves::Methods
 		end
 
 		## Data to load
-		def load_data content
+		def restore_savefile content
 			# current_room
-			load_data_current_room content['current_room']
+			restore_current_room content['current_room']
 			# Inventory - Items
-			load_data_inventory content['inventory']
+			restore_inventory content['Inventory']
 		end
 
-		def load_data_current_room roomname
-			room = load_data_get_room roomname
+		def restore_current_room roomname
+			room = restore_get_room roomname
 			goto! room
 		end
 
-		def load_data_get_room roomname
+		def restore_get_room roomname
 			roomname = roomname.to_sym
 			room = nil
 			if    (Instances::Rooms::ROOMS.keys.include? roomname)
@@ -34,8 +34,8 @@ module Saves::Methods
 			return room
 		end
 
-		def load_data_inventory inventory_content
-			@inventory.load_data inventory_content
+		def restore_inventory inventory_content
+			@inventory.restore_savefile inventory_content
 		end
 	end # END - MODULE Player
 end # END - MODULE Saves::Methods

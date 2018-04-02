@@ -35,50 +35,83 @@ module Instances
 
 			## Load and create Persons
 			def load_persons
-				return @data['persons'].map do |personstr|
-					person = personstr.to_sym
-					if (Instances::Persons.constants.include? person)
-						next [person, Instances::Persons.const_get(person).new]
-					else
-						## Person doesn't exist, display warning
-						instance_type = get_instance_type_classname
-						classname     = get_classname
-						log "WARNING: #{instance_type} '#{classname}' tried to load Person '#{personstr}' which doesn't exist."
+				if (@data['persons'])
+					return @data['persons'].map do |personstr|
+						personname = personstr.to_sym
+						person = load_person personname
+						next [personname, person]  if (person)
 						next nil
-					end
-				end .reject { |x| !x } .to_h  if (@data['persons'])
+					end .reject { |x| !x } .to_h
+				else
+					return {}
+				end
+			end
+
+			def load_person personname
+				personname = personname.to_sym
+				if (Instances::Persons.constants.include? personname)
+					return Instances::Persons.const_get(personname).new
+				else
+					## Person doesn't exist, display warning
+					instance_type = get_instance_type_classname
+					classname     = get_classname
+					log "WARNING: #{instance_type} '#{classname}' tried to load Person '#{personname.to_s}' which doesn't exist."
+					return nil
+				end
 			end
 
 			## Load and create Components
 			def load_components
-				return @data['components'].map do |componentstr|
-					component = componentstr.to_sym
-					if (Instances::Components.constants.include? component)
-						next [component, Instances::Components.const_get(component).new]
-					else
-						## Component doesn't exist, display warning
-						instance_type = get_instance_type_classname
-						classname     = get_classname
-						log "WARNING: #{instance_type} '#{classname}' tried to load Component '#{componentstr}' which doesn't exist."
+				if (@data['components'])
+					return @data['components'].map do |componentstr|
+						componentname = componentstr.to_sym
+						component = load_component(componentname)
+						next [componentname, component]  if (component)
 						next nil
-					end
-				end .reject { |x| !x } .to_h  if (@data['components'])
+					end .reject { |x| !x } .to_h
+				else
+					return {}
+				end
+			end
+
+			def load_component componentname
+				componentname = componentname.to_sym
+				if (Instances::Components.constants.include? componentname)
+					return Instances::Components.const_get(componentname).new
+				else
+					## Component doesn't exist, display warning
+					instance_type = get_instance_type_classname
+					classname     = get_classname
+					log "WARNING: #{instance_type} '#{classname}' tried to load Component '#{componentname.to_s}' which doesn't exist."
+					return nil
+				end
 			end
 
 			## Load and create Events
 			def load_events
-				return @data['events'].map do |eventstr, eventdata|
-					event = eventstr.to_sym
-					if (Events.constants.include? event)
-						next [event, Events.const_get(event).new(eventdata)]
-					else
-						## Event doesn't exist, display warning
-						instance_type = get_instance_type_classname
-						classname     = get_classname
-						log "WARNING: #{instance_type} '#{classname}' tried to load Event '#{eventstr}' which doesn't exist."
+				if (@data['events'])
+					return @data['events'].map do |eventstr, eventdata|
+						eventname = eventstr.to_sym
+						event = load_event eventname, eventdata
+						next [eventname, event]  if (event)
 						next nil
-					end
-				end .reject { |x| !x } .to_h  if (@data['events'])
+					end .reject { |x| !x } .to_h
+				else
+					return {}
+				end
+			end
+
+			def load_event eventname, eventdata
+				eventname = eventname.to_sym
+				if (Events.constants.include? eventname)
+					return Events.const_get(eventname).new(eventdata)
+				else
+					## Event doesn't exist, display warning
+					instance_type = get_instance_type_classname
+					classname     = get_classname
+					log "WARNING: #{instance_type} '#{classname}' tried to load Event '#{eventname}' which doesn't exist."
+					return nil
+				end
 			end
 
 			## Default items method (fallback)

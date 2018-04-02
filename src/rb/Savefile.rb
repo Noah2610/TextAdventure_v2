@@ -2,11 +2,15 @@
 module Saves
 	class Savefile
 		def initialize savefile_name
+			create_savefile_directory
 			savefile_name = "#{savefile_name}.json"  unless (savefile_name =~ /.+\.json\z/)
 			@savefile = File.join DIR[:saves], savefile_name
-			@savefile = nil  unless (savefile_exists? @savefile)
 			## Load savefile contents
-			@savefile_content = load_savefile
+			@savefile_content = load_savefile_content
+		end
+
+		def create_savefile_directory
+			Dir.mkdir DIR[:saves]  unless (File.directory? DIR[:saves])
 		end
 
 		def savefile_exists? savefile
@@ -17,7 +21,7 @@ module Saves
 			return true
 		end
 
-		def load_savefile
+		def load_savefile_content
 			return nil  unless (@savefile)
 			content = load_json
 			return content
@@ -52,7 +56,7 @@ module Saves
 		end
 
 		## Load savefile
-		def load_data
+		def restore_savefile
 			return  unless (@savefile_content)
 			Saves::OBJECTS_TO_SAVE.each do |object|
 				content = @savefile_content[object.class.name]
@@ -60,7 +64,7 @@ module Saves
 					log "WARNING: Tried loading data for object '#{object.class.name}' from savefile, which doesn't exist! Outdated savefile?"
 					next
 				end
-				object.load_data content
+				object.restore_savefile content
 			end
 		end
 	end # END - CLASS Savefile

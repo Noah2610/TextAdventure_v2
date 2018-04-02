@@ -38,6 +38,7 @@ module Inventory
 
 	### INVENTORY CLASS
 	class Inventory
+		attr_reader :can_take
 		include Saves::Methods::Inventory
 
 		def initialize args = {}
@@ -79,12 +80,19 @@ module Inventory
 			return false
 		end
 
-		def can_take= items
-			@can_take.concat items
+		def can_take= itemnames
+			itemnames = itemnames.map do |itemname|
+				next itemname.to_sym
+			end
+			@can_take.concat itemnames
 		end
 
 		def can_take? item
 			return @can_take.include? item.get_classname.to_sym
+		end
+
+		def clear_can_take
+			@can_take.clear
 		end
 	end # END - CLASS
 
