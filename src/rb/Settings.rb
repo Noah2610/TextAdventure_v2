@@ -80,6 +80,10 @@ class Settings
 		return @SETTINGS['input'] || {}
 	end
 
+	def menu
+		return @SETTINGS['menu']
+	end
+
 	def chain_keyword? string
 		return false  unless (kws = @SETTINGS['chain_keywords'])
 		kws.each do |kw|

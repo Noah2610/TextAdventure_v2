@@ -9,42 +9,44 @@ ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
 
 ## Set DIR constant with relevant paths
 DIR = {
-	src:            File.join(ROOT, 'src'),
-	rb:             File.join(ROOT, 'src/rb'),
-	misc:           File.join(ROOT, 'src/rb/misc'),
-	windows:        File.join(ROOT, 'src/rb/Windows'),
-	input:          File.join(ROOT, 'src/rb/Input'),
-	verbs:          File.join(ROOT, 'src/rb/Verbs'),
-	terms:          File.join(ROOT, 'src/rb/Terms'),
-	instances:      File.join(ROOT, 'src/rb/Instances'),
-	items:          File.join(ROOT, 'src/rb/Instances/Items'),
-	components:     File.join(ROOT, 'src/rb/Instances/Components'),
-	persons:        File.join(ROOT, 'src/rb/Instances/Persons'),
-	rooms:          File.join(ROOT, 'src/rb/Instances/Rooms'),
-	events:         File.join(ROOT, 'src/rb/Events'),
-	data: {         # Text files, etc
-		verbs:        File.join(ROOT, 'src/Data/Verbs'),
-		terms:        File.join(ROOT, 'src/Data/Terms'),
-		items:        File.join(ROOT, 'src/Data/Items'),
-		components:   File.join(ROOT, 'src/Data/Components'),
-		persons:      File.join(ROOT, 'src/Data/Persons'),
-		rooms:        File.join(ROOT, 'src/Data/Rooms')
+	src:              File.join(ROOT, 'src'),
+	rb:               File.join(ROOT, 'src/rb'),
+	misc:             File.join(ROOT, 'src/rb/misc'),
+	windows:          File.join(ROOT, 'src/rb/Windows'),
+	window_managers:  File.join(ROOT, 'src/rb/Windows/Managers'),
+	menu_items:       File.join(ROOT, 'src/rb/Windows/MenuItems'),
+	input:            File.join(ROOT, 'src/rb/Input'),
+	verbs:            File.join(ROOT, 'src/rb/Verbs'),
+	terms:            File.join(ROOT, 'src/rb/Terms'),
+	instances:        File.join(ROOT, 'src/rb/Instances'),
+	items:            File.join(ROOT, 'src/rb/Instances/Items'),
+	components:       File.join(ROOT, 'src/rb/Instances/Components'),
+	persons:          File.join(ROOT, 'src/rb/Instances/Persons'),
+	rooms:            File.join(ROOT, 'src/rb/Instances/Rooms'),
+	events:           File.join(ROOT, 'src/rb/Events'),
+	data: {           # Text files, etc
+		verbs:          File.join(ROOT, 'src/Data/Verbs'),
+		terms:          File.join(ROOT, 'src/Data/Terms'),
+		items:          File.join(ROOT, 'src/Data/Items'),
+		components:     File.join(ROOT, 'src/Data/Components'),
+		persons:        File.join(ROOT, 'src/Data/Persons'),
+		rooms:          File.join(ROOT, 'src/Data/Rooms')
 	},
-	test: {         # For Unit Tests
-		rb:           File.join(ROOT, 'src/Test/rb'),
+	test: {           # For Unit Tests
+		rb:             File.join(ROOT, 'src/Test/rb'),
 		data: {
-			# Currently using same Instance data as in other environments
-			verbs:      File.join(ROOT, 'src/Data/Verbs'),
-			terms:      File.join(ROOT, 'src/Data/Terms'),
-			items:      File.join(ROOT, 'src/Data/Items'),
-			components: File.join(ROOT, 'src/Data/Components'),
-			persons:    File.join(ROOT, 'src/Data/Persons'),
-			rooms:      File.join(ROOT, 'src/Data/Rooms')
+			# Currently   using same Instance data as in other environments
+			verbs:        File.join(ROOT, 'src/Data/Verbs'),
+			terms:        File.join(ROOT, 'src/Data/Terms'),
+			items:        File.join(ROOT, 'src/Data/Items'),
+			components:   File.join(ROOT, 'src/Data/Components'),
+			persons:      File.join(ROOT, 'src/Data/Persons'),
+			rooms:        File.join(ROOT, 'src/Data/Rooms')
 		}
 	},
-	includes:       File.join(ROOT, 'src/rb/Includes'),   # Modules that should be included to classes (Inventory, Keywords, Savable, ...)
-	settings:       File.join(ROOT, 'src/settings.yml'),  # Default Settings file
-	saves:          File.join(ROOT, 'saves')              # Savefiles directory
+	includes:         File.join(ROOT, 'src/rb/Includes'),   # Modules that should be included to classes (Inventory, Keywords, Savable, ...)
+	settings:         File.join(ROOT, 'src/settings.yml'),  # Default Settings file
+	saves:            File.join(ROOT, 'saves')              # Savefiles directory
 }
 
 require File.join DIR[:misc], 'handle_argument_parser'

@@ -39,9 +39,16 @@ class Game
 		end
 	end
 
-	def init
-		## Initialize Curses Window Manager
-		@window_manager = Windows::Manager.new
+	## Main menu
+	def init_menu
+		@window_manager = Windows::Managers::MainMenu.new
+		@window_manager.init_curses
+		update  if (running?)
+	end
+
+	## Initialize Curses Window Manager for Game
+	def init_game
+		@window_manager = Windows::Managers::Game.new
 		@window_manager.init_curses
 		update  if (running?)
 	end
@@ -155,7 +162,9 @@ end
 
 ### Start Game
 GAME = Game.new
-GAME.init
+## Start main menu
+GAME.init_menu
+#GAME.init_game
 while (GAME.running?)
 	GAME.update
 end

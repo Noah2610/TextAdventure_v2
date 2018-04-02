@@ -9,12 +9,14 @@ module Windows
 
 	class Window
 		def initialize args = {}
+			@window = nil
 			@hidden = false
-			@width  = args[:width]   || args[:w] || 1.0
-			@height = args[:height]  || args[:h] || 1.0
-			@pos    = ( args[:pos]   || (
-				(args[:x] && args[:y]) ? { x: args[:x], y: args[:y] } : { x: 0.0, y: 0.0 }
-			))
+			@width  = 1.0
+			@height = 1.0
+			@pos = {
+				x: 0.0,
+				y: 0.0
+			}
 			@border = [?|, ?-]
 		end
 

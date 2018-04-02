@@ -87,10 +87,11 @@ end
 
 ## Sort a Hash by its key names in the order of given Array
 def sort_hash hash, args
+	sort_by = args[:by]
 	return nil  unless (args.is_a?(Hash) && args.key?(:by) && args[:by].is_a?(Array))
 	return hash.sort do |item_a, item_b|
-		index_a = args[:by].index item_a.first
-		index_b = args[:by].index item_b.first
+		index_a = sort_by.index(item_a.first) || 0
+		index_b = sort_by.index(item_b.first) || 0
 		next index_a - index_b
 	end .to_h
 end

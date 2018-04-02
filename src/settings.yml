@@ -54,4 +54,11 @@ output:
   min_width:           24        # Minimum amount of width a Window has to have to be drawn
   min_height:          3         # Minimum amount of height a Window has to have to be drawn
   prompt_conversation: '=> '     # Text in front of conversation output lines
+
+## General Menu settings
+menu:
+  ## MainMenu settings
+  MainMenu:
+    border_color:      'red'
+    border_attr:       'bold'
 ...
