@@ -30,16 +30,14 @@ module Windows
 				@window.clear
 
 				## Don't draw if too small or shouldn't show
-				if (hidden?)
-					return false
-				end
+				return  if (hidden?)
 
 				## Optional custom code for border
 				attr_apply :color, @border_color, :attr, @border_attr  if (@border_color || @border_attr)
 
 				@window.move pos(:y), pos(:x)
 				@window.resize height, width
-				@window.box @border[0], @border[1]
+				@window.box @border[0], @border[1]  if (@border)
 
 				attr_reset
 
@@ -116,12 +114,10 @@ module Windows
 
 				attr_reset
 				@window.refresh
-
-				return true
 			end
 
 			def update
-				redraw
+				redraw  if (shown?)
 			end
 
 		end # END - CLASS

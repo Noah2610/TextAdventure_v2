@@ -24,10 +24,13 @@ class Windows::Outputs::Status < Windows::Outputs::Output
 	end
 
 	def update
-		if (shown?)
-			create_lines
-			redraw
-		end
+		#TODO: Fix weird issues!
+		## super calls redraw
+		## Calling redraw before and after create_lines fixes issues for whatever reason
+		## FIX THIS!
+		super
+		create_lines  if (shown?)
+		super
 	end
 end
 
