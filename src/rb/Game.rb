@@ -41,6 +41,8 @@ class Game
 
 	## Main menu
 	def init_menu
+		## Disable cursor for MainMenu
+		Curses.curs_set 0  unless (ENVT.debug? || ENVT.test?)
 		@window_manager = Windows::Managers::MainMenu.new
 		@window_manager.init_curses
 		update  if (running?)
@@ -48,6 +50,8 @@ class Game
 
 	## Initialize Curses Window Manager for Game
 	def init_game
+		## Enable cursor for Game
+		Curses.curs_set 1  unless (ENVT.debug? || ENVT.test?)
 		@window_manager = Windows::Managers::Game.new
 		@window_manager.init_curses
 		update  if (running?)
@@ -163,8 +167,10 @@ end
 ### Start Game
 GAME = Game.new
 ## Start main menu
-GAME.init_menu
-#GAME.init_game
+unless (ENVT.debug? || ENVT.test?)
+	GAME.init_menu
+	#GAME.init_game
+end
 while (GAME.running?)
 	GAME.update
 end
@@ -174,11 +180,13 @@ Curses.close_screen  unless (ENVT.debug? || ENVT.test?)
 
 ### Start byebug then exit if in environment debug
 if (ENVT.debug?)
+	GAME.init_game
 	debugger
 	exit
 
-### Unit tests
+	### Unit tests
 elsif (ENVT.test?)
+	GAME.init_game
 	require File.join DIR[:test][:rb], 'Entry'
 end
 

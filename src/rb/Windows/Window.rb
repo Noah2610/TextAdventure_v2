@@ -26,6 +26,9 @@ module Windows
 				height,  width,
 				pos(:y), pos(:x)
 			)
+
+			## Enable keypad, fixes curses' constants
+			@window.keypad true
 		end
 
 		## Return wanted width for window

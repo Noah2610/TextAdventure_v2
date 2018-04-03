@@ -57,8 +57,23 @@ output:
 
 ## General Menu settings
 menu:
+  ## Menu navigation - selecting an option
+  navigation:
+    up:
+      - 'KEY_UP'     # Up Arrow
+      - 'k'
+    down:
+      - 'KEY_DOWN'   # Down Arrow
+      - 'j'
+    left:
+      - 'KEY_LEFT'   # Left Arrow
+      - 'h'
+    right:
+      - 'KEY_RIGHT'  # Right Arrow
+      - 'l'
+
   ## MainMenu settings
   MainMenu:
-    border_color:      'red'
+    border_color:      'magenta'
     border_attr:       'bold'
 ...
