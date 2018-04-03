@@ -1,13 +1,15 @@
 
 ## Require my ArgumentParser gem or download if not installed
 #  https://github.com/Noah2610/ArgumentParser
-if (Gem::Specification.find_all_by_name('argument_parser').any?)
+get_argumentparser_script = File.join ROOT, 'bin/get_argument_parser.sh'
+argumentparser_dir = File.join ROOT, 'lib'
+Dir.mkdir argumentparser_dir  unless (File.directory? argumentparser_dir)
+argumentparser_file = File.join argumentparser_dir, 'argument_parser.rb'
+if    (Gem::Specification.find_all_by_name('argument_parser').any?)
 	require 'argument_parser'
+elsif (File.file? argumentparser_file)
+	require argumentparser_file
 else
-	get_argumentparser_script = File.join ROOT, 'bin/get_argument_parser.sh'
-	argumentparser_dir = File.join ROOT, 'lib'
-	Dir.mkdir argumentparser_dir  unless (File.directory? argumentparser_dir)
-	argumentparser_file = File.join argumentparser_dir, 'argument_parser.rb'
 	# Output message to terminal
 	puts [
 		"#{__FILE__}:",
