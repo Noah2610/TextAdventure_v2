@@ -4,12 +4,15 @@ require_files File.join(DIR[:menu_options], 'MainMenu')
 
 module Windows
 	module Menus
-		nav = SETTINGS.menu['navigation']
-		NAVIGATION = {
-			up:    [nav['up']].flatten    || ['KEY_UP',    ?k],
-			down:  [nav['down']].flatten  || ['KEY_DOWN',  ?j],
-			left:  [nav['left']].flatten  || ['KEY_LEFT',  ?h],
-			right: [nav['right']].flatten || ['KEY_RIGHT', ?l]
+		input = SETTINGS.menu['input']
+		INPUT_KEYS = {
+			navigation: {
+				up:    [input['up']].flatten     || ['KEY_UP',    ?k],
+				down:  [input['down']].flatten   || ['KEY_DOWN',  ?j],
+				left:  [input['left']].flatten   || ['KEY_LEFT',  ?h],
+				right: [input['right']].flatten  || ['KEY_RIGHT', ?l]
+			},
+			submit:  [input['select']].flatten || ['KEY_ENTER', 10, 32]
 		}
 
 		class Menu < Window
@@ -75,13 +78,23 @@ module Windows
 				return @selected_option
 			end
 
-			## Check if char or charid is valid navigation key
-			def navigate? direction, char
+			## Check if char or charid is valid key
+			def valid_key? keys, char
 				charid = get_char_id char
-				return NAVIGATION[direction].any? do |key|
+				return keys.any? do |key|
 					keyid = get_char_id key
 					next charid == keyid
 				end
+			end
+
+			## Check if char or charid is valid submit key
+			def submit? char
+				return valid_key? INPUT_KEYS[:submit], char
+			end
+
+			## Check if char or charid is valid navigation key
+			def navigate? direction, char
+				return valid_key? INPUT_KEYS[:navigation][direction], char
 			end
 
 			def get_char_id char
@@ -183,11 +196,17 @@ module Windows
 				end
 			end
 
+			## Submit selected Option / "click" on Option
+			def submit_selected_option
+				selected_option.submit!
+			end
+
 			## Read user input (one character)
 			## For Option navigation
 			def read
 				charid = @window.getch.ord
 				char = Curses.keyname charid
+				## Navigation
 				if    (navigate_up?    char)
 					select_option_above
 				elsif (navigate_down?  char)
@@ -196,6 +215,9 @@ module Windows
 					select_option_left
 				elsif (navigate_right? char)
 					select_option_right
+				## Submit / Select Option
+				elsif (submit? charid)  # use charid here because char is weird with Enter key
+					submit_selected_option
 				end
 			end
 

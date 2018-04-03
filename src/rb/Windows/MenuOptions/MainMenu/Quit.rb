@@ -9,5 +9,9 @@ module Windows::Menus::Options
 			@text_align = :center
 			@text = 'Quit Game'
 		end
+
+		def submit!
+			quit_game
+		end
 	end # END - CLASS Quit
 end # END - MODULE Windows::Menus::Options

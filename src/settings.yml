@@ -57,8 +57,12 @@ output:
 
 ## General Menu settings
 menu:
+  ## Attributes for selected option
+  selected_attributes:
+    - 'bold'
+    - 'underline'
   ## Menu navigation - selecting an option
-  navigation:
+  input:
     up:
       - 'KEY_UP'     # Up Arrow
       - 'k'
@@ -71,6 +75,10 @@ menu:
     right:
       - 'KEY_RIGHT'  # Right Arrow
       - 'l'
+    select:          ## Select the selected option
+      - 'KEY_ENTER'
+      - 10           # 'KEY_ENTER' doesn't work (for me), 10 is space
+      - 32           # Space Key
 
   ## MainMenu settings
   MainMenu:

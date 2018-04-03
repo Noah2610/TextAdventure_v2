@@ -96,3 +96,10 @@ def sort_hash hash, args
 	end .to_h
 end
 
+## Quit Game
+def quit_game
+	Curses.close_screen  unless (ENVT.debug? || ENVT.test?)
+	puts "Good Bye! :)"
+	exit
+end
+

@@ -8,41 +8,29 @@ module Windows
 				@options = {
 					start: Options::Start.new(
 						menu:   self,
-						coords: [0,0]
+						coords: [0, 0]
 					),
 					quit:  Options::Quit.new(
 						menu:   self,
-						coords: [0,1]
+						coords: [0, 1]
 					)
 				}
 			end
 
 			def update_option_start
 				option = get_option :start
-				# Width
 				option.set_width 0.5
-				# Height
 				option.set_height 3, :absolute
-				# Pos X
 				option.set_pos :x, 0.5
-				# Pos Y
 				option.set_pos :y, 0.25
 			end
 
 			def update_option_quit
 				option = get_option :quit
-				# Width
 				option.set_width 0.5
-				# Height
 				option.set_height 3, :absolute
-				# Pos X
 				option.set_pos :x, 0.5
-				# Pos Y
 				option.set_pos :y, 0.75
-			end
-
-			def update
-				super
 			end
 		end # END - CLASS
 	end # END - MODULE Menus

@@ -3,6 +3,10 @@
 module Windows
 	module Menus
 		module Options
+			SELECTED_ATTRIBUTES = [(
+				SETTINGS.menu['selected_attributes'] || ['bold', 'underline']
+			)].flatten.join(?,)
+
 			#TODO:
 			## Don't inherit from Windows::Window, instead write custom methods here
 			## Windows::Window has some methods that we can use for Options
@@ -14,8 +18,6 @@ module Windows
 					super
 					@menu      = args[:menu]
 					@coords    = args[:coords] || [0,0]
-					@min_width = 16
-					@max_width = 24
 					@box_align = {
 						horizontal: :left,
 						vertical:   :top
@@ -26,12 +28,6 @@ module Windows
 
 				def set_window window
 					@window = window
-				end
-
-				def set_width amount, type = :percent
-					super
-					@width = @min_width  if (@width < @min_width)
-					@width = @max_width  if (@width > @max_width)
 				end
 
 				def pos target = :all
@@ -90,7 +86,7 @@ module Windows
 
 				def get_text
 					if (@menu.selected_option == self)
-						return "{ATTR:standout}#{@text}{RESET}"
+						return "{ATTR:#{SELECTED_ATTRIBUTES}}#{@text}{RESET}"
 					else
 						return @text
 					end
@@ -107,6 +103,10 @@ module Windows
 						padding = ((width - line.size) * 0.5).round
 					end
 					return padding
+				end
+
+				## Submit / "click" on Option
+				def submit!
 				end
 
 				def update

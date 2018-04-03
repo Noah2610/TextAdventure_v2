@@ -9,5 +9,9 @@ module Windows::Menus::Options
 			@text_align = :center
 			@text = '{COLOR:green}Start Game{RESET}'
 		end
+
+		def submit!
+			GAME.init_game
+		end
 	end # END - CLASS Start
 end # END - MODULE Windows::Menus::Options
