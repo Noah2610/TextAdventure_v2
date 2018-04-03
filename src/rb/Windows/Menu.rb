@@ -20,7 +20,7 @@ module Windows
 
 			def initialize
 				super
-				@border = ['#', '#']
+				@border = [?|, ?-]
 				@border_color = SETTINGS.menu['MainMenu']['border_color']
 				@border_attr  = SETTINGS.menu['MainMenu']['border_attr']
 				# Options are list entries
@@ -45,7 +45,7 @@ module Windows
 				## Set color for border
 				attr_apply :color, @border_color, :attr, @border_attr  if (@border_color || @border_attr)
 				## Create border for window
-				@window.box @border[0], @border[1]
+				@window.box @border[0], @border[1]  if (@border)
 				attr_reset
 				## Set position to proper cursor position
 				@window.refresh

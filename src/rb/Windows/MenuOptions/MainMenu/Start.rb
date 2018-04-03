@@ -3,10 +3,10 @@ module Windows::Menus::Options
 		def initialize args = {}
 			super
 			@box_align = {
-				horizontal: :center,
+				horizontal: :right,
 				vertical:   :top
 			}
-			@text_align = :center
+			@text_align = :right
 			@text = '{COLOR:green}Start Game{RESET}'
 		end
 

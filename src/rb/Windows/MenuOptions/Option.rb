@@ -76,11 +76,15 @@ module Windows
 					@window.setpos pos(:y), pos(:x)
 					text = get_text
 					lines, attr_stack = process_attribute_codes([text].flatten.join("\n").split("\n"))
+					#@window.setpos pos(:y), pos(:x) - 1
+					#@window.addch '|'
 					lines.each_with_index do |line, index|
 						padding_x = get_aligned_line_x_position line
 						@window.setpos pos(:y) + index, pos(:x) + padding_x
 						print_with_attributes line, attr_stack
 					end
+					#@window.setpos pos(:y), pos(:x) + width
+					#@window.addch '|'
 					@window.refresh
 				end
 

@@ -82,6 +82,6 @@ menu:
 
   ## MainMenu settings
   MainMenu:
-    border_color:      'magenta'
+    border_color:      'cyan'
     border_attr:       'bold'
 ...
