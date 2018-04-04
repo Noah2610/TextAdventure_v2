@@ -66,7 +66,6 @@ if (ENVT.dev? || ENVT.debug?)
 end
 
 require File.join DIR[:misc], 'extensions'
-require File.join DIR[:misc], 'constants'
 require File.join DIR[:rb], 'Settings'
 SETTINGS = Settings.new DIR[:settings]
 require File.join DIR[:misc], 'misc'
