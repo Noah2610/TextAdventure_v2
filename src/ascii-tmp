@@ -1,0 +1,224 @@
+3x3
+
+TTT EEE X X TTT  A  DD  V V EEE N N TTT U U RRR EEE
+ T  EE   X   T  AAA D D V V EE  NNN  T  U U RRR EE
+ T  EEE X X  T  A A DD   V  EEE N N  T  UUU R R EEE
+
+         TTT EEE X X TTT
+          T  EE   X   T
+          T  EEE X X  T
+ A  DD  V V EEE N N TTT U U RRR EEE
+AAA D D V V EE  NNN  T  U U RRR EE
+A A DD   V  EEE N N  T  UUU R R EEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+5x5
+
+TTTTT EEEEE X   X TTTTT  AAA  DDDD  V   V EEEEE N   N TTTTT U   U RRRR  EEEEE
+  T   E      X X    T   AA AA D  DD V   V E     NN  N   T   U   U R   R E
+  T   EEEE    X     T   A   A D   D V   V EEE   N N N   T   U   U RRRR  EEEE
+  T   E      X X    T   AAAAA D  DD  V V  E     N  NN   T   U   U R RR  E
+  T   EEEEE X   X   T   A   A DDDD    V   EEEEE N   N   T    UUU  R  RR EEEEE
+
+              TTTTT EEEEE X   X TTTTT
+                T   E      X X    T
+                T   EEEE    X     T
+                T   E      X X    T
+                T   EEEEE X   X   T
+ AAA  DDDD  V   V EEEEE N   N TTTTT U   U RRRR  EEEEE
+AA AA D  DD V   V E     NN  N   T   U   U R   R E
+A   A D   D V   V EEE   N N N   T   U   U RRRR  EEEE
+AAAAA D  DD  V V  E     N  NN   T   U   U R RR  E
+A   A DDDD    V   EEEEE N   N   T    UUU  R  RR EEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+5x3
+
+TTTTT EEEEE X   X TTTTT  AAA  DDDD  V   V EEEEE N   N TTTTT U   U RRRR  EEEEE
+  T   EEEE    X     T   A   A D   D V   V EEE   N N N   T   U   U RRRR  EEEE
+  T   EEEEE X   X   T   A   A DDDD    V   EEEEE N   N   T    UUU  R  RR EEEEE
+
+              TTTTT EEEEE X   X TTTTT
+                T   EEEE    X     T
+                T   EEEEE X   X   T
+ AAA  DDDD  V   V EEEEE N   N TTTTT U   U RRRR  EEEEE
+A   A D   D V   V EEE   N N N   T   U   U RRRR  EEEE
+A   A DDDD    V   EEEEE N   N   T    UUU  R  RR EEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+7x7
+
+TTTTTTT EEEEEEE XX   XX TTTTTTT   AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+TTTTTTT EEEEEEE  XX XX  TTTTTTT  AA AA  DD  DDD VV   VV EEEEEEE NNN  NN TTTTTTT UU   UU RR   RR EEEEEEE
+  TTT   EE        XXX     TTT   AA   AA DD   DD VV   VV EE      NNNN NN   TTT   UU   UU RR   RR EE
+  TTT   EEEEE      x      TTT   AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+  TTT   EE        XXX     TTT   AAAAAAA DD   DD  VV VV  EE      NN NNNN   TTT   UU   UU RR  RR  EE
+  TTT   EEEEEEE  XX XX    TTT   AA   AA DD  DDD   VVV   EEEEEEE NN  NNN   TTT   UUU UUU RR   RR EEEEEEE
+  TTT   EEEEEEE XX   XX   TTT   AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+                   TTTTTTT EEEEEEE XX   XX TTTTTTT
+                   TTTTTTT EEEEEEE  XX XX  TTTTTTT
+                     TTT   EE        XXX     TTT
+                     TTT   EEEEE      x      TTT
+                     TTT   EE        XXX     TTT
+                     TTT   EEEEEEE  XX XX    TTT
+                     TTT   EEEEEEE XX   XX   TTT
+  AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+ AA AA  DD  DDD VV   VV EEEEEEE NNN  NN TTTTTTT UU   UU RR   RR EEEEEEE
+AA   AA DD   DD VV   VV EE      NNNN NN   TTT   UU   UU RR   RR EE
+AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+AAAAAAA DD   DD  VV VV  EE      NN NNNN   TTT   UU   UU RR  RR  EE
+AA   AA DD  DDD   VVV   EEEEEEE NN  NNN   TTT   UUU UUU RR   RR EEEEEEE
+AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+7x5
+
+TTTTTTT EEEEEEE XX   XX TTTTTTT   AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+  TTT   EE        XXX     TTT   AA   AA DD   DD VV   VV EE      NNNN NN   TTT   UU   UU RR   RR EE
+  TTT   EEEEE      x      TTT   AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+  TTT   EE        XXX     TTT   AAAAAAA DD   DD  VV VV  EE      NN NNNN   TTT   UU   UU RR  RR  EE
+  TTT   EEEEEEE XX   XX   TTT   AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+                   TTTTTTT EEEEEEE XX   XX TTTTTTT
+                     TTT   EE        XXX     TTT
+                     TTT   EEEEE      x      TTT
+                     TTT   EE        XXX     TTT
+                     TTT   EEEEEEE XX   XX   TTT
+  AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+AA   AA DD   DD VV   VV EE      NNNN NN   TTT   UU   UU RR   RR EE
+AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+AAAAAAA DD   DD  VV VV  EE      NN NNNN   TTT   UU   UU RR  RR  EE
+AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+7x3
+
+TTTTTTT EEEEEEE XX   XX TTTTTTT   AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+  TTT   EEEEE      x      TTT   AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+  TTT   EEEEEEE XX   XX   TTT   AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+                   TTTTTTT EEEEEEE XX   XX TTTTTTT
+                     TTT   EEEEE      x      TTT
+                     TTT   EEEEEEE XX   XX   TTT
+  AAA   DDDDDD  VV   VV EEEEEEE NN   NN TTTTTTT UU   UU RRRRRR  EEEEEEE
+AA   AA DD   DD  VV VV  EEEEE   NN NNNN   TTT   UU   UU RRRRRR  EEEEE
+AA   AA DDDDDD     V    EEEEEEE NN   NN   TTT    UUUUU  RR   RR EEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+9x9
+
+TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT    AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+TTTTTTTTT EEEEEEEEE  XX   XX  TTTTTTTTT   AAAAA   DDDDDDDD  VV     VV EEEEEEEEE NNNN   NN TTTTTTTTT UU     UU RRR  RRRR EEEEEEEEE
+   TTT    EE          XX XX      TTT     AAA AAA  DD    DDD VV     VV EE        NNNN   NN    TTT    UU     UU RR    RRR EE
+   TTT    EE           XXX       TTT    AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+   TTT    EEEEEEE       X        TTT    AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+   TTT    EE           XXX       TTT    AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+   TTT    EE          XX XX      TTT    AAAAAAAAA DD    DDD   VV VV   EE        NN   NNNN    TTT    UUU   UUU RR   RRR  EE
+   TTT    EEEEEEEEE  XX   XX     TTT    AA     AA DDDDDDDD     VVV    EEEEEEEEE NN   NNNN    TTT     UUUUUUU  RR    RRR EEEEEEEEE
+   TTT    EEEEEEEEE XX     XX    TTT    AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+                        TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT
+                        TTTTTTTTT EEEEEEEEE  XX   XX  TTTTTTTTT
+                           TTT    EE          XX XX      TTT
+                           TTT    EE           XXX       TTT
+                           TTT    EEEEEEE       X        TTT
+                           TTT    EE           XXX       TTT
+                           TTT    EE          XX XX      TTT
+                           TTT    EEEEEEEEE  XX   XX     TTT
+                           TTT    EEEEEEEEE XX     XX    TTT
+   AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+  AAAAA   DDDDDDDD  VV     VV EEEEEEEEE NNNN   NN TTTTTTTTT UU     UU RRR  RRRR EEEEEEEEE
+ AAA AAA  DD    DDD VV     VV EE        NNNN   NN    TTT    UU     UU RR    RRR EE
+AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+AAAAAAAAA DD    DDD   VV VV   EE        NN   NNNN    TTT    UUU   UUU RR   RRR  EE
+AA     AA DDDDDDDD     VVV    EEEEEEEEE NN   NNNN    TTT     UUUUUUU  RR    RRR EEEEEEEEE
+AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+9x7
+
+TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT    AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+TTTTTTTTT EEEEEEEEE  XX   XX  TTTTTTTTT   AAAAA   DDDDDDDD  VV     VV EEEEEEEEE NNNN   NN TTTTTTTTT UU     UU RRR  RRRR EEEEEEEEE
+   TTT    EE           XXX       TTT    AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+   TTT    EEEEEEE       X        TTT    AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+   TTT    EE           XXX       TTT    AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+   TTT    EEEEEEEEE  XX   XX     TTT    AA     AA DDDDDDDD     VVV    EEEEEEEEE NN   NNNN    TTT     UUUUUUU  RR    RRR EEEEEEEEE
+   TTT    EEEEEEEEE XX     XX    TTT    AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+                        TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT
+                        TTTTTTTTT EEEEEEEEE  XX   XX  TTTTTTTTT
+                           TTT    EE           XXX       TTT
+                           TTT    EEEEEEE       X        TTT
+                           TTT    EE           XXX       TTT
+                           TTT    EEEEEEEEE  XX   XX     TTT
+                           TTT    EEEEEEEEE XX     XX    TTT
+   AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+  AAAAA   DDDDDDDD  VV     VV EEEEEEEEE NNNN   NN TTTTTTTTT UU     UU RRR  RRRR EEEEEEEEE
+AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+AA     AA DDDDDDDD     VVV    EEEEEEEEE NN   NNNN    TTT     UUUUUUU  RR    RRR EEEEEEEEE
+AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+9x5
+
+TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT    AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+   TTT    EE           XXX       TTT    AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+   TTT    EEEEEEE       X        TTT    AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+   TTT    EE           XXX       TTT    AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+   TTT    EEEEEEEEE XX     XX    TTT    AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+                        TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT
+                           TTT    EE           XXX       TTT
+                           TTT    EEEEEEE       X        TTT
+                           TTT    EE           XXX       TTT
+                           TTT    EEEEEEEEE XX     XX    TTT
+   AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+AAA   AAA DD     DD  VV   VV  EE        NN NN  NN    TTT    UU     UU RRR  RRR  EE
+AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+AAAAAAAAA DD     DD   VV VV   EE        NN  NN NN    TTT    UU     UU RR  RRR   EE
+AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+9x3
+
+TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT    AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+   TTT    EEEEEEE       X        TTT    AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+   TTT    EEEEEEEEE XX     XX    TTT    AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+                        TTTTTTTTT EEEEEEEEE XX     XX TTTTTTTTT
+                           TTT    EEEEEEE       X        TTT
+                           TTT    EEEEEEEEE XX     XX    TTT
+   AAA    DDDDDDD   VV     VV EEEEEEEEE NNN    NN TTTTTTTTT UU     UU RRRRRRRR  EEEEEEEEE
+AA     AA DD     DD  VV   VV  EEEEEEE   NN  N  NN    TTT    UU     UU RRRRRR    EEEEEEE
+AA     AA DDDDDDD       V     EEEEEEEEE NN    NNN    TTT      UUUUU   RR    RRR EEEEEEEEE
+
+------------------------------------------------------------------------------------------------------------------------
+
+5x9
+TTTTT EEEEE X   X TTTTT
+TTTTT EEEEE  X X  TTTTT
+  T   E      X X    T
+  T   E       X     T
+  T   EEEE    X     T
+  T   E       X     T
+  T   E      X X    T
+  T   EEEEE  X X    T
+  T   EEEEE X   X   T
+
+------------------------------------------------------------------------------------------------------------------------
+
