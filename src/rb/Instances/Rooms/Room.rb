@@ -7,19 +7,18 @@ module Instances
 		## Initialize / load all rooms and return them
 		def self.init_rooms
 			return self.constants.map do |constname|
-				room = self.init_room(constname)
-				next [constname, room]  unless (room.nil?)
+				next [constname, self.const_get(classname)]  if (can_create_room? constname)
 				next nil
 			end .reject { |x| !x } .to_h
 		end
 
-		## Initialize a single Room by their classname
-		def self.init_room classname
-			return nil  if     ([:Room, :ROOMS].include? classname)
-			return nil  unless (self.constants.include?(classname))
+		def self.can_create_room? classname
+			classname = classname.to_sym
+			return false  if     ([:Room, :ROOMS].include? classname)
+			return false  unless (self.constants.include?(classname))
 			clazz = self.const_get(classname)
-			return nil  unless (clazz.is_a? Class)
-			return clazz.new
+			return false  unless (clazz.is_a? Class)
+			return true
 		end
 
 		class Room < Instances::Instance
@@ -28,6 +27,7 @@ module Instances
 
 			def initialize args = {}
 				super
+				ROOMS[get_classname.to_sym] = self
 				@persons    = load_persons
 				@components = load_components
 				@events     = load_events
@@ -172,7 +172,7 @@ module Instances
 				## Get all neighbors
 				@neighbors = @data['neighbors'].map do |roomstr|
 					roomname = roomstr.to_sym
-					if (room = Instances::Rooms::ROOMS[roomname])
+					if (room = ROOMS[roomname])
 						next [roomname, room]
 					else
 						## Room doesn't exist, log warning
@@ -185,23 +185,25 @@ module Instances
 
 			## Load / create neighboring Rooms
 			def load_neighbors
-				return @neighbors  unless (@neighbors.nil?)
+				return  unless (@neighbors.nil?)
 				@neighbors = @data['neighbors'].map do |roomstr|
 					roomname = roomstr.to_sym
-					## Don't create new Room but get already created Room from constant
-					next [roomname, Instances::Rooms::ROOMS[roomname]]  if (Instances::Rooms::ROOMS.keys.include?(roomname))
-					## Create new Room
-					if (room = Instances::Rooms.init_room(roomname))
-						Instances::Rooms::ROOMS[roomname] = room
-						next [roomname, room]
-					else
-						## Room doesn't exist, log warning
-						classname = get_classname
-						log "WARNING: Room '#{classname}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
-						next nil
-					end
+					next [roomname, ROOMS[roomname]]  if (ROOMS.keys.include?(roomname))
+					room = load_room(roomname)
+					next [roomname, room]  if (room)
+					next nil
 				end .reject { |x| !x } .to_h
-				return @neighbors
+			end
+
+			def load_room roomname
+				if (Instances::Rooms.can_create_room? roomname)
+					return Instances::Rooms.const_get(roomname).new
+				else
+					## Room doesn't exist, log warning
+					classname = get_classname
+					log "WARNING: Room '#{classname}' tried to set Room '#{roomname}' as neighbor which doesn't exist!"
+					return nil
+				end
 			end
 
 			## This method is called everytime the Player goes to this Room

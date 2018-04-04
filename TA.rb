@@ -42,7 +42,8 @@ DIR = {
 			components:   File.join(ROOT, 'src/Data/Components'),
 			persons:      File.join(ROOT, 'src/Data/Persons'),
 			rooms:        File.join(ROOT, 'src/Data/Rooms')
-		}
+		},
+		saves:          File.join(ROOT, 'src/Test/saves')
 	},
 	includes:         File.join(ROOT, 'src/rb/Includes'),   # Modules that should be included to classes (Inventory, Keywords, Savable, ...)
 	settings:         File.join(ROOT, 'src/settings.yml'),  # Default Settings file

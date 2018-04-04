@@ -28,4 +28,12 @@ module TestInputHelpers
 		line = Input::Line.new input
 		return line.process
 	end
+
+	## process_line and log input and output
+	def process_line_with_log input
+		log [
+			"> #{input}",
+			"=> #{process_line(input).join("\n   ")}"
+		].join("\n")
+	end
 end

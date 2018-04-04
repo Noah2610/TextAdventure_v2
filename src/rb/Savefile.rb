@@ -4,32 +4,44 @@ module Saves
 		def initialize savefile_name
 			create_savefile_directory
 			savefile_name = "#{savefile_name}.json"  unless (savefile_name =~ /.+\.json\z/)
-			@savefile = File.join DIR[:saves], savefile_name
+			@savefile = File.join get_saves_directory_for_envt, savefile_name
 			## Load savefile contents
-			@savefile_content = load_savefile_content
+			@savefile_content = nil
+			load_or_create_savefile
 		end
 
 		def create_savefile_directory
-			Dir.mkdir DIR[:saves]  unless (File.directory? DIR[:saves])
+			Dir.mkdir get_saves_directory_for_envt  unless (File.directory? get_saves_directory_for_envt)
+		end
+
+		def get_saves_directory_for_envt
+			dir = DIR[:saves]
+			dir = DIR[:test][:saves]  if (ENVT.test?)
+			return dir
+		end
+
+		def load_or_create_savefile
+			if (savefile_exists? @savefile)
+				@savefile_content = load_savefile_content
+			else
+				# New Savefile
+				@savefile_content = {}
+			end
 		end
 
 		def savefile_exists? savefile
-			unless (File.exists? savefile)
-				log "WARNING: Tried loading savefile '#{savefile}' which doesn't exist!"
-				return false
-			end
-			return true
+			return true  if (File.exists? savefile)
+			return false
 		end
 
 		def load_savefile_content
-			return nil  unless (@savefile)
-			content = load_json
+			content = load_json File.read(@savefile)
 			return content
 		end
 
-		def load_json
+		def load_json json
 			begin
-				return JSON.parse File.read(@savefile)
+				return JSON.parse json
 			rescue
 				log "WARNING: Couldn't load savefile '#{@savefile}'; Is it JSON?"
 				return nil
@@ -67,5 +79,7 @@ module Saves
 				object.restore_savefile content
 			end
 		end
+
+		alias :restore :restore_savefile
 	end # END - CLASS Savefile
 end # END - MODULE Saves
