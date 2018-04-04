@@ -47,7 +47,8 @@ DIR = {
 	},
 	includes:         File.join(ROOT, 'src/rb/Includes'),   # Modules that should be included to classes (Inventory, Keywords, Savable, ...)
 	settings:         File.join(ROOT, 'src/settings.yml'),  # Default Settings file
-	saves:            File.join(ROOT, 'saves')              # Savefiles directory
+	saves:            File.join(ROOT, 'saves'),             # Savefiles directory
+	ascii_art:        File.join(ROOT, 'src/Data/AsciiArt')
 }
 
 require File.join DIR[:misc], 'handle_argument_parser'
