@@ -16,7 +16,7 @@ PLAYER.goto! Instances::Rooms::ParsleysTruck.new
 ## Savefile
 # Load development Savefile
 SAVEFILE = Saves::Savefile.new 'development'
-SAVEFILE.restore
+SAVEFILE.restore  unless (ENVT.test?)
 
 ### Game
 class Game

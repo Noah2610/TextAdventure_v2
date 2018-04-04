@@ -1,7 +1,7 @@
-Gemfile.lock
-.bundle/
-log/*.log
-lib/
-**/.virb/
-.byebug_history
-saves/
+/Gemfile.lock
+/.bundle/
+/log/*.log
+/lib/
+/**/.virb/
+/.byebug_history
+/saves/
