@@ -11,6 +11,7 @@ module Windows
 					'{LARGE_START}TEXT{LARGE_END}',
 					'{LARGE_START}ADVENTURE{LARGE_END}'
 				]
+				@padding_h = 2
 			end
 		end # END - CLASS MainTitle
 	end # END - MODULE Outputs

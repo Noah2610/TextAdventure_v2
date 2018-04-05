@@ -49,40 +49,42 @@ module Windows::Large
 	end
 
 	def process_large
+		full_normal_text  = @lines.join("\n")
 		regex_for_split = /{LARGE_START}|{LARGE_END}/m
-		text_matrix_lines = @lines.join("\n").split("\n").map do |line|
+		text_matrix_lines = full_normal_text.split("\n").map do |line|
 			next line.split(regex_for_split).map.with_index do |text, index|
 				if    (index % 2 == 0)  # Even - normal text
-					next text
+					next text  unless (text.empty?)
+					next nil
 				elsif (index % 2 == 1)  # Odd  - LARGE text
 					next gen_large_text_matrix text
 				end
-			end
+			end .reject { |x| !x }
 		end
 		gen_lines_to_draw_from_text_matrix_lines text_matrix_lines
 	end
 
 	def gen_large_text_matrix text
-		@current_normal_text = text
+		@current_unlarge_text = text
 		return text.each_char.map do |char|
 			next gen_large_char_matrix char
 		end .reject { |x| !x }
 	end
 
 	def gen_large_char_matrix char
-		@current_character_size = get_fitting_character_size_for_text @current_normal_text
+		@current_character_size = get_fitting_character_size_for_text @current_unlarge_text
 		return char  if (@current_character_size.nil?)
 		return get_char_matrix_for_current_size char
 	end
 
-	def get_fitting_character_size_for_text normal_text
+	def get_fitting_character_size_for_text unlarge_text
 		return nil  unless (@window)
-		normal_text_length = normal_text.size
+		unlarge_text_length = unlarge_text.size
 		get_sorted_character_sizes.each do |character_size|
 			size_width, size_height = character_size.split(?x).map &:to_i
 			total_size = [
-				(((size_width + 1) * normal_text_length) + (@padding * 2)),
-				size_height
+				(((size_width + 1) * unlarge_text_length) + (@padding * 2)),
+				(size_height + (@padding_h * 2))
 			]
 			return character_size  if (size_fits_in_window? total_size)
 		end
@@ -119,16 +121,14 @@ module Windows::Large
 
 	def gen_lines_to_draw_from_text_matrix_lines text_matrix_lines
 		return text_matrix_lines.each do |text_matrix_line|
+			@lines_to_draw << ''  unless (text_matrix_line == text_matrix_lines.first)
 			next gen_line_to_draw_from_text_matrix_line text_matrix_line
 		end
 	end
 
 	def gen_line_to_draw_from_text_matrix_line text_matrix_line
-		text_matrix_line.each do |text_matrix_entry|
-			if (text_matrix_entry.is_a? String)
-				@lines_to_draw << text_matrix_entry
-				next
-			end
+		text_matrix_line.each_with_index do |text_matrix_entry, line_index|
+			next  unless (text_matrix_entry.is_a?(Array) && text_matrix_entry.any?)
 			text_matrix_entry.first.size.times do |char_index|
 				@lines_to_draw << ''
 				text_matrix_entry.each do |char_matrix|
