@@ -9,8 +9,8 @@ module Windows
 				@border = [?|, ?-]
 				@lines = [
 					'{LARGE_START}',
-					'FOO',
-					'BAR',
+					'TEXT',
+					'ADVENTURE',
 					'{LARGE_END}'
 				]
 				@padding_h = 2

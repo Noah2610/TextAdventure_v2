@@ -29,7 +29,13 @@ module Windows::Large
 		'3x3',
 		'5x5',
 		'7x7',
-		'9x9'
+		'9x9',
+		'5x3',
+		'7x5',
+		'7x3',
+		'9x7',
+		'9x5',
+		'9x3',
 	]
 	CHARACTERS = self.load_characters_as_matrixes
 
@@ -107,8 +113,8 @@ module Windows::Large
 			size_width, size_height = character_size.split(?x).map &:to_i
 			processed_large_text_lines_height = get_total_height_of_processed_large_text
 			total_size = [
-				(((size_width + 1) * unlarge_text_length) + (@padding * 2)),
-				((size_height + 2) + processed_large_text_lines_height + (@padding_h * 2))
+				(((size_width + 2) * unlarge_text_length) + (@padding * 2)),
+				((size_height + 1) + processed_large_text_lines_height + (@padding_h * 2))
 			]
 			return character_size  if (size_fits_in_window? total_size)
 		end
@@ -150,8 +156,80 @@ module Windows::Large
 	def get_char_matrix_for_current_size char
 		char_key = char.upcase
 		char_key = 'SPACE'  if (char == ' ')
-		return CHARACTERS[@current_character_size][char_key]  if (CHARACTERS[@current_character_size] && CHARACTERS[@current_character_size][char_key])
-		return CHARACTERS[@current_character_size]['UNKNOWN']
+		if (CHARACTERS[@current_character_size])
+			return CHARACTERS[@current_character_size][char_key]   if (CHARACTERS[@current_character_size][char_key])
+			return CHARACTERS[@current_character_size]['UNKNOWN']
+		end
+		return get_truncated_version_of_char_for_current_size char
+	end
+
+	#TODO: Split up this method
+	def get_truncated_version_of_char_for_current_size char
+		char_key = char.upcase
+		char_key = 'SPACE'  if (char == ' ')
+		size = @current_character_size.match(/\A([0-9])+x([0-9]+)\z/)[1 .. -1]
+		current_size = {}
+		current_size[:width], current_size[:height] = size.map &:to_i
+		return ??  unless (current_size[:width] > current_size[:height])
+
+		tmp_size = "#{current_size[:width]}x#{current_size[:width]}"
+		if (CHARACTERS[tmp_size])
+			char_matrix   = CHARACTERS[tmp_size][char_key]
+			char_matrix ||= CHARACTERS[tmp_size]['UNKNOWN']
+		else
+			return ??
+		end
+
+		truncation_step = ((current_size[:width] - current_size[:height]) / 2.0).floor
+		truncation_n = (current_size[:width].to_f / 3.0).round - 1
+		truncation_indices = {
+			above: (truncation_n),
+			below: ((current_size[:width] - 1) - truncation_n)
+		}
+
+		indices_to_truncate = []
+		tmp_index = truncation_indices[:above].dup
+		indices_to_truncate << truncation_step.times.map.with_index do |step, counter|
+			if    (counter % 2 == 0)  # EVEN counter - go DOWN (because starts with 0)
+				if (tmp_index + counter < current_size[:width] - 1)
+					tmp_index += counter
+				else
+					tmp_index -= counter
+				end
+			elsif (counter % 2 == 1)  # ODD  counter - go UP
+				if (tmp_index - counter > 0)
+					tmp_index -= counter
+				else
+					tmp_index += counter
+				end
+			end
+			next tmp_index.dup
+		end
+		tmp_index = truncation_indices[:below].dup
+		indices_to_truncate << truncation_step.times.map.with_index do |step, counter|
+			if    (counter % 2 == 0)  # EVEN counter - go UP (because starts with 0)
+				if (tmp_index - counter > 0)
+					tmp_index -= counter
+				else
+					tmp_index += counter
+				end
+			elsif (counter % 2 == 1)  # ODD  counter - go DOWN
+				if (tmp_index + counter < current_size[:width] - 1)
+					tmp_index += counter
+				else
+					tmp_index -= counter
+				end
+			end
+			next tmp_index.dup
+		end
+		indices_to_truncate.flatten!
+
+		new_char_matrix = char_matrix.dup
+		indices_to_truncate.each do |index|
+			new_char_matrix[index] = nil
+		end
+		new_char_matrix.reject! { |x| !x }
+		return new_char_matrix
 	end
 
 	def gen_lines_to_draw_from_text_matrix_lines text_matrix_lines

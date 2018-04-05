@@ -92,8 +92,8 @@ class Game
 		## Print User's Input to UserOut output Window
 		window(:user).print line.text
 		## Process Line
-		#output = "{LARGE_START}#{line.process.join("\n")}{LARGE_END}"
-		output = line.process
+		output = "{LARGE_START}#{line.process.join("\n")}{LARGE_END}"
+		#output = line.process
 
 		unless (output.nil? || output.empty?)
 			window(:primary).print output       if (PLAYER.mode? :normal)
