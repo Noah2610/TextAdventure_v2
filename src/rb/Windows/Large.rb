@@ -49,21 +49,42 @@ module Windows::Large
 	end
 
 	def process_large
-		full_normal_text_reversed  = @lines.join("\n").reverse
-		regex_for_split = /#{'{LARGE_START}'.reverse}|#{'{LARGE_END}'.reverse}/m
+		@full_normal_text = @lines.join("\n")
+
+		split_text = split_text_into_normal_and_large_groups
+
 		@processed_large_text_lines = []
-		full_normal_text_reversed.split("\n").each do |line|
-			@processed_large_text_lines << line.split(regex_for_split).map.with_index do |text, index|
-				if    (index % 2 == 0)  # Even - normal text
-					next text  unless (text.empty?)
-					next nil
-				elsif (index % 2 == 1)  # Odd  - LARGE text
-					next gen_large_text_matrix text
+		split_text.reverse.each do |type, text|
+			case type
+			when :normal
+				@processed_large_text_lines << text.split("\n")  unless (text.empty?)
+			when :large
+				text.split("\n").each do |txt|
+					@processed_large_text_lines << [gen_large_text_matrix(txt)]
 				end
-			end .reject { |x| !x }
+			end
 		end
-		#log @processed_large_text_lines
 		gen_lines_to_draw_from_text_matrix_lines reverse_text_matrix_lines(@processed_large_text_lines)
+	end
+
+	def split_text_into_normal_and_large_groups
+		normal_text_dup = @full_normal_text.dup
+		split_text = []
+		regex_for_scan = /(#{'{LARGE_START}'}(.+?)#{'{LARGE_END}'})/m
+		@full_normal_text.scan regex_for_scan do |large_text_arr|
+			full_match = large_text_arr[0]
+			large_text = large_text_arr[1]
+			index = normal_text_dup.index full_match
+			sliced = normal_text_dup.slice!(0 ... index)
+			split_text << [:normal, sliced]     unless (sliced.empty?)
+			split_text << [:large, large_text]  unless (large_text.empty?)
+			normal_text_dup.slice!(0 ... full_match.size)
+		end
+		split_text << [:normal, normal_text_dup]
+		split_text.map! do |type, part|
+			next [type, part.reverse]
+		end
+		return split_text
 	end
 
 	def gen_large_text_matrix text
@@ -85,7 +106,6 @@ module Windows::Large
 		get_sorted_character_sizes.each do |character_size|
 			size_width, size_height = character_size.split(?x).map &:to_i
 			processed_large_text_lines_height = get_total_height_of_processed_large_text
-			log processed_large_text_lines_height
 			total_size = [
 				(((size_width + 1) * unlarge_text_length) + (@padding * 2)),
 				((size_height + 1) + processed_large_text_lines_height + (@padding_h * 2))

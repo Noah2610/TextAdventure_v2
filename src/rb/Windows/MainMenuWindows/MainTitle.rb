@@ -8,8 +8,8 @@ module Windows
 				super
 				@border = [?|, ?-]
 				@lines = [
-					'{LARGE_START}TEXT{LARGE_END}',
-					'{LARGE_START}ADVENTURE{LARGE_END}'
+					'{LARGE_START}TEXT',
+					'ADVENTURE{LARGE_END}'
 				]
 				@padding_h = 2
 			end
