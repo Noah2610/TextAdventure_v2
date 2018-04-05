@@ -43,7 +43,7 @@ module Windows
 
 				## Process lines
 				## Generate attribute stack for attribute-coded strings
-				lines, attr_stack = process_attribute_codes @lines
+				lines, attr_stack = process_attribute_codes get_lines_to_draw
 
 				unless (lines.nil? || lines.empty?)
 					lines_final = []
@@ -114,6 +114,10 @@ module Windows
 
 				attr_reset
 				@window.refresh
+			end
+
+			def get_lines_to_draw
+				return @lines
 			end
 
 			def update

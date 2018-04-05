@@ -1,5 +1,5 @@
 ## Require MenuOptions
-require File.join DIR[:menu_options],         'Option'
+require File.join DIR[:menu_options],       'Option'
 require_files File.join(DIR[:menu_options], 'MainMenu')
 
 module Windows

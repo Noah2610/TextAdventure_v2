@@ -30,6 +30,37 @@ module Windows
 					@window = window
 				end
 
+				## Set width, height, and position
+				def set_width amount, type = :percent
+					case type
+					when :percent, :perc
+						@width = (size(:w) * amount).floor
+					when :absolute, :abs
+						@width = amount
+					end
+				end
+
+				def set_height amount, type = :percent
+					case type
+					when :percent, :perc
+						@height = [(size(:h) * amount).floor, 3].max
+					when :absolute, :abs
+						@height = amount
+					end
+				end
+
+				def set_pos target, amount, type = :percent
+					return nil  unless (@pos.keys.include? target)
+					screen_axis = :w  if (target == :x)
+					screen_axis = :h  if (target == :y)
+					case type
+					when :percent, :perc
+						@pos[target] = (size(screen_axis) * amount).floor
+					when :absolute, :abs
+						@pos[target] = amount
+					end
+				end
+
 				def pos target = :all
 					ret = super
 					case target

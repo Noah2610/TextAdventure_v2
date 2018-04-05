@@ -2,6 +2,7 @@
 ## Require Window files
 require File.join DIR[:windows], 'Window'
 require File.join DIR[:windows], 'Color'
+require File.join DIR[:windows], 'Large'
 require File.join DIR[:windows], 'Output'
 require File.join DIR[:windows], 'Menu'
 
@@ -34,9 +35,9 @@ module Windows::Managers
 		end
 
 		def try_to_call_method method_name
-			begin
+			if (methods.include? method_name.to_sym)
 				method(method_name).call
-			rescue NameError
+			else
 				classname = self.class.name.match(/\AWindows::Managers::(.+)\z/)[1]
 				log "WARNING: Window Manager '#{classname}' tried to call method '#{method_name}', which doesn't exist!"
 			end
