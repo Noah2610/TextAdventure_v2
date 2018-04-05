@@ -108,7 +108,7 @@ module Windows::Large
 			processed_large_text_lines_height = get_total_height_of_processed_large_text
 			total_size = [
 				(((size_width + 1) * unlarge_text_length) + (@padding * 2)),
-				((size_height + 1) + processed_large_text_lines_height + (@padding_h * 2))
+				((size_height + 2) + processed_large_text_lines_height + (@padding_h * 2))
 			]
 			return character_size  if (size_fits_in_window? total_size)
 		end
@@ -133,6 +133,7 @@ module Windows::Large
 		return @processed_large_text_lines.map do |line|
 			next line.map do |entry|
 				next 1                     if (entry.is_a? String)
+				next nil                   if (entry.is_a?(Array) && entry.empty?)
 				next entry.first.size + 1  if (entry.is_a? Array)
 				next nil
 			end
