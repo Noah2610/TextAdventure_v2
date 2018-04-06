@@ -2,7 +2,7 @@
 ## Require Window files
 require File.join DIR[:windows], 'Window'
 require File.join DIR[:windows], 'Color'
-require File.join DIR[:windows], 'Large'
+require File.join DIR[:windows], 'LargeCharacters/Large'
 require File.join DIR[:windows], 'Output'
 require File.join DIR[:windows], 'Menu'
 

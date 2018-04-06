@@ -1,4 +1,3 @@
-
 module Windows::Large
 	def self.load_characters_as_matrixes
 		return Dir.new(CHARACTER_DIR).map do |dir|
@@ -40,20 +39,30 @@ module Windows::Large
 		def initialize char, size
 			@char = char
 			@size = size
-			@char_matrix = get_char_matrix
+			@char_matrix = gen_char_matrix
 		end
 
-		def get_char_matrix
+		def gen_char_matrix
+			return [@char]                               if (is_normal?)
 			size_string = get_size_string
 			char_key = get_char_key
 			if (CHARACTERS[size_string])
 				return CHARACTERS[size_string][char_key]   if (CHARACTERS[size_string][char_key])
 				return CHARACTERS[size_string]['UNKNOWN']
 			end
-			return get_truncated_char_matrix
+			return gen_truncated_char_matrix
+		end
+
+		def is_normal?
+			return !is_large?
+		end
+
+		def is_large?
+			return !!@size
 		end
 
 		def get_size_string
+			return nil  if (@size.nil?)
 			return "#{@size[:width]}x#{@size[:height]}"
 		end
 
@@ -62,7 +71,7 @@ module Windows::Large
 			return 'SPACE'
 		end
 
-		def get_truncated_char_matrix
+		def gen_truncated_char_matrix
 			char_key = get_char_key
 			return ??  unless (@size[:width] > @size[:height])
 
@@ -149,5 +158,9 @@ module Windows::Large
 				next truncation_index.dup
 			end
 		end
-	end
+
+		def matrix
+			return @char_matrix
+		end
+	end # END - CLASS Character
 end # END - MODULE Windows::Large
