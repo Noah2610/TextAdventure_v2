@@ -38,6 +38,8 @@ module Windows::Large
 		'9x3',
 	]
 	CHARACTERS = self.load_characters_as_matrixes
+	PADDING_BETWEEN_LARGE_LINES = 1
+	PADDING_BETWEEN_LARGE_CHARS = 1
 
 	def initialize args = {}
 		super
@@ -59,18 +61,30 @@ module Windows::Large
 
 		split_text = split_text_into_normal_and_large_groups
 
-		@processed_large_text_lines = []
-		split_text.reverse.each do |type, text|
+		@text_matrix_lines = []
+		split_text.each do |type, text|
 			case type
 			when :normal
-				@processed_large_text_lines << text.split("\n")  unless (text.empty?)
+				@text_matrix_lines << text.split("\n")  unless (text.empty?)
 			when :large
 				text.split("\n").each do |txt|
-					@processed_large_text_lines << [gen_large_text_matrix(txt)]
+					@text_matrix_lines << gen_large_text_matrix(txt)
 				end
 			end
 		end
-		gen_lines_to_draw_from_text_matrix_lines reverse_text_matrix_lines(@processed_large_text_lines)
+		#log @text_matrix_lines
+		#gen_lines_to_draw_from_text_matrix_lines reverse_text_matrix_lines(@text_matrix_lines)
+
+		if (@all_text_in_window)
+			check_if_fits_counter = 0
+			while (!text_matrix_lines_fit_in_window?)
+				break  if (check_if_fits_counter >= 40)
+				shrink_text_matrix_lines
+				check_if_fits_counter += 1
+			end
+		end
+
+		gen_lines_to_draw_from_text_matrix_lines @text_matrix_lines
 	end
 
 	def split_text_into_normal_and_large_groups
@@ -88,7 +102,7 @@ module Windows::Large
 		end
 		split_text << [:normal, normal_text_dup]
 		split_text.map! do |type, part|
-			next [type, part.reverse]
+			next [type, part]
 		end
 		return split_text
 	end
@@ -101,24 +115,33 @@ module Windows::Large
 	end
 
 	def gen_large_char_matrix char
-		@current_character_size = get_fitting_character_size_for_text @current_unlarge_text
-		return char  if (@current_character_size.nil?)
+		set_fitting_character_size_for_text @current_unlarge_text
+		return [char]  if (@current_character_size_string.nil?)
 		return get_char_matrix_for_current_size char
 	end
 
-	def get_fitting_character_size_for_text unlarge_text
-		return nil  unless (@window)
+	def set_fitting_character_size_for_text unlarge_text
+		@current_character_size_string = nil
+		@current_character_size = nil
 		unlarge_text_length = unlarge_text.size
 		get_sorted_character_sizes.each do |character_size|
 			size_width, size_height = character_size.split(?x).map &:to_i
 			processed_large_text_lines_height = get_total_height_of_processed_large_text
 			total_size = [
-				(((size_width + 2) * unlarge_text_length) + (@padding * 2)),
-				((size_height + 1) + processed_large_text_lines_height + (@padding_h * 2))
+				((size_width + PADDING_BETWEEN_LARGE_CHARS + 1) * unlarge_text_length),
+				(size_height + PADDING_BETWEEN_LARGE_LINES)
 			]
-			return character_size  if (size_fits_in_window? total_size)
+			if (size_fits_in_window? total_size)
+				@current_character_size_string = character_size
+				sizes = character_size.match(/\A([0-9])+x([0-9]+)\z/)[1 .. -1]
+				sizes.map! &:to_i
+				@current_character_size = {
+					width:  sizes[0],
+					height: sizes[1]
+				}
+				return
+			end
 		end
-		return nil
 	end
 
 	def get_sorted_character_sizes
@@ -136,7 +159,7 @@ module Windows::Large
 	end
 
 	def get_total_height_of_processed_large_text
-		return @processed_large_text_lines.map do |line|
+		return @text_matrix_lines.map do |line|
 			next line.map do |entry|
 				next 1                     if (entry.is_a? String)
 				next nil                   if (entry.is_a?(Array) && entry.empty?)
@@ -148,81 +171,30 @@ module Windows::Large
 
 	def size_fits_in_window? size
 		return (
-			(width  >= size[0]) &&
-			(height >= size[1])
+			(width  >= (size[0] + (@padding * 2))) &&
+			(height >= (size[1] + (@padding_h * 2)))
 		)
 	end
 
 	def get_char_matrix_for_current_size char
 		char_key = char.upcase
 		char_key = 'SPACE'  if (char == ' ')
-		if (CHARACTERS[@current_character_size])
-			return CHARACTERS[@current_character_size][char_key]   if (CHARACTERS[@current_character_size][char_key])
-			return CHARACTERS[@current_character_size]['UNKNOWN']
+		if (CHARACTERS[@current_character_size_string])
+			return CHARACTERS[@current_character_size_string][char_key]   if (CHARACTERS[@current_character_size_string][char_key])
+			return CHARACTERS[@current_character_size_string]['UNKNOWN']
 		end
 		return get_truncated_version_of_char_for_current_size char
 	end
 
-	#TODO: Split up this method
 	def get_truncated_version_of_char_for_current_size char
 		char_key = char.upcase
 		char_key = 'SPACE'  if (char == ' ')
-		size = @current_character_size.match(/\A([0-9])+x([0-9]+)\z/)[1 .. -1]
-		current_size = {}
-		current_size[:width], current_size[:height] = size.map &:to_i
-		return ??  unless (current_size[:width] > current_size[:height])
+		return ??  unless (@current_character_size[:width] > @current_character_size[:height])
 
-		tmp_size = "#{current_size[:width]}x#{current_size[:width]}"
-		if (CHARACTERS[tmp_size])
-			char_matrix   = CHARACTERS[tmp_size][char_key]
-			char_matrix ||= CHARACTERS[tmp_size]['UNKNOWN']
-		else
-			return ??
-		end
+		char_matrix = get_char_matrix_for_parent_size char
+		return ??  unless (char_matrix)
 
-		truncation_step = ((current_size[:width] - current_size[:height]) / 2.0).floor
-		truncation_n = (current_size[:width].to_f / 3.0).round - 1
-		truncation_indices = {
-			above: (truncation_n),
-			below: ((current_size[:width] - 1) - truncation_n)
-		}
-
-		indices_to_truncate = []
-		tmp_index = truncation_indices[:above].dup
-		indices_to_truncate << truncation_step.times.map.with_index do |step, counter|
-			if    (counter % 2 == 0)  # EVEN counter - go DOWN (because starts with 0)
-				if (tmp_index + counter < current_size[:width] - 1)
-					tmp_index += counter
-				else
-					tmp_index -= counter
-				end
-			elsif (counter % 2 == 1)  # ODD  counter - go UP
-				if (tmp_index - counter > 0)
-					tmp_index -= counter
-				else
-					tmp_index += counter
-				end
-			end
-			next tmp_index.dup
-		end
-		tmp_index = truncation_indices[:below].dup
-		indices_to_truncate << truncation_step.times.map.with_index do |step, counter|
-			if    (counter % 2 == 0)  # EVEN counter - go UP (because starts with 0)
-				if (tmp_index - counter > 0)
-					tmp_index -= counter
-				else
-					tmp_index += counter
-				end
-			elsif (counter % 2 == 1)  # ODD  counter - go DOWN
-				if (tmp_index + counter < current_size[:width] - 1)
-					tmp_index += counter
-				else
-					tmp_index -= counter
-				end
-			end
-			next tmp_index.dup
-		end
-		indices_to_truncate.flatten!
+		indices_to_truncate = get_indices_to_truncate
 
 		new_char_matrix = char_matrix.dup
 		indices_to_truncate.each do |index|
@@ -232,35 +204,146 @@ module Windows::Large
 		return new_char_matrix
 	end
 
+	def get_char_matrix_for_parent_size char
+		char_key = char.upcase
+		char_key = 'SPACE'  if (char == ' ')
+		char_matrix = nil
+		parent_size = "#{@current_character_size[:width]}x#{@current_character_size[:width]}"
+		if (CHARACTERS[parent_size])
+			char_matrix   = CHARACTERS[parent_size][char_key]
+			char_matrix ||= CHARACTERS[parent_size]['UNKNOWN']
+		end
+		return char_matrix
+	end
+
+	def get_indices_to_truncate
+		truncation_indices = get_truncation_indices
+		indices_to_truncate = []
+		indices_to_truncate << get_indices_to_truncate_for_above_index(truncation_indices[:above])
+		indices_to_truncate << get_indices_to_truncate_for_below_index(truncation_indices[:below])
+		indices_to_truncate.flatten!
+
+		return indices_to_truncate
+	end
+
+	def get_truncation_step
+		return ((@current_character_size[:width] - @current_character_size[:height]) / 2.0).floor
+	end
+
+	def get_truncation_indices
+		truncation_n = (@current_character_size[:width].to_f / 3.0).round - 1
+		truncation_indices = {
+			above: (truncation_n),
+			below: ((@current_character_size[:width] - 1) - truncation_n)
+		}
+	end
+
+	def get_indices_to_truncate_for_above_index truncation_index
+		return get_truncation_step.times.map.with_index do |step, counter|
+			if    (counter % 2 == 0)  # EVEN counter - go DOWN (because starts with 0)
+				if (truncation_index + counter < @current_character_size[:width] - 1)
+					truncation_index += counter
+				else
+					truncation_index -= counter
+				end
+			elsif (counter % 2 == 1)  # ODD  counter - go UP
+				if (truncation_index - counter > 0)
+					truncation_index -= counter
+				else
+					truncation_index += counter
+				end
+			end
+			next truncation_index.dup
+		end
+	end
+
+	def get_indices_to_truncate_for_below_index truncation_index
+		return get_truncation_step.times.map.with_index do |step, counter|
+			if    (counter % 2 == 0)  # EVEN counter - go UP (because starts with 0)
+				if (truncation_index - counter > 0)
+					truncation_index -= counter
+				else
+					truncation_index += counter
+				end
+			elsif (counter % 2 == 1)  # ODD  counter - go DOWN
+				if (truncation_index + counter < @current_character_size[:width] - 1)
+					truncation_index += counter
+				else
+					truncation_index -= counter
+				end
+			end
+			next truncation_index.dup
+		end
+	end
+
+	def text_matrix_lines_fit_in_window?
+		highest_width = 0
+		total_height  = 0
+		@text_matrix_lines.each do |matrix_line|
+			new_highest_width = 0
+			if    (matrix_line.first.is_a? String)
+				matrix_line.each do |normal_text_line|
+					normal_text_width = normal_text_line.size
+					new_highest_width = normal_text_width  if (normal_text_width > new_highest_width)
+					total_height += 1
+				end
+			elsif (matrix_line.first.is_a? Array)
+				first_char = matrix_line.first
+				char_matrix_width = first_char.first.size
+				char_matrix_height = first_char.size
+				amount_of_chars = matrix_line.size
+				new_highest_width = (char_matrix_width * amount_of_chars) + (PADDING_BETWEEN_LARGE_CHARS * amount_of_chars)
+				total_height += (char_matrix_height + PADDING_BETWEEN_LARGE_LINES)
+			end
+			highest_width = new_highest_width  if (new_highest_width > highest_width)
+		end
+
+		total_size = [
+			highest_width,
+			total_height
+		]
+		return size_fits_in_window? total_size
+	end
+
+	def shrink_text_matrix_lines
+		log GAME.get_tick, 'SHRINK!!'
+	end
+
 	def gen_lines_to_draw_from_text_matrix_lines text_matrix_lines
 		return text_matrix_lines.each do |text_matrix_line|
-			@lines_to_draw << ''  unless (text_matrix_line == text_matrix_lines.first)
+			# Empty lines for padding between large text lines
+			unless (text_matrix_line == text_matrix_lines.first)
+				PADDING_BETWEEN_LARGE_LINES.times do
+					@lines_to_draw << ''
+				end
+			end
 			next gen_line_to_draw_from_text_matrix_line text_matrix_line
 		end
 	end
 
 	def gen_line_to_draw_from_text_matrix_line text_matrix_line
-		text_matrix_line.each_with_index do |text_matrix_entry, line_index|
-			if (text_matrix_entry.is_a?(String) && !text_matrix_entry.empty?)
-				@lines_to_draw << text_matrix_entry
-				next
+		if (text_matrix_line.first.is_a?(String))
+			text_matrix_line.each do |normal_text|
+				@lines_to_draw << normal_text  unless (text_matrix_line.first.empty?)
 			end
-			next  unless (text_matrix_entry.is_a?(Array) && text_matrix_entry.any?)
-			text_matrix_entry.first.size.times do |char_index|
-				@lines_to_draw << ''
-				text_matrix_entry.each do |char_matrix|
-					@lines_to_draw[-1] += char_matrix[char_index]
-					@lines_to_draw[-1] += ' '  if (char_matrix[char_index].size > 1)
-				end
+			return
+		end
+		return  unless (text_matrix_line.is_a?(Array) && text_matrix_line.any?)
+		text_matrix_line.first.size.times do |char_index|
+			@lines_to_draw << ''
+			text_matrix_line.each_with_index do |char_matrix, line_index|
+				@lines_to_draw[-1] += char_matrix[char_index]
+				@lines_to_draw[-1] += ' ' * PADDING_BETWEEN_LARGE_CHARS  if (char_matrix[char_index].size > 1)
 			end
 		end
 	end
 
 	def reverse_text_matrix_lines text_matrix_lines
 		return text_matrix_lines.map    do |text_matrix_line|
-			next text_matrix_line.map     do |text_matrix_entry|
-				next text_matrix_entry.reverse
-			end .reverse
+			next text_matrix_line  if (text_matrix_line.first.is_a?(Array))
+			next text_matrix_line.map do |normal_text_line|
+				next normal_text_line
+			end                    if (text_matrix_line.first.is_a?(String))
 		end .reverse
 	end
 
