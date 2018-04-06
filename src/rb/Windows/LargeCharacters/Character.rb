@@ -20,35 +20,22 @@ module Windows::Large
 		end .reject { |x| !x } .to_h
 	end
 
-	CHARACTER_SIZES = [
-		'3x3',
-		'5x5',
-		'7x7',
-		'9x9',
-		'5x3',
-		'7x5',
-		'7x3',
-		'9x7',
-		'9x5',
-		'9x3',
-	]
-	CHARACTER_DIR = File.join DIR[:ascii_art], 'Characters'
-	CHARACTERS = self.load_characters_as_matrixes
+	CHARACTER_MATRIXES = self.load_characters_as_matrixes
 
 	class Character
-		def initialize char, size
+		def initialize char, size = Windows::Large.get_sorted_character_sizes.first
+			size = get_size_hash_from_string size
 			@char = char
-			@size = size
-			@char_matrix = gen_char_matrix
+			resize_to size
 		end
 
 		def gen_char_matrix
 			return [@char]                               if (is_normal?)
 			size_string = get_size_string
 			char_key = get_char_key
-			if (CHARACTERS[size_string])
-				return CHARACTERS[size_string][char_key]   if (CHARACTERS[size_string][char_key])
-				return CHARACTERS[size_string]['UNKNOWN']
+			if (CHARACTER_MATRIXES[size_string])
+				return CHARACTER_MATRIXES[size_string][char_key]   if (CHARACTER_MATRIXES[size_string][char_key])
+				return CHARACTER_MATRIXES[size_string]['UNKNOWN']
 			end
 			return gen_truncated_char_matrix
 		end
@@ -59,6 +46,14 @@ module Windows::Large
 
 		def is_large?
 			return !!@size
+		end
+
+		def get_size
+			return @size  if (!!@size)
+			return {
+				width:  1,
+				height: 1
+			}
 		end
 
 		def get_size_string
@@ -92,9 +87,9 @@ module Windows::Large
 			char_key = get_char_key
 			char_matrix = nil
 			parent_size = "#{@size[:width]}x#{@size[:width]}"
-			if (CHARACTERS[parent_size])
-				char_matrix   = CHARACTERS[parent_size][char_key]
-				char_matrix ||= CHARACTERS[parent_size]['UNKNOWN']
+			if (CHARACTER_MATRIXES[parent_size])
+				char_matrix   = CHARACTER_MATRIXES[parent_size][char_key]
+				char_matrix ||= CHARACTER_MATRIXES[parent_size]['UNKNOWN']
 			end
 			return char_matrix
 		end
@@ -161,6 +156,32 @@ module Windows::Large
 
 		def matrix
 			return @char_matrix
+		end
+
+		def get_size_hash_from_string size_string
+			return size_string  unless (size_string.is_a? String)
+			return size_string.match(/\A([0-9]+?)x([0-9]+)\z/)[1 .. -1].map &:to_i
+		end
+
+		def shrink
+			sorted_character_sizes = Windows::Large.get_sorted_character_sizes :ascending
+			current_size_index = sorted_character_sizes.index get_size_string
+			return  if (current_size_index.nil?)
+			smaller_size = nil
+			if (current_size_index > 1)
+				smaller_size_string = sorted_character_sizes[current_size_index - 1]
+				sizes = get_size_hash_from_string smaller_size_string
+				smaller_size = {
+					width:  sizes[0],
+					height: sizes[1]
+				}
+			end
+			resize_to smaller_size
+		end
+
+		def resize_to size
+			@size = size
+			@char_matrix = gen_char_matrix
 		end
 	end # END - CLASS Character
 end # END - MODULE Windows::Large

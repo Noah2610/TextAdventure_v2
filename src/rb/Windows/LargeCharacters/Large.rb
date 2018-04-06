@@ -1,12 +1,28 @@
 
 ### This module is responsible for creating large AsciiArt versions of text
 
+## Just set some constants before anything else
+module Windows::Large
+	CHARACTER_SIZES = [
+		'3x3',
+		'5x5',
+		'7x7',
+		'9x9',
+		'5x3',
+		'7x5',
+		'7x3',
+		'9x7',
+		'9x5',
+		'9x3',
+	]
+	CHARACTER_DIR = File.join DIR[:ascii_art], 'Characters'
+	PADDING_BETWEEN_LARGE_LINES = 1
+	PADDING_BETWEEN_LARGE_CHARS = 1
+end
+
 require_files File.join(DIR[:windows], 'LargeCharacters'), except: 'Large'
 
 module Windows::Large
-	PADDING_BETWEEN_LARGE_LINES = 1
-	PADDING_BETWEEN_LARGE_CHARS = 1
-
 	def initialize args = {}
 		super
 		@lines_to_draw = nil
@@ -31,23 +47,19 @@ module Windows::Large
 		split_text.each do |type, text|
 			case type
 			when :normal
-				@large_lines << text.split("\n")  unless (text.empty?)
+				@large_lines << text.split("\n")                 unless (text.empty?)
 			when :large
 				text.split("\n").each do |txt|
-					@large_lines << gen_large_character_line(txt)
+					@large_lines << gen_large_character_line(txt)  unless (txt.empty?)
 				end
 			end
 		end
-		#log @text_matrix_lines
-		#gen_lines_to_draw_from_text_matrix_lines reverse_text_matrix_lines(@text_matrix_lines)
 
-		if (@all_text_in_window)
-			check_if_fits_counter = 0
-			while (!large_lines_fit_in_window?)
-				break  if (check_if_fits_counter >= 40)
-				shrink_large_lines
-				check_if_fits_counter += 1
-			end
+		check_if_fits_counter = 0
+		while (!large_lines_fit_in_window?)
+			break  if (check_if_fits_counter >= 40)
+			shrink_large_lines
+			check_if_fits_counter += 1
 		end
 
 		gen_lines_to_draw_from_large_lines
@@ -83,23 +95,25 @@ module Windows::Large
 
 	def gen_large_character char
 		set_fitting_character_size_for_text @current_unlarge_text
-		return Character.new char, @current_character_size
+		return Character.new char, @current_character_size # { width: 9, height: 9 }
 	end
 
+	##TODO:
+	## Maybe remove this method and initially create characters at largest possible size?
+	## They will ne resized after all have been created anyway
 	def set_fitting_character_size_for_text unlarge_text
 		@current_character_size_string = nil
 		@current_character_size = nil
 		unlarge_text_length = unlarge_text.size
-		get_sorted_character_sizes.each do |character_size|
+		Windows::Large.get_sorted_character_sizes.each do |character_size|
 			size_width, size_height = character_size.split(?x).map &:to_i
 			total_size = [
-				((size_width + PADDING_BETWEEN_LARGE_CHARS + 1) * unlarge_text_length),
+				((size_width + PADDING_BETWEEN_LARGE_CHARS) * unlarge_text_length),
 				(size_height + PADDING_BETWEEN_LARGE_LINES)
 			]
 			if (size_fits_in_window? total_size)
 				@current_character_size_string = character_size
-				sizes = character_size.match(/\A([0-9])+x([0-9]+)\z/)[1 .. -1]
-				sizes.map! &:to_i
+				sizes = character_size.match(/\A([0-9])+x([0-9]+)\z/)[1 .. -1].map &:to_i
 				@current_character_size = {
 					width:  sizes[0],
 					height: sizes[1]
@@ -109,18 +123,21 @@ module Windows::Large
 		end
 	end
 
-	def get_sorted_character_sizes
+	def self.get_sorted_character_sizes sort_direction = :descending
 		return CHARACTER_SIZES.sort do |size_a, size_b|
-			val_a = get_total_ascii_value_of_string size_a
-			val_b = get_total_ascii_value_of_string size_b
-			next val_b - val_a
+			val_a = Windows::Large.get_total_ascii_value_of_string size_a
+			val_b = Windows::Large.get_total_ascii_value_of_string size_b
+			next val_b - val_a  if (sort_direction == :descending)
+			next val_a - val_b  if (sort_direction == :ascending)
 		end
 	end
 
-	def get_total_ascii_value_of_string string
+	def self.get_total_ascii_value_of_string string
+		return 0  if (string.nil?)
 		return string.each_char.reduce do |char_a, char_b|
 			next char_a.ord + char_b.ord
-		end + string[0].ord
+		end + string[0].ord * 2  # Adding the doubled value of the first char is a kinda hacky workaround
+		# to prioritize the value of the first char (width axis)
 	end
 
 	##TODO: DEPRECATED
@@ -142,7 +159,7 @@ module Windows::Large
 		)
 	end
 
-	def large_lines_fit_in_window?
+	def get_large_lines_total_size
 		highest_width = 0
 		total_height  = 0
 		@large_lines.each do |large_line|
@@ -154,11 +171,11 @@ module Windows::Large
 					total_height += 1
 				end
 			else
-				char_matrix_width = large_line.character_matrix_width
-				char_matrix_height = large_line.character_matrix_height
-				amount_of_chars = large_line.characters.size
-				new_highest_width = (char_matrix_width * amount_of_chars) + (PADDING_BETWEEN_LARGE_CHARS * amount_of_chars)
-				total_height += (char_matrix_height + PADDING_BETWEEN_LARGE_LINES)
+				char_width        = large_line.character_width
+				char_height       = large_line.character_height
+				amount_of_chars   = large_line.characters.size
+				new_highest_width = (char_width * amount_of_chars) + (PADDING_BETWEEN_LARGE_CHARS * amount_of_chars)
+				total_height     += (char_height + PADDING_BETWEEN_LARGE_LINES)
 			end
 			highest_width = new_highest_width  if (new_highest_width > highest_width)
 		end
@@ -167,13 +184,18 @@ module Windows::Large
 			highest_width,
 			total_height
 		]
-		return size_fits_in_window? total_size
+		return total_size
+	end
+
+	def large_lines_fit_in_window?
+		return size_fits_in_window? get_large_lines_total_size
 	end
 
 	def shrink_large_lines
-		#TODO
-		return
 		@large_lines.each do |large_line|
+			next   unless (large_line.is_a? Line)
+			large_line.shrink
+			break  if (large_lines_fit_in_window?)
 		end
 	end
 
@@ -210,7 +232,7 @@ module Windows::Large
 	end
 
 	def gen_large_characters_to_draw_from_large_line large_line
-		large_line.character_matrix_height.times do |char_index|
+		large_line.character_height.times do |char_index|
 			@lines_to_draw << ''
 			large_line.characters.each.with_index do |character, line_index|
 				char_matrix_row = character.matrix[char_index]
