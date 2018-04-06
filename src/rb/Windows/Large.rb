@@ -1,43 +1,9 @@
 
 ### This module is responsible for creating large AsciiArt versions of text
 
+require File.join DIR[:windows], 'LargeCharacter'
+
 module Windows::Large
-
-	def self.load_characters_as_matrixes
-		return Dir.new(CHARACTER_DIR).map do |dir|
-			dirpath = File.join CHARACTER_DIR, dir
-			next nil  if (self.is_invalid_dir?(dir) || File.file?(dirpath) || !CHARACTER_SIZES.include?(dir))
-			next [dir, self.load_characters_in_dir_as_matrixes(dirpath)]
-		end .reject { |x| !x } .to_h
-	end
-
-	def self.is_invalid_dir? dir
-		return dir.match? /\A\.{1,2}\z/
-	end
-
-	def self.load_characters_in_dir_as_matrixes dir
-		return Dir.new(dir).map do |charfile|
-			next nil  if (self.is_invalid_dir? charfile)
-			charfile_path    = File.join dir, charfile
-			charfile_content = File.read charfile_path
-			next [charfile, charfile_content.split("\n")]
-		end .reject { |x| !x } .to_h
-	end
-
-	CHARACTER_DIR = File.join DIR[:ascii_art], 'Characters'
-	CHARACTER_SIZES = [
-		'3x3',
-		'5x5',
-		'7x7',
-		'9x9',
-		'5x3',
-		'7x5',
-		'7x3',
-		'9x7',
-		'9x5',
-		'9x3',
-	]
-	CHARACTERS = self.load_characters_as_matrixes
 	PADDING_BETWEEN_LARGE_LINES = 1
 	PADDING_BETWEEN_LARGE_CHARS = 1
 
@@ -179,6 +145,7 @@ module Windows::Large
 	def get_char_matrix_for_current_size char
 		char_key = char.upcase
 		char_key = 'SPACE'  if (char == ' ')
+		#return Character.new char_key, @current_character_size
 		if (CHARACTERS[@current_character_size_string])
 			return CHARACTERS[@current_character_size_string][char_key]   if (CHARACTERS[@current_character_size_string][char_key])
 			return CHARACTERS[@current_character_size_string]['UNKNOWN']
@@ -226,16 +193,16 @@ module Windows::Large
 		return indices_to_truncate
 	end
 
-	def get_truncation_step
-		return ((@current_character_size[:width] - @current_character_size[:height]) / 2.0).floor
-	end
-
 	def get_truncation_indices
 		truncation_n = (@current_character_size[:width].to_f / 3.0).round - 1
 		truncation_indices = {
 			above: (truncation_n),
 			below: ((@current_character_size[:width] - 1) - truncation_n)
 		}
+	end
+
+	def get_truncation_step
+		return ((@current_character_size[:width] - @current_character_size[:height]) / 2.0).floor
 	end
 
 	def get_indices_to_truncate_for_above_index truncation_index
@@ -306,18 +273,30 @@ module Windows::Large
 	end
 
 	def shrink_text_matrix_lines
-		log GAME.get_tick, 'SHRINK!!'
+		return
+		@text_matrix_lines = @text_matrix_lines.map do |matrix_line|
+			next shrink_text_matrix_line matrix_line
+		end
+	end
+
+	def shrink_text_matrix_line text_matrix_line
+		return text_matrix_line.map do |matrix_char|
+			next matrix_char  if (matrix_char.is_a? String)
+			next matrix_char.map do |matrix_char_line|
+				next matrix_char_line
+			end
+		end
 	end
 
 	def gen_lines_to_draw_from_text_matrix_lines text_matrix_lines
-		return text_matrix_lines.each do |text_matrix_line|
+		return text_matrix_lines.each do |matrix_line|
 			# Empty lines for padding between large text lines
-			unless (text_matrix_line == text_matrix_lines.first)
+			unless (matrix_line == text_matrix_lines.first)
 				PADDING_BETWEEN_LARGE_LINES.times do
 					@lines_to_draw << ''
 				end
 			end
-			next gen_line_to_draw_from_text_matrix_line text_matrix_line
+			next gen_line_to_draw_from_text_matrix_line matrix_line
 		end
 	end
 
