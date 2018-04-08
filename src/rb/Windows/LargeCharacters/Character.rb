@@ -23,19 +23,29 @@ module Windows::Large
 	CHARACTER_MATRIXES = self.load_characters_as_matrixes
 
 	class Character
-		def initialize char, size = Windows::Large.get_sorted_character_sizes.first
+		def initialize char, size, args = {}
 			size = get_size_hash_from_string size
 			@char = char
+			@attr_code = args[:attr_code]
 			resize_to size
 		end
 
+		def resize_to size
+			@size = size
+			@char_matrix = gen_char_matrix
+			@char_matrix_to_draw = gen_char_matrix_to_draw
+		end
+
 		def gen_char_matrix
-			return [@char]                               if (is_normal?)
+			return [@char]                                       if (is_normal?)
 			size_string = get_size_string
 			char_key = get_char_key
 			if (CHARACTER_MATRIXES[size_string])
-				return CHARACTER_MATRIXES[size_string][char_key]   if (CHARACTER_MATRIXES[size_string][char_key])
-				return CHARACTER_MATRIXES[size_string]['UNKNOWN']
+				if (CHARACTER_MATRIXES[size_string][char_key])
+					return CHARACTER_MATRIXES[size_string][char_key]
+				else
+					return CHARACTER_MATRIXES[size_string]['UNKNOWN']
+				end
 			end
 			return gen_truncated_char_matrix
 		end
@@ -154,8 +164,19 @@ module Windows::Large
 			end
 		end
 
+		def gen_char_matrix_to_draw char_matrix = @char_matrix
+			return char_matrix  unless (@attr_code)
+			return char_matrix.map do |matrix_line|
+				next "#{@attr_code}#{matrix_line}"
+			end
+		end
+
 		def matrix
 			return @char_matrix
+		end
+
+		def matrix_to_draw
+			return @char_matrix_to_draw
 		end
 
 		def get_size_hash_from_string size_string
@@ -177,11 +198,6 @@ module Windows::Large
 				}
 			end
 			resize_to smaller_size
-		end
-
-		def resize_to size
-			@size = size
-			@char_matrix = gen_char_matrix
 		end
 	end # END - CLASS Character
 end # END - MODULE Windows::Large

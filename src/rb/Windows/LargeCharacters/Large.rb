@@ -87,15 +87,38 @@ module Windows::Large
 
 	def gen_large_character_line text
 		@current_unlarge_text = text
+		current_attr_code = nil
+		full_attr_code = nil
 		large_characters = text.each_char.map do |char|
-			next gen_large_character char
+			## Handle attribute codes
+			if    (char == ?{)
+				current_attr_code = ?{
+				next nil
+			elsif (current_attr_code && char != ?})
+				current_attr_code += char
+				next nil
+			elsif (current_attr_code && char == ?})
+				current_attr_code += char
+				full_attr_code = current_attr_code
+				current_attr_code = nil
+				next nil
+			end
+
+			if (full_attr_code)
+				large_char = gen_large_character char, attr_code: full_attr_code
+				full_attr_code = nil
+				next large_char
+			else
+				next gen_large_character char
+			end
 		end .reject { |x| !x }
 		return Line.new large_characters
 	end
 
-	def gen_large_character char
-		set_fitting_character_size_for_text @current_unlarge_text
-		return Character.new char, @current_character_size # { width: 9, height: 9 }
+	def gen_large_character char, args = {}
+		unlarge_text = @current_unlarge_text.gsub /{.+?}/, ''
+		set_fitting_character_size_for_text unlarge_text
+		return Character.new char, @current_character_size, args
 	end
 
 	##TODO:
@@ -235,8 +258,9 @@ module Windows::Large
 		large_line.character_height.times do |char_index|
 			@lines_to_draw << ''
 			large_line.characters.each.with_index do |character, line_index|
+				char_matrix_to_draw_row = character.matrix_to_draw[char_index]
 				char_matrix_row = character.matrix[char_index]
-				@lines_to_draw[-1] += char_matrix_row
+				@lines_to_draw[-1] += char_matrix_to_draw_row
 				@lines_to_draw[-1] += ' ' * PADDING_BETWEEN_LARGE_CHARS  if (char_matrix_row.size > 1)
 			end
 		end

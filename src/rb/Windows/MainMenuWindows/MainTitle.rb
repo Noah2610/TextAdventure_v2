@@ -9,8 +9,8 @@ module Windows
 				@border = [?|, ?-]
 				@lines = [
 					'{LARGE_START}',
-					'Text',
-					'Adventure',
+					'{COLOR:red;ATTR:bold}T{COLOR:green;ATTR:bold}e{COLOR:blue;ATTR:bold}x{COLOR:cyan;ATTR:bold}t{RESET}',
+					'{COLOR:yellow;ATTR:bold}A{COLOR:magenta;ATTR:bold}d{COLOR:red;ATTR:bold}v{COLOR:green;ATTR:bold}e{COLOR:blue;ATTR:bold}n{COLOR:cyan;ATTR:bold}t{COLOR:yellow;ATTR:bold}u{COLOR:magenta;ATTR:bold}r{COLOR:red;ATTR:bold}e{RESET}',
 					'{LARGE_END}'
 				]
 				@padding_h = 2
