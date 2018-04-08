@@ -204,7 +204,6 @@ module Windows::Large
 		end
 		total_height -= PADDING_BETWEEN_LARGE_LINES
 
-		log total_height
 		total_size = [
 			highest_width,
 			total_height

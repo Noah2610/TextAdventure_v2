@@ -1,11 +1,11 @@
 #!/bin/env ruby
 
 require 'json'
-require 'pathname'
 require 'yaml'
 
 ## Set root directory of this script
-ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
+#ROOT = File.dirname(Pathname.new(File.absolute_path(__FILE__)).realpath)
+ROOT = File.expand_path(File.dirname(__FILE__))
 
 ## Set DIR constant with relevant paths
 DIR = {
