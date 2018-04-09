@@ -41,7 +41,7 @@ module Windows::Large
 	def process_large
 		@full_normal_text = @lines.join("\n")
 
-		split_text = split_text_into_normal_and_large_groups
+		split_text = split_text_into_groups
 
 		@large_lines = []
 		split_text.each do |type, text|
@@ -50,7 +50,7 @@ module Windows::Large
 				@large_lines << text.split("\n")                 unless (text.empty?)
 			when :large
 				text.split("\n").each do |txt|
-					@large_lines << gen_large_character_line(txt)  unless (txt.empty?)
+					@large_lines << gen_large_line(txt)  unless (txt.empty?)
 				end
 			end
 		end
@@ -65,7 +65,7 @@ module Windows::Large
 		gen_lines_to_draw_from_large_lines
 	end
 
-	def split_text_into_normal_and_large_groups
+	def split_text_into_groups
 		normal_text_dup = @full_normal_text.dup
 		split_text = []
 		regex_for_scan = /(#{'{LARGE_START}'}(.+?)#{'{LARGE_END}'})/m
@@ -85,7 +85,7 @@ module Windows::Large
 		return split_text
 	end
 
-	def gen_large_character_line text
+	def gen_large_line text
 		@current_unlarge_text = text
 		current_attr_code = nil
 		full_attr_code = nil
@@ -159,20 +159,9 @@ module Windows::Large
 		return 0  if (string.nil?)
 		return string.each_char.reduce do |char_a, char_b|
 			next char_a.ord + char_b.ord
-		end + string[0].ord * 2  # Adding the doubled value of the first char is a kinda hacky workaround
+		end + string[0].ord * 2
+		# Adding the doubled value of the first char is a kinda hacky workaround
 		# to prioritize the value of the first char (width axis)
-	end
-
-	##TODO: DEPRECATED
-	def get_total_height_of_processed_large_text
-		return @text_matrix_lines.map do |line|
-			next line.map do |entry|
-				next 1                     if (entry.is_a? String)
-				next nil                   if (entry.is_a?(Array) && entry.empty?)
-				next entry.first.size + 1  if (entry.is_a? Array)
-				next nil
-			end
-		end .flatten .reject { |x| !x } .sum
 	end
 
 	def size_fits_in_window? size
@@ -223,23 +212,12 @@ module Windows::Large
 		end
 	end
 
-	def shrink_text_matrix_line text_matrix_line
-		return text_matrix_line.map do |matrix_char|
-			next matrix_char  if (matrix_char.is_a? String)
-			next matrix_char.map do |matrix_char_line|
-				next matrix_char_line
-			end
-		end
-	end
-
 	def gen_lines_to_draw_from_large_lines
 		return @large_lines.each do |large_line|
 			# Empty lines for padding between large text lines
-			unless (large_line == @large_lines.first)
-				PADDING_BETWEEN_LARGE_LINES.times do
-					@lines_to_draw << ''
-				end
-			end
+			PADDING_BETWEEN_LARGE_LINES.times do
+				@lines_to_draw << ''
+			end  unless (large_line == @large_lines.first || large_line.is_normal?)
 			next gen_line_to_draw_from_large_line large_line
 		end
 	end
@@ -266,15 +244,4 @@ module Windows::Large
 			end
 		end
 	end
-
-	##TODO: DEPRECATED
-	def reverse_text_matrix_lines text_matrix_lines
-		return text_matrix_lines.map    do |text_matrix_line|
-			next text_matrix_line  if (text_matrix_line.first.is_a?(Array))
-			next text_matrix_line.map do |normal_text_line|
-				next normal_text_line
-			end                    if (text_matrix_line.first.is_a?(String))
-		end .reverse
-	end
-
 end # END - MODULE

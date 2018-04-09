@@ -4,11 +4,10 @@
 ##  ex.: Input Window, Main Output Window, Conversation Output Window, ...
 
 module Windows
-	MIN_WIDTH  = SETTINGS.output['min_width']
-	MIN_HEIGHT = SETTINGS.output['min_height']
-
 	class Window
 		def initialize args = {}
+			@min_width  = SETTINGS.output['min_width']
+			@min_height = SETTINGS.output['min_height']
 			@window = nil
 			@hidden = false
 			@width  = 1.0
@@ -116,7 +115,7 @@ module Windows
 
 		## Check if Window is hidden
 		def hidden?
-			return (!!@hidden || (width < MIN_WIDTH || height < MIN_HEIGHT))
+			return (!!@hidden || (width < @min_width || height < @min_height))
 		end
 		## Check if Window is shown
 		def shown?
