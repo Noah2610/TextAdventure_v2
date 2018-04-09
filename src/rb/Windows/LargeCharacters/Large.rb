@@ -247,6 +247,12 @@ module Windows::Large
 				next "#{padding}#{row}"
 			end
 		when :right
+			aligned_line_to_draw = line_to_draw.map do |row|
+				plain_row_size = row.gsub(/{.+?}/, '').size
+				padding_amount = (width - plain_row_size - @padding * 2).floor
+				padding = padding_amount > 0 ? ' ' * padding_amount : ''
+				next "#{padding}#{row}"
+			end
 		else
 			aligned_line_to_draw = line_to_draw
 		end
