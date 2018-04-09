@@ -44,14 +44,17 @@ module Windows::Large
 		split_text = split_text_into_groups
 
 		@large_lines = []
-		split_text.each do |type, text|
+		split_text.each do |type, text, alignment|
+			@current_alignment = alignment
 			case type
 			when :normal
-				@large_lines << text.split("\n")                 unless (text.empty?)
+				split = text.split("\n")
+				@large_lines << split                  unless (split.empty?)
 			when :large
-				text.split("\n").each do |txt|
+				split = text.split("\n")
+				split.each do |txt|
 					@large_lines << gen_large_line(txt)  unless (txt.empty?)
-				end
+				end  unless (split.empty?)
 			end
 		end
 
@@ -68,20 +71,18 @@ module Windows::Large
 	def split_text_into_groups
 		normal_text_dup = @full_normal_text.dup
 		split_text = []
-		regex_for_scan = /(#{'{LARGE_START}'}(.+?)#{'{LARGE_END}'})/m
-		@full_normal_text.scan regex_for_scan do |large_text_arr|
-			full_match = large_text_arr[0]
-			large_text = large_text_arr[1]
+		regex_for_scan = /({LARGE_START(:\w+?)?}(.+?){LARGE_END})/m
+		@full_normal_text.scan regex_for_scan do |regex_match_arr|
+			full_match = regex_match_arr[0]
+			alignment  = regex_match_arr[1] ? regex_match_arr[1].sub(?:, '') : nil
+			large_text = regex_match_arr[2]
 			index = normal_text_dup.index full_match
 			sliced = normal_text_dup.slice!(0 ... index)
-			split_text << [:normal, sliced]     unless (sliced.empty?)
-			split_text << [:large, large_text]  unless (large_text.empty?)
+			split_text << [:normal, sliced, alignment]     unless (sliced.empty?)
+			split_text << [:large, large_text, alignment]  unless (large_text.empty?)
 			normal_text_dup.slice!(0 ... full_match.size)
 		end
-		split_text << [:normal, normal_text_dup]
-		split_text.map! do |type, part|
-			next [type, part]
-		end
+		split_text << [:normal, normal_text_dup, nil]
 		return split_text
 	end
 
@@ -112,7 +113,7 @@ module Windows::Large
 				next gen_large_character char
 			end
 		end .reject { |x| !x }
-		return Line.new large_characters
+		return Line.new large_characters, alignment: @current_alignment
 	end
 
 	def gen_large_character char, args = {}
@@ -166,7 +167,7 @@ module Windows::Large
 
 	def size_fits_in_window? size
 		return (
-			(width  >= (size[0] + (@padding * 2))) &&
+			(width  >= (size[0] + (@padding   * 2))) &&
 			(height >= (size[1] + (@padding_h * 2)))
 		)
 	end
@@ -224,24 +225,40 @@ module Windows::Large
 
 	def gen_line_to_draw_from_large_line large_line
 		unless (large_line.is_a? Line)
-			large_line.each do |normal_text|
-				@lines_to_draw << normal_text  unless (large_line.first.empty?)
-			end
+			handle_line_to_draw_for_normal_line large_line
 			return
 		end
 		return  unless (large_line.is_a?(Line))
-		gen_large_characters_to_draw_from_large_line large_line
+
+		large_line_to_draw = gen_line_to_draw_with_alignment large_line
+		@lines_to_draw.concat large_line_to_draw
 	end
 
-	def gen_large_characters_to_draw_from_large_line large_line
-		large_line.character_height.times do |char_index|
-			@lines_to_draw << ''
-			large_line.characters.each.with_index do |character, line_index|
-				char_matrix_to_draw_row = character.matrix_to_draw[char_index]
-				char_matrix_row = character.matrix[char_index]
-				@lines_to_draw[-1] += char_matrix_to_draw_row
-				@lines_to_draw[-1] += ' ' * PADDING_BETWEEN_LARGE_CHARS  if (char_matrix_row.size > 1)
+	def gen_line_to_draw_with_alignment large_line
+		alignment = large_line.alignment ? large_line.alignment.to_sym : nil
+		line_to_draw = large_line.gen_characters_to_draw
+		aligned_line_to_draw = []
+		case alignment
+		when :center
+			aligned_line_to_draw = line_to_draw.map do |row|
+				plain_row_size = row.gsub(/{.+?}/, '').size
+				padding_amount = ((width - plain_row_size - @padding * 2) * 0.5).floor
+				padding = padding_amount > 0 ? ' ' * padding_amount : ''
+				next "#{padding}#{row}"
 			end
+		when :right
+		else
+			aligned_line_to_draw = line_to_draw
 		end
+		return aligned_line_to_draw
+	end
+
+	def handle_line_to_draw_for_normal_line normal_line
+		normal_line.each do |normal_text|
+			@lines_to_draw << normal_text  unless (normal_line.first.empty?)
+		end
+	end
+
+	def handle_alignment_for_large_line_to_draw line_to_draw
 	end
 end # END - MODULE

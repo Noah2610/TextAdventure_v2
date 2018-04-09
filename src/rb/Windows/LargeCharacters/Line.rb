@@ -1,11 +1,8 @@
 module Windows::Large
 	class Line
-		def initialize characters = []
+		def initialize characters, args = {}
 			@characters = characters
-		end
-
-		def new_character *args
-			@characters << Character.new(*args)
+			@alignment = args[:alignment]
 		end
 
 		def characters
@@ -50,6 +47,24 @@ module Windows::Large
 		def is_large?
 			return false  if (characters.empty?)
 			return characters.first.is_large?
+		end
+
+		def gen_characters_to_draw
+			lines_to_draw = []
+			character_height.times do |char_index|
+				lines_to_draw << ''
+				characters.each.with_index do |character, row_index|
+					char_matrix_row_plain = character.matrix_to_draw[char_index]
+					char_matrix_row = character.matrix[char_index]
+					lines_to_draw[-1] += char_matrix_row_plain
+					lines_to_draw[-1] += ' ' * PADDING_BETWEEN_LARGE_CHARS  if (char_matrix_row.size > 1)  unless (character == characters.last)
+				end
+			end
+			return lines_to_draw
+		end
+
+		def alignment
+			return @alignment
 		end
 	end # END - CLASS Line
 end # END - MODULE Windows::Large
