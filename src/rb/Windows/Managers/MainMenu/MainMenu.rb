@@ -1,6 +1,5 @@
-
 ## Require other Window files
-require_files File.join(DIR[:windows], 'MainMenuWindows')
+require_files File.join(DIR[:window_managers], 'MainMenu/Windows')
 
 module Windows
 	module Managers

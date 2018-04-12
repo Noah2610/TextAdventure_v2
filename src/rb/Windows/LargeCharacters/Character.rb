@@ -2,18 +2,14 @@ module Windows::Large
 	def self.load_characters_as_matrixes
 		return Dir.new(CHARACTER_DIR).map do |dir|
 			dirpath = File.join CHARACTER_DIR, dir
-			next nil  if (self.is_invalid_dir?(dir) || File.file?(dirpath) || !CHARACTER_SIZES.include?(dir))
+			next nil  if (invalid_dir?(dir) || File.file?(dirpath) || !CHARACTER_SIZES.include?(dir))
 			next [dir, self.load_characters_in_dir_as_matrixes(dirpath)]
 		end .reject { |x| !x } .to_h
 	end
 
-	def self.is_invalid_dir? dir
-		return dir.match? /\A\.{1,2}\z/
-	end
-
 	def self.load_characters_in_dir_as_matrixes dir
 		return Dir.new(dir).map do |charfile|
-			next nil  if (self.is_invalid_dir? charfile)
+			next nil  if (invalid_dir? charfile)
 			charfile_path    = File.join dir, charfile
 			charfile_content = File.read charfile_path
 			next [charfile, charfile_content.split("\n")]

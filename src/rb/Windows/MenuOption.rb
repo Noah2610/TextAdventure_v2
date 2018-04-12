@@ -80,7 +80,7 @@ module Windows
 					when :right
 						return (position - width)
 					when :center
-						return (position - (width * 0.5)).round
+						return (position - (width * 0.5)).floor
 					end
 				end
 
@@ -91,7 +91,7 @@ module Windows
 					when :bottom
 						return (position - height)
 					when :center
-						return (position - (height * 0.5)).round
+						return (position - (height * 0.5)).floor
 					end
 				end
 
@@ -135,13 +135,13 @@ module Windows
 					when :right
 						padding = width - line.size
 					when :center
-						padding = ((width - line.size) * 0.5).round
+						padding = ((width - line.size) * 0.5).floor
 					end
 					return padding
 				end
 
 				## Submit / "click" on Option
-				def submit!
+				def submit
 				end
 
 				def update

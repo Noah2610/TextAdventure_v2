@@ -1,6 +1,5 @@
-
 ## Require Windows
-require_files File.join(DIR[:windows], 'GameWindows')
+require_files File.join(DIR[:window_managers], 'Game/Windows')
 
 module Windows
 	module Managers

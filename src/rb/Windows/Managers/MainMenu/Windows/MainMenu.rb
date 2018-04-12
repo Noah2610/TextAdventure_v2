@@ -1,3 +1,5 @@
+## Require Menu Options for MainMenu
+require_files File.join(DIR[:window_managers], 'MainMenu/Windows/MainMenuOptions')
 
 module Windows
 	module Menus
@@ -6,11 +8,11 @@ module Windows
 				super
 				## Menu Options
 				@options = {
-					start: Options::Start.new(
+					start: Options::MainMenuStart.new(
 						menu:   self,
 						coords: [0, 0]
 					),
-					quit:  Options::Quit.new(
+					quit:  Options::MainMenuQuit.new(
 						menu:   self,
 						coords: [1, 0]
 					)

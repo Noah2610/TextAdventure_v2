@@ -103,3 +103,11 @@ def quit_game
 	exit
 end
 
+def invalid_dir? dir
+	return dir.match? /\A.*?\/?\.{1,2}\z/
+end
+
+def sanitize_string string
+	regex = /[ .,;:^!?"'$%&§\/\\(){}\[\]<>#+\-*~ß=|´`]/
+	return string.gsub(regex, ?_)
+end

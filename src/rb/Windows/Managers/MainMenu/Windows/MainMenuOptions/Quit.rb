@@ -1,5 +1,5 @@
 module Windows::Menus::Options
-	class Quit < Option
+	class MainMenuQuit < Option
 		def initialize args = {}
 			super
 			@box_align = {
@@ -10,7 +10,7 @@ module Windows::Menus::Options
 			@text = 'Quit Game'
 		end
 
-		def submit!
+		def submit
 			quit_game
 		end
 	end # END - CLASS Quit

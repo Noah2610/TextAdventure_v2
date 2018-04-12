@@ -21,36 +21,32 @@ SAVEFILE = Saves::Savefile.new 'development'
 ### Game
 class Game
 	def initialize
-		## Global game tick variable, increases by one every time #update is called
 		@tick = 0
-
-		## Method queue
 		@queue = {}
 
-		## Initialize Curses screen
 		unless (ENVT.debug? || ENVT.test?)
-			## Initialize Curses screen
 			Curses.init_screen
 			Curses.start_color
-			## Initialize custom color-pairs
 			Windows::Color.init
-			## Set Escape delay
 			Curses.ESCDELAY = SETTINGS.input['ESCDELAY']
 		end
 	end
 
-	## Main menu
-	def init_menu
-		## Disable cursor for MainMenu
+	def init_main_menu
 		Curses.curs_set 0  unless (ENVT.debug? || ENVT.test?)
 		@window_manager = Windows::Managers::MainMenu.new
 		@window_manager.init_curses
 		update  if (running?)
 	end
 
-	## Initialize Curses Window Manager for Game
+	def init_choose_savefile
+		Curses.curs_set 0  unless (ENVT.debug? || ENVT.test?)
+		@window_manager = Windows::Managers::ChooseSavefile.new
+		@window_manager.init_curses
+		update  if (running?)
+	end
+
 	def init_game
-		## Enable cursor for Game
 		Curses.curs_set 1  unless (ENVT.debug? || ENVT.test?)
 		@window_manager = Windows::Managers::Game.new
 		@window_manager.init_curses
@@ -169,7 +165,7 @@ end
 GAME = Game.new
 ## Start main menu
 unless (ENVT.debug? || ENVT.test?)
-	GAME.init_menu
+	GAME.init_main_menu
 	#GAME.init_game
 end
 while (GAME.running?)

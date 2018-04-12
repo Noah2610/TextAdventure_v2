@@ -1,6 +1,5 @@
-## Require MenuOptions
-require File.join DIR[:menu_options],       'Option'
-require_files File.join(DIR[:menu_options], 'MainMenu')
+## Require MenuOption
+require File.join DIR[:windows], 'MenuOption'
 
 module Windows
 	module Menus
@@ -198,7 +197,7 @@ module Windows
 
 			## Submit selected Option / "click" on Option
 			def submit_selected_option
-				selected_option.submit!
+				selected_option.submit
 			end
 
 			## Read user input (one character)

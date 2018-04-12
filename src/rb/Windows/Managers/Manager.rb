@@ -14,7 +14,7 @@ module Windows::Managers
 
 		def init_curses
 			unless (ENVT.debug? || ENVT.test?)
-				## Initialise Curses Windows
+				## Initialize Curses Windows
 				@windows.values.each &:init_curses
 			end
 		end
@@ -51,5 +51,10 @@ module Windows::Managers
 end # END - MODULE Windows::Managers
 
 ## Require Window Managers
-require_files File.join(DIR[:window_managers]), except: 'Manager'
+Dir.new(DIR[:window_managers]).each do |file|
+	filepath = File.join DIR[:window_managers], file
+	next  unless (File.directory? filepath)
+	next  if     (invalid_dir? filepath)
+	require_files filepath
+end
 

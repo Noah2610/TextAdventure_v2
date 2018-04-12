@@ -14,7 +14,6 @@ DIR = {
 	misc:             File.join(ROOT, 'src/rb/misc'),
 	windows:          File.join(ROOT, 'src/rb/Windows'),
 	window_managers:  File.join(ROOT, 'src/rb/Windows/Managers'),
-	menu_options:     File.join(ROOT, 'src/rb/Windows/MenuOptions'),
 	input:            File.join(ROOT, 'src/rb/Input'),
 	verbs:            File.join(ROOT, 'src/rb/Verbs'),
 	terms:            File.join(ROOT, 'src/rb/Terms'),
